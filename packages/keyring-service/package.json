@@ -1,0 +1,92 @@
+{
+  "name": "@unisat/keyring-service",
+  "version": "0.1.22",
+  "description": "Keyring service for managing Bitcoin wallets - supports HD, simple, and hardware wallets",
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/**/*",
+    "src/**/*",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js",
+      "import": "./lib/index.mjs"
+    },
+    "./types": {
+      "types": "./lib/types/index.d.ts",
+      "require": "./lib/types/index.js",
+      "import": "./lib/types/index.mjs"
+    },
+    "./adapters/memory": {
+      "types": "./lib/adapters/memory.d.ts",
+      "require": "./lib/adapters/memory.js",
+      "import": "./lib/adapters/memory.mjs"
+    },
+    "./adapters/extensionPersist": {
+      "types": "./lib/adapters/extensionPersist.d.ts",
+      "require": "./lib/adapters/extensionPersist.js",
+      "import": "./lib/adapters/extensionPersist.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts,.js",
+    "clean": "rm -rf lib",
+    "dev": "tsup --watch",
+    "prepublishOnly": "yarn clean && yarn build"
+  },
+  "keywords": [
+    "bitcoin",
+    "wallet",
+    "keyring",
+    "crypto",
+    "blockchain",
+    "unisat",
+    "hd-wallet",
+    "hardware-wallet",
+    "typescript"
+  ],
+  "author": "UniSat",
+  "license": "MIT",
+  "dependencies": {
+    "@unisat/wallet-bitcoin": "workspace:*",
+    "@unisat/wallet-types": "workspace:*",
+    "@metamask/obs-store": "^7.0.0",
+    "bitcoinjs-lib": "^6.1.5",
+    "bitcore-lib": "^10.0.0",
+    "bip39": "^3.1.0",
+    "hdkey": "^2.1.0",
+    "browser-passworder": "^2.0.3",
+    "events": "^3.3.0",
+    "bs58check": "^3.0.1",
+    "@keystonehq/keystone-sdk": "^0.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
+    "eslint": "^8.50.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.0",
+    "vitest": "^0.34.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unisat-wallet/wallet-toolkit.git",
+    "directory": "packages/keyring-service"
+  },
+  "bugs": {
+    "url": "https://github.com/unisat-wallet/wallet-toolkit/issues"
+  },
+  "homepage": "https://github.com/unisat-wallet/wallet-toolkit/tree/main/packages/keyring-service#readme",
+  "publishConfig": {
+    "access": "public"
+  }
+}

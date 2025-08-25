@@ -1,0 +1,55 @@
+{
+  "name": "@unisat/contact-book",
+  "version": "0.1.6",
+  "description": "Universal contact book management with multi-chain support",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./adapters": {
+      "require": "./dist/adapters/index.js",
+      "import": "./dist/adapters/index.mjs",
+      "types": "./dist/adapters/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "cd ../.. && npx vitest packages/contact-book/test",
+    "test:run": "cd ../.. && npx vitest run packages/contact-book/test",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "bitcoin",
+    "contact",
+    "address",
+    "wallet",
+    "multi-chain",
+    "unisat"
+  ],
+  "author": "UniSat Team",
+  "license": "MIT",
+  "dependencies": {
+    "@unisat/wallet-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.6",
+    "@types/node": "^20.0.0",
+    "tsup": "^7.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^0.34.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

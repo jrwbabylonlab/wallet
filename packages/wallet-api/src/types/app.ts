@@ -1,0 +1,62 @@
+/**
+ * Application and configuration related type definitions
+ */
+
+import { NetworkType } from '@unisat/wallet-types'
+
+// ========================================
+// Application and configuration related
+// ========================================
+
+export interface AppInfo {
+  logo: string
+  title: string
+  desc: string
+  route?: string
+  url: string
+  time: number
+  id: number
+  tag?: string
+  readtime?: number
+  new?: boolean
+  tagColor?: string
+}
+
+export interface AppSummary {
+  apps: AppInfo[]
+  readTabTime?: number
+}
+
+export interface WalletConfig {
+  version: string
+  endpoint: string
+  endpoints: string[]
+  chainType: NetworkType
+  enabledFeatures: string[]
+  feeRates: {
+    slow: number
+    standard: number
+    fast: number
+  }
+  limits: {
+    maxTransactionSize: number
+    maxFeeRate: number
+    minFeeRate: number
+    maxUtxos: number
+  }
+}
+
+export interface VersionDetail {
+  version: string
+  title: string
+  changelogs: string[]
+  notice: string
+}
+
+// ========================================
+// Babylon related (if needed)
+// ========================================
+
+export interface BabylonConfigV2 {
+  [key: string]: any
+}

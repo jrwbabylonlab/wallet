@@ -1,0 +1,50 @@
+{
+  "name": "@unisat/wallet-toolkit",
+  "version": "0.1.0",
+  "description": "UniSat Wallet Toolkit - Modular Bitcoin Wallet Components",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "clean": "pnpm -r clean",
+    "typecheck": "pnpm -r typecheck",
+    "dev": "pnpm -r dev"
+  },
+  "keywords": [
+    "bitcoin",
+    "wallet",
+    "toolkit",
+    "keyring",
+    "unisat",
+    "ordinals",
+    "brc20",
+    "modular"
+  ],
+  "author": "UniSat Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@changesets/cli": "^2.29.6",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "bitcoinjs-lib": "^6.1.6",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.0",
+    "tiny-secp256k1": "^2.2.1",
+    "tsup": "^7.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^0.34.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.6.0"
+}

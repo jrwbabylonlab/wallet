@@ -1,0 +1,78 @@
+{
+  "name": "@unisat/tx-helpers",
+  "version": "0.1.8",
+  "description": "Bitcoin transaction helpers for UniSat Wallet - supports BTC, Inscriptions, Runes, and Atomicals",
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/**/*",
+    "src/**/*",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js",
+      "import": "./lib/index.mjs"
+    },
+    "./types": {
+      "types": "./lib/types/index.d.ts",
+      "require": "./lib/types/index.js",
+      "import": "./lib/types/index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts,.js",
+    "clean": "rm -rf lib",
+    "dev": "tsup --watch",
+    "prepublishOnly": "yarn clean && yarn build"
+  },
+  "keywords": [
+    "bitcoin",
+    "transaction",
+    "inscription",
+    "runes",
+    "atomicals",
+    "ordinals",
+    "psbt",
+    "unisat",
+    "wallet",
+    "blockchain",
+    "typescript"
+  ],
+  "author": "UniSat",
+  "license": "MIT",
+  "dependencies": {
+    "@unisat/wallet-bitcoin": "workspace:*",
+    "@unisat/wallet-types": "workspace:*",
+    "@unisat/keyring-service": "workspace:*",
+    "big-integer": "^1.6.52",
+    "bignumber.js": "^9.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
+    "eslint": "^8.50.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.0",
+    "vitest": "^0.34.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unisat-wallet/wallet-toolkit.git",
+    "directory": "packages/tx-helpers"
+  },
+  "bugs": {
+    "url": "https://github.com/unisat-wallet/wallet-toolkit/issues"
+  },
+  "homepage": "https://github.com/unisat-wallet/wallet-toolkit/tree/main/packages/tx-helpers#readme",
+  "publishConfig": {
+    "access": "public"
+  }
+}

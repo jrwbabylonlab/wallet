@@ -1,0 +1,55 @@
+{
+  "name": "@unisat/wallet-api",
+  "version": "0.1.6",
+  "description": "UniSat wallet API client with comprehensive Bitcoin ecosystem support",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./types": {
+      "require": "./dist/types/index.js",
+      "import": "./dist/types/index.mjs",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "cd ../.. && npx vitest packages/api/test",
+    "test:run": "cd ../.. && npx vitest run packages/api/test",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "bitcoin",
+    "wallet",
+    "api",
+    "brc20",
+    "runes",
+    "inscriptions",
+    "unisat"
+  ],
+  "author": "UniSat Team",
+  "license": "MIT",
+  "dependencies": {
+    "@unisat/wallet-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsup": "^7.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^0.34.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
