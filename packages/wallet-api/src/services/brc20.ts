@@ -195,4 +195,12 @@ export class BRC20Service {
   }> {
     return this.httpClient.post('/v5/brc20/single-step-transfer/sign-reveal', params)
   }
+
+  async getBRC20ProgList(
+    address: string,
+    cursor: number,
+    size: number
+  ): Promise<{ list: TokenBalance[]; total: number }> {
+    return this.httpClient.get('/v5/brc20-prog/list', { query: { address, cursor, size, type: 5 } })
+  }
 }
