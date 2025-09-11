@@ -16,7 +16,4 @@ export { SimpleEncryptor } from './encryptor/simple-encryptor'
 export { ADDRESS_TYPES } from './constant'
 
 // All types (interfaces, enums, etc.)
-export type * from './types'
-
-// Enum exports
-export { KeyringType, CosmosSignDataType } from './types'
+export * from './types'
