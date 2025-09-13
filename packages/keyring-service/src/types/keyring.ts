@@ -71,5 +71,6 @@ export enum KeyringType {
   SimpleKeyring = 'Simple Key Pair',
   KeystoneKeyring = 'Keystone',
   ColdWalletKeyring = 'Cold Wallet',
+  ReadonlyKeyring = 'Readonly',
   Empty = 'Empty',
 }
