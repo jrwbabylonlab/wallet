@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 import { AddressType, NetworkType } from '@unisat/wallet-types'
 import { decodeAddress, getAddressType, isValidAddress, publicKeyToAddress } from '../src/address'
+import { eccManager } from '../src/bitcoin-core'
 
 const p2wpkh_data = {
   pubkey: '02b602ad190efb7b4f520068e3f8ecf573823d9e2557c5229231b4e14b79bbc0d8',
@@ -34,6 +35,9 @@ const invalid_data = {
 
 describe('address', () => {
   describe('publicKeyToAddress', () => {
+    beforeAll(async () => {
+      await eccManager.waitForReady()
+    })
     it('should generate P2WPKH addresses correctly', () => {
       expect(publicKeyToAddress(p2wpkh_data.pubkey, AddressType.P2WPKH, NetworkType.MAINNET)).toBe(
         p2wpkh_data.mainnet_address

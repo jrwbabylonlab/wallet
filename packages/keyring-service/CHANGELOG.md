@@ -1,5 +1,13 @@
 # @unisat/keyring-service
 
+## 0.1.30
+
+### Patch Changes
+
+- fix
+- Updated dependencies
+  - @unisat/wallet-bitcoin@0.1.13
+
 ## 0.1.29
 
 ### Patch Changes

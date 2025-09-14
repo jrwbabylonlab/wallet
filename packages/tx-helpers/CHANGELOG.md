@@ -1,5 +1,14 @@
 # @unisat/tx-helpers
 
+## 0.1.16
+
+### Patch Changes
+
+- fix
+- Updated dependencies
+  - @unisat/keyring-service@0.1.30
+  - @unisat/wallet-bitcoin@0.1.13
+
 ## 0.1.15
 
 ### Patch Changes

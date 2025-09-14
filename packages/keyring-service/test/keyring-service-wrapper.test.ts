@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterEach, beforeAll } from 'vitest'
 import {
   KeyringServiceWrapper,
   createKeyringService,
@@ -6,9 +6,14 @@ import {
 } from './keyring-service-wrapper'
 import { KeyringType } from '../src/types'
 import { AddressType } from '@unisat/wallet-types'
+import { eccManager } from '@unisat/wallet-bitcoin'
 
 describe('KeyringServiceWrapper', () => {
   let keyringService: KeyringServiceWrapper
+
+  beforeAll(async () => {
+    await eccManager.waitForReady()
+  })
 
   beforeEach(async () => {
     // Mock console to reduce test output noise
