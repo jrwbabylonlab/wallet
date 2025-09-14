@@ -1,5 +1,11 @@
 # @unisat/wallet-bitcoin
 
+## 0.1.12
+
+### Patch Changes
+
+- refactor: bitcoin ecc
+
 ## 0.1.11
 
 ### Patch Changes

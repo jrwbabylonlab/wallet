@@ -2,12 +2,12 @@ import { isTaprootInput } from 'bitcoinjs-lib/src/psbt/bip371.js'
 import { decode } from 'bs58check'
 import { EventEmitter } from 'events'
 import {
-  ECPair,
   ECPairInterface,
   bitcoin,
   signMessageOfDeterministicECDSA,
   verifyMessageOfECDSA,
   tweakSigner,
+  eccManager,
 } from '@unisat/wallet-bitcoin'
 import { ToSignInput } from '../types'
 
@@ -43,14 +43,14 @@ export class SimpleKeyring extends EventEmitter {
         buf = Buffer.from(decode(key).slice(1, 33))
       }
 
-      return ECPair.fromPrivateKey(buf as any)
+      return eccManager.eccPair.fromPrivateKey(buf as any)
     })
   }
 
   async addAccounts(n = 1) {
     const newWallets: ECPairInterface[] = []
     for (let i = 0; i < n; i++) {
-      newWallets.push(ECPair.makeRandom())
+      newWallets.push(eccManager.eccPair.makeRandom())
     }
     this.wallets = this.wallets.concat(newWallets)
     const hexWallets = newWallets.map(({ publicKey }) => publicKey.toString('hex'))

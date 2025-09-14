@@ -1,5 +1,5 @@
 // Bitcoin core exports
-export { bitcoin, ECPair, ecc } from './bitcoin-core'
+export { bitcoin, eccManager } from './bitcoin-core'
 export type { ECPairInterface } from './bitcoin-core'
 
 // Address utilities

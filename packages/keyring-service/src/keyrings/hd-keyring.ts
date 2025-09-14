@@ -3,7 +3,7 @@ import * as bip39 from 'bip39'
 import bitcore from 'bitcore-lib'
 //@ts-ignore
 import * as hdkey from 'hdkey'
-import { ECPair, ECPairInterface, bitcoin } from '@unisat/wallet-bitcoin'
+import { ECPairInterface, bitcoin, eccManager } from '@unisat/wallet-bitcoin'
 import { SimpleKeyring } from './simple-keyring'
 
 const hdPathString = "m/44'/0'/0'/0"
@@ -124,7 +124,7 @@ export class HdKeyring extends SimpleKeyring {
     }
     const root = this.hdWallet.derive(hdPath)
     const child = root.deriveChild(index)
-    const ecpair = ECPair.fromPrivateKey(child.privateKey, {
+    const ecpair = eccManager.eccPair.fromPrivateKey(child.privateKey, {
       network: this.network,
     })
     const address = ecpair.publicKey.toString('hex')
@@ -236,7 +236,7 @@ export class HdKeyring extends SimpleKeyring {
   private _addressFromIndex(i: number) {
     if (!this._index2wallet[i]) {
       const child = this.root.deriveChild(i)
-      const ecpair = ECPair.fromPrivateKey(child.privateKey, {
+      const ecpair = eccManager.eccPair.fromPrivateKey(child.privateKey, {
         network: this.network,
       })
       const address = ecpair.publicKey.toString('hex')

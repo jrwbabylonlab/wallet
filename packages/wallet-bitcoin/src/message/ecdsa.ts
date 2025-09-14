@@ -1,4 +1,4 @@
-import { ECPairInterface, bitcoin, ECPair } from '../bitcoin-core'
+import { ECPairInterface, bitcoin, eccManager } from '../bitcoin-core'
 
 const MAGIC_BYTES = Buffer.from('Bitcoin Signed Message:\n')
 
@@ -56,7 +56,7 @@ export function verifyMessageOfECDSA(publicKey: string, text: string, sig: strin
     const signature = sigBuffer.slice(1)
 
     // Verify the signature using ECPair
-    const keyPair = ECPair.fromPublicKey(pubKeyBuffer)
+    const keyPair = eccManager.eccPair.fromPublicKey(pubKeyBuffer)
     return keyPair.verify(hash, signature)
   } catch (error) {
     return false

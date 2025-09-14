@@ -1,4 +1,4 @@
-import { ECPair, bitcoin, ecc } from './bitcoin-core'
+import { bitcoin, eccManager } from './bitcoin-core'
 
 export const toXOnly = (pubKey: Buffer) => (pubKey.length === 32 ? pubKey : pubKey.slice(1, 33))
 
@@ -17,10 +17,10 @@ export function tweakSigner(signer: bitcoin.Signer, opts: any = {}): bitcoin.Sig
     throw new Error('Private key is required for tweaking signer!')
   }
   if (signer.publicKey[0] === 3) {
-    privateKey = ecc.privateNegate(privateKey)
+    privateKey = eccManager.ecc.privateNegate(privateKey)
   }
 
-  const tweakedPrivateKey = ecc.privateAdd(
+  const tweakedPrivateKey = eccManager.ecc.privateAdd(
     privateKey,
     tapTweakHash(toXOnly(signer.publicKey), opts.tweakHash) as any
   )
@@ -28,7 +28,7 @@ export function tweakSigner(signer: bitcoin.Signer, opts: any = {}): bitcoin.Sig
     throw new Error('Invalid tweaked private key!')
   }
 
-  return ECPair.fromPrivateKey(Buffer.from(tweakedPrivateKey), {
+  return eccManager.eccPair.fromPrivateKey(Buffer.from(tweakedPrivateKey), {
     network: opts.network,
   })
 }
@@ -36,12 +36,13 @@ export function tweakSigner(signer: bitcoin.Signer, opts: any = {}): bitcoin.Sig
 /**
  * ECDSA signature validator
  */
-export const validator = (pubkey: Buffer, msghash: Buffer, signature: Buffer): boolean =>
-  ECPair.fromPublicKey(pubkey).verify(msghash, signature)
+export const validator = (pubkey: Buffer, msghash: Buffer, signature: Buffer): boolean => {
+  return eccManager.eccPair.fromPublicKey(pubkey).verify(msghash, signature)
+}
 
 /**
  * Schnorr signature validator
  */
 export const schnorrValidator = (pubkey: Buffer, msghash: Buffer, signature: Buffer): boolean => {
-  return ECPair.fromPublicKey(pubkey).verifySchnorr(msghash, signature)
+  return eccManager.eccPair.fromPublicKey(pubkey).verifySchnorr(msghash, signature)
 }

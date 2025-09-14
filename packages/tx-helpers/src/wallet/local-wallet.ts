@@ -4,7 +4,7 @@ import { AbstractWallet } from './abstract-wallet'
 import { HdKeyring, SimpleKeyring, ToSignInput } from '@unisat/keyring-service'
 import {
   bitcoin,
-  ECPair,
+  eccManager,
   publicKeyToAddress,
   publicKeyToScriptPk,
   scriptPkToAddress,
@@ -27,7 +27,7 @@ export class LocalWallet implements AbstractWallet {
     networkType: NetworkType = NetworkType.MAINNET
   ) {
     const network = toPsbtNetwork(networkType)
-    const keyPair = ECPair.fromWIF(wif, network)
+    const keyPair = eccManager.eccPair.fromWIF(wif, network)
     this.keyring = new SimpleKeyring([keyPair.privateKey!.toString('hex')])
     this.keyring.addAccounts(1)
     this.pubkey = keyPair.publicKey.toString('hex')
@@ -65,7 +65,7 @@ export class LocalWallet implements AbstractWallet {
     networkType: NetworkType = NetworkType.MAINNET
   ) {
     const network = toPsbtNetwork(networkType)
-    const ecpair = ECPair.makeRandom({ network })
+    const ecpair = eccManager.eccPair.makeRandom({ network })
     const wallet = new LocalWallet(ecpair.toWIF(), addressType, networkType)
     return wallet
   }

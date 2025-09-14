@@ -3,7 +3,7 @@ import { AddressUserToSignInput, PublicKeyUserToSignInput, SignPsbtOptions } fro
 import { AbstractWallet } from './abstract-wallet'
 import {
   bitcoin,
-  ECPair,
+  eccManager,
   genPsbtOfBIP322Simple,
   getSignatureFromPsbtOfBIP322Simple,
   publicKeyToAddress,
@@ -29,7 +29,7 @@ export class EstimateWallet implements AbstractWallet {
     addressType: AddressType = AddressType.P2WPKH
   ) {
     const network = toPsbtNetwork(networkType)
-    const keyPair = ECPair.fromWIF(wif, network)
+    const keyPair = eccManager.eccPair.fromWIF(wif, network)
     this.keyring = new SimpleKeyring([keyPair.privateKey!.toString('hex')])
     this.keyring.addAccounts(1)
     this.pubkey = keyPair.publicKey.toString('hex')
@@ -44,7 +44,7 @@ export class EstimateWallet implements AbstractWallet {
     networkType: NetworkType = NetworkType.MAINNET
   ) {
     const network = toPsbtNetwork(networkType)
-    const ecpair = ECPair.makeRandom({ network })
+    const ecpair = eccManager.eccPair.makeRandom({ network })
     const wallet = new EstimateWallet(ecpair.toWIF(), networkType, addressType)
     return wallet
   }
