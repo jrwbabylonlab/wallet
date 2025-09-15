@@ -1,4 +1,4 @@
-import { SimpleKeyring, ToSignInput } from '@unisat/keyring-service'
+import { SimpleKeyring } from '@unisat/keyring-service'
 import { AddressUserToSignInput, PublicKeyUserToSignInput, SignPsbtOptions } from '../types'
 import { AbstractWallet } from './abstract-wallet'
 import {
@@ -11,7 +11,7 @@ import {
   toPsbtNetwork,
   toXOnly,
 } from '@unisat/wallet-bitcoin'
-import { AddressType, NetworkType } from '@unisat/wallet-types'
+import { AddressType, NetworkType, ToSignInput } from '@unisat/wallet-types'
 
 /**
  * EstimateWallet is a wallet that can be used to estimate the size of a transaction.

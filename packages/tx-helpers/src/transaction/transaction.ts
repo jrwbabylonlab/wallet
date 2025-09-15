@@ -1,6 +1,6 @@
 import { EstimateWallet } from '../wallet'
 import { utxoHelper } from './utxo'
-import { AddressType, NetworkType } from '@unisat/wallet-types'
+import { AddressType, NetworkType, ToSignInput } from '@unisat/wallet-types'
 import {
   addressToScriptPk,
   bitcoin,
@@ -10,7 +10,6 @@ import {
 } from '@unisat/wallet-bitcoin'
 import { UnspentOutput } from 'src/types'
 import { ErrorCodes, WalletUtilsError } from 'src/error'
-import { ToSignInput } from '@unisat/keyring-service'
 interface TxInput {
   data: {
     hash: string

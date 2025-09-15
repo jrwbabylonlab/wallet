@@ -11,9 +11,3 @@ export { ExtensionPersistStoreAdapter } from './adapters/extensionPersist'
 // Encryptor implementations
 export { BrowserPassworderEncryptor } from './encryptor/browser-encryptor'
 export { SimpleEncryptor } from './encryptor/simple-encryptor'
-
-// Constants
-export { ADDRESS_TYPES } from './constant'
-
-// All types (interfaces, enums, etc.)
-export * from './types'

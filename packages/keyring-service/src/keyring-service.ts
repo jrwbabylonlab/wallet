@@ -10,12 +10,12 @@ import {
   ToSignInput,
   KeyringType,
   Encryptor,
-} from './types'
+  Keyring,
+  ADDRESS_TYPES,
+} from '@unisat/wallet-types'
 import { AddressType } from '@unisat/wallet-types'
 import { BrowserPassworderEncryptor } from './encryptor/browser-encryptor'
-import { Keyring } from './types/keyring'
 import { ColdWalletKeyring, HdKeyring, KeystoneKeyring, SimpleKeyring } from './keyrings'
-import { ADDRESS_TYPES } from './constant'
 import { EmptyKeyring } from './keyrings/empty-keyring'
 import { bitcoin } from '@unisat/wallet-bitcoin'
 

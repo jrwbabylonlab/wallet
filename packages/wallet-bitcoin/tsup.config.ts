@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsup'
 
 export default defineConfig({
   entry: ['src/index.ts'],
@@ -8,7 +8,15 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   outDir: 'lib',
-  external: ['bitcoinjs-lib', 'ecpair', 'tiny-secp256k1', '@noble/hashes', '@noble/secp256k1', '@unisat/wallet-types'],
+  external: [
+    'bitcoinjs-lib',
+    'ecpair',
+    '@noble/hashes',
+    '@noble/secp256k1',
+    '@unisat/wallet-types',
+    'tiny-secp256k1',
+    '@bitcoinerlab/secp256k1'
+  ],
   target: 'es2020',
-  tsconfig: './tsconfig.json'
-});
+  tsconfig: './tsconfig.json',
+})

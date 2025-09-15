@@ -9,7 +9,7 @@ import {
   tweakSigner,
   eccManager,
 } from '@unisat/wallet-bitcoin'
-import { ToSignInput } from '../types'
+import { ToSignInput } from '@unisat/wallet-types'
 
 const type = 'Simple Key Pair'
 

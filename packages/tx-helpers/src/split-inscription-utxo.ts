@@ -1,9 +1,8 @@
-import { NetworkType } from '@unisat/wallet-types'
+import { NetworkType, ToSignInput } from '@unisat/wallet-types'
 import { ErrorCodes, WalletUtilsError } from './error'
 import { InscriptionUnit, InscriptionUnspendOutput, Transaction, utxoHelper } from './transaction'
 import { UnspentOutput } from './types'
 import { bitcoin } from '@unisat/wallet-bitcoin'
-import { ToSignInput } from '@unisat/keyring-service'
 export const UTXO_DUST = 546
 export async function splitInscriptionUtxo({
   btcUtxos,

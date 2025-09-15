@@ -1,5 +1,7 @@
 import * as bitcoin from 'bitcoinjs-lib'
 import ECPairModule, { ECPairAPI } from 'ecpair'
+import * as tinysecp256k1 from 'tiny-secp256k1'
+import * as bitcoinlabSecp256k1 from '@bitcoinerlab/secp256k1'
 
 export type { ECPairInterface } from 'ecpair'
 export { bitcoin }
@@ -12,63 +14,20 @@ export enum EccType {
 class ECCManager {
   eccType: EccType = EccType.tiny
 
-  private tinyEcc: any
-  // @ts-ignore
+  private tinyEcc: any = tinysecp256k1
   private tinyEccPair: ECPairAPI
-
-  private bitcoinlabEcc: any
-  // @ts-ignore
+  private bitcoinlabEcc: any = bitcoinlabSecp256k1
   private bitcoinlabEccPair: ECPairAPI
 
-  private ready = false
-
   constructor() {
-    // Lazy load
-    import('tiny-secp256k1').then(v => {
-      console.log('tiny-secp256k1 loaded')
-      this.tinyEcc = v
-      // @ts-ignore
-      this.tinyEccPair = (ECPairModule.default ? ECPairModule.default : ECPairModule)(this.tinyEcc)
-    })
-    import('@bitcoinerlab/secp256k1').then(v => {
-      console.log('@bitcoinerlab/secp256k1 loaded')
-      this.bitcoinlabEcc = v
-      // @ts-ignore
-      this.bitcoinlabEccPair = (ECPairModule.default ? ECPairModule.default : ECPairModule)(
-        this.bitcoinlabEcc
-      )
-    })
+    // @ts-ignore
+    this.tinyEccPair = (ECPairModule.default ? ECPairModule.default : ECPairModule)(this.tinyEcc)
+    // @ts-ignore
+    this.bitcoinlabEccPair = (ECPairModule.default ? ECPairModule.default : ECPairModule)(
+      this.bitcoinlabEcc
+    )
 
-    this.waitForAllEccReady().then(() => {
-      this.setEccType(this.eccType)
-      this.ready = true
-    })
-  }
-
-  private waitForAllEccReady(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const check = () => {
-        if (this.tinyEcc && this.bitcoinlabEcc) {
-          resolve()
-        } else {
-          setTimeout(check, 50)
-        }
-      }
-      check()
-    })
-  }
-
-  waitForReady(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const check = () => {
-        if (this.ready) {
-          resolve()
-        } else {
-          setTimeout(check, 50)
-        }
-      }
-      check()
-    })
+    this.setEccType(this.eccType)
   }
 
   setEccType(eccType: EccType) {

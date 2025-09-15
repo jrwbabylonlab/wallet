@@ -1,4 +1,4 @@
-import { Encryptor } from '../types'
+import { Encryptor } from '@unisat/wallet-types'
 
 // Simple browser-compatible encryptor (for development only)
 export class SimpleEncryptor implements Encryptor {

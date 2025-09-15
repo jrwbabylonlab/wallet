@@ -1,7 +1,7 @@
-import { AddressType, NetworkType } from '@unisat/wallet-types'
+import { AddressType, NetworkType, ToSignInput } from '@unisat/wallet-types'
 import { AddressUserToSignInput, PublicKeyUserToSignInput, SignPsbtOptions } from '../types'
 import { AbstractWallet } from './abstract-wallet'
-import { HdKeyring, SimpleKeyring, ToSignInput } from '@unisat/keyring-service'
+import { HdKeyring, SimpleKeyring } from '@unisat/keyring-service'
 import {
   bitcoin,
   eccManager,
