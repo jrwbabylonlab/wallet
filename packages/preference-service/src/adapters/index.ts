@@ -1,6 +1,8 @@
 /**
- * Adapters
+ * Storage adapters
  */
 
-export * from './storage';
-export * from './locale';
+export * from './base';
+export * from './memory';
+export * from './extension';
+export * from './mobile';

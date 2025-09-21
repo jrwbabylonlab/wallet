@@ -273,6 +273,46 @@ importers:
         specifier: ^0.34.0
         version: 0.34.0(@vitest/ui@0.34.0)
 
+  packages/preference-service:
+    dependencies:
+      '@unisat/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@unisat/wallet-types':
+        specifier: workspace:*
+        version: link:../wallet-types
+      debounce:
+        specifier: ^1.2.1
+        version: 1.2.1
+      eventemitter3:
+        specifier: ^5.0.1
+        version: 5.0.1
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+    devDependencies:
+      '@types/debounce':
+        specifier: ^1.2.4
+        version: 1.2.4
+      '@types/lodash':
+        specifier: ^4.14.195
+        version: 4.14.195
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.8.0
+      eslint:
+        specifier: ^8.0.0
+        version: 8.50.0
+      tsup:
+        specifier: ^7.0.0
+        version: 7.2.0(typescript@5.2.2)
+      typescript:
+        specifier: ^5.0.0
+        version: 5.2.2
+      vitest:
+        specifier: ^0.34.0
+        version: 0.34.0(@vitest/ui@0.34.0)
+
   packages/tx-helpers:
     dependencies:
       '@unisat/keyring-service':
@@ -1403,6 +1443,10 @@ packages:
       '@types/har-format': 1.2.16
     dev: true
 
+  /@types/debounce@1.2.4:
+    resolution: {integrity: sha512-jBqiORIzKDOToaF63Fm//haOCHuwQuLa2202RK4MozpA6lh93eCBc+/8+wZn5OzjJt3ySdc+74SXWXB55Ewtyw==}
+    dev: true
+
   /@types/filesystem@0.0.36:
     resolution: {integrity: sha512-vPDXOZuannb9FZdxgHnqSwAG/jvdGM8Wq+6N4D/d80z+D4HWH+bItqsZaVRQykAn6WEVeEkLm2oQigyHtgb0RA==}
     dependencies:
@@ -1423,6 +1467,10 @@ packages:
 
   /@types/json-schema@7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+    dev: true
+
+  /@types/lodash@4.14.195:
+    resolution: {integrity: sha512-Hwx9EUgdwf2GLarOjQp5ZH8ZmblzcbTBC2wtQWNKARBSxM9ezRIAUpeDTgoQRAFB0+8CNWXVA9+MaSOzOF3nPg==}
     dev: true
 
   /@types/node@12.20.55:
@@ -2365,6 +2413,10 @@ packages:
       randombytes: 2.1.0
       randomfill: 1.0.4
     dev: true
+
+  /debounce@1.2.1:
+    resolution: {integrity: sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==}
+    dev: false
 
   /debug@4.4.1:
     resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}

@@ -1,13 +1,22 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  entry: ['src/index.ts'],
+  entry: {
+    'index': 'src/index.ts',
+    'types/index': 'src/types.ts'
+  },
   format: ['cjs', 'esm'],
-  dts: false,
-  clean: true,
-  sourcemap: true,
+  dts: true,
   splitting: false,
-  minify: false,
-  treeshake: true,
-  external: []
-});
+  sourcemap: true,
+  clean: true,
+  outDir: 'lib',
+  target: 'es2020',
+  external: [
+    '@unisat/i18n',
+    '@unisat/wallet-types',
+    'debounce',
+    'eventemitter3',
+    'lodash'
+  ],
+})

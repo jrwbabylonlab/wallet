@@ -87,7 +87,7 @@ const template: BasePreferenceStore = {
   developerMode: false
 };
 
-// Create service instance
+// Create service instance (no generic parameter needed!)
 const preferenceService = new PreferenceService({
   storage,
   locale,
@@ -250,6 +250,8 @@ class CustomStorageAdapter extends BaseStorageAdapter {
 
 ### PreferenceService
 
+**Simplified API**: No generic parameters required! All platform-specific methods are available in a single service class.
+
 #### Core Methods
 - `init(reset?: boolean): Promise<void>` - Initialize the service
 - `getCurrentAccount(): Account | null` - Get current account
@@ -287,6 +289,8 @@ class CustomStorageAdapter extends BaseStorageAdapter {
 - `setNetworkType(networkType: any): void`
 
 #### Platform-specific Methods
+
+**Note**: All methods are available on the same service instance. Platform-specific fields are optional in the store.
 
 Extension features:
 - `getAutoLockTimeId(): number`
