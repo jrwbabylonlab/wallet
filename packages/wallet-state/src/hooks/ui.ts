@@ -5,12 +5,13 @@ import { Inscription } from '@unisat/wallet-shared'
 import { getAddressType } from '../utils/bitcoin-utils'
 import { AddressType } from '@unisat/wallet-types'
 
-import { AppState } from '..'
+import { AppState, AssetTabKey } from '..'
 import { useCurrentAccount, useCurrentAddress } from '../hooks/accounts'
 import { useAppDispatch, useAppSelector } from '../hooks/base'
 import { useChainType, useNetworkType } from '../hooks/settings'
-import { AssetTabKey, uiActions } from '../reducers/ui'
+import { uiActions } from '../reducers/ui'
 import { TypeChain } from '@unisat/wallet-shared'
+import { useLocation } from 'react-router-dom'
 export function useUIState(): AppState['ui'] {
   return useAppSelector(state => state.ui)
 }
@@ -132,4 +133,9 @@ export const useUtxoTools = (chain: TypeChain) => {
   return {
     openUtxoTools,
   }
+}
+
+export function useLocationState<T>() {
+  const { state } = useLocation()
+  return state as T
 }

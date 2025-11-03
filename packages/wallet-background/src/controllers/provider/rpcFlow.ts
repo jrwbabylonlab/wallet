@@ -2,11 +2,12 @@ import 'reflect-metadata'
 
 import { keyringService, notificationService, permissionService } from '../../services'
 import { PromiseFlow, underline2Camelcase } from '../../utils'
-import { ChainType, EVENTS } from '../../shared/constants'
+import { EVENTS } from '@unisat/wallet-shared'
 import eventBus from '../../shared/eventBus'
 
 import providerController from './controller'
 import { ErrorCodes, WalletError } from '../../utils/error'
+import { ChainType } from '@unisat/wallet-types'
 
 class UnlockManager {
   private unlockPromise: Promise<any> | null = null

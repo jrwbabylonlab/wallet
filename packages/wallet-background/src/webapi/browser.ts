@@ -1,4 +1,4 @@
-import { MANIFEST_VERSION } from '../shared/constants'
+import { MANIFEST_VERSION } from '@unisat/wallet-shared'
 
 function getBrowser() {
   if (typeof globalThis.browser === 'undefined') {

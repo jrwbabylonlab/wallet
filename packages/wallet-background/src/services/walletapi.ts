@@ -1,6 +1,6 @@
 import randomstring from 'randomstring'
 
-import { CHAINS_MAP, CHANNEL, VERSION } from '../shared/constants'
+import { CHAINS_MAP, CHANNEL, VERSION } from '@unisat/wallet-shared'
 import { UniSatApiClient, createClient } from '@unisat/wallet-api'
 
 import preferenceService from '../services/preference'
@@ -73,8 +73,8 @@ export class WalletApiService {
   updateHeaders = () => {
     const headers: Record<string, string> = {
       'x-client': 'UniSat Wallet',
-      'x-version': VERSION,
-      'x-channel': CHANNEL,
+      'x-version': VERSION!,
+      'x-channel': CHANNEL!,
     }
 
     if (this.store?.deviceId) {

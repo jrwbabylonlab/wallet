@@ -1,7 +1,7 @@
 import { load, save } from 'redux-localstorage-simple'
 
 import { configureStore } from '@reduxjs/toolkit'
-import { setupListeners } from '@reduxjs/toolkit/query/react'
+import { setupListeners } from '@reduxjs/toolkit/dist/query/react/index.js'
 
 import accounts from './reducers/accounts'
 import discovery from './reducers/discovery'
@@ -24,6 +24,7 @@ const store = configureStore({
     discovery,
   },
   middleware: getDefaultMiddleware =>
+    // @ts-ignore
     getDefaultMiddleware({ thunk: true }).concat(save({ states: PERSISTED_KEYS, debounce: 1000 })),
   preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: true }),
 })
@@ -40,3 +41,5 @@ export type AppDispatch = typeof store.dispatch
 export * from './context'
 export * from './hooks'
 export * from './updater'
+export * from './reducers'
+export * from './types'

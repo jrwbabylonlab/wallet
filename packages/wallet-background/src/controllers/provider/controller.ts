@@ -1,5 +1,4 @@
 import { permissionService, sessionService, walletApiService } from '../../services'
-import { CHAINS, CHAINS_MAP, NETWORK_TYPES, VERSION } from '../../shared/constants'
 import {
   NetworkType,
   RequestMethodGetInscriptionsParams,
@@ -23,6 +22,7 @@ import {
   arbitrarySignDocToBytesHex,
   directSignDocToBytesHex,
 } from '@unisat/babylon-service'
+import { NETWORK_TYPES, CHAINS, CHAINS_MAP, VERSION } from '@unisat/wallet-shared'
 
 class ProviderController extends BaseController {
   requestAccounts = async ({ session: { origin } }) => {

@@ -1,5 +1,5 @@
 import { createPersistStore } from '../utils'
-import { INTERNAL_REQUEST_ORIGIN } from '../shared/constants'
+import { INTERNAL_REQUEST_ORIGIN } from '@unisat/wallet-shared'
 import { ExtensionPersistStoreAdapter, PermissionService } from '@unisat/permission-service'
 import { ChainType } from '@unisat/wallet-types'
 

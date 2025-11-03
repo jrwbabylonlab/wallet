@@ -32,7 +32,6 @@ export * from './integration/extension-bridge'
 
 // Shared types and constants
 export * from './shared/types'
-export * from './shared/constants'
 
 // Utils
 export { brc20Utils } from './utils/brc20-utils'

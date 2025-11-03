@@ -12,18 +12,7 @@ import {
   walletApiService,
 } from '../services'
 import { psbtFromString } from '../utils/psbt-utils'
-import {
-  ADDRESS_TYPES,
-  AUTO_LOCK_TIMES,
-  BRAND_ALIAN_TYPE_TEXT,
-  CHAINS_MAP,
-  COIN_NAME,
-  COIN_SYMBOL,
-  DEFAULT_LOCKTIME_ID,
-  EVENTS,
-  KEYRING_TYPES,
-  NETWORK_TYPES,
-} from '../shared/constants'
+import { AUTO_LOCK_TIMES, CHAINS_MAP, DEFAULT_LOCKTIME_ID, EVENTS } from '@unisat/wallet-shared'
 import eventBus from '../shared/eventBus'
 import {
   Account,
@@ -70,8 +59,14 @@ import { AddressType, ChainType } from '@unisat/wallet-types'
 import { ContactBookItem } from '../services/contactBook'
 import { ConnectedSite } from '../services/permission'
 import BaseController from './base'
-import { AddressFlagType } from '@unisat/preference-service/types'
 import { bnUtils } from '@unisat/base-utils'
+import {
+  ADDRESS_TYPES,
+  AddressFlagType,
+  BRAND_ALIAN_TYPE_TEXT,
+  KEYRING_TYPES,
+  NETWORK_TYPES,
+} from '@unisat/wallet-shared'
 
 export type AccountAsset = {
   name: string

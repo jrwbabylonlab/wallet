@@ -1,6 +1,6 @@
 {
   "name": "@unisat/wallet-background",
-  "version": "0.1.7",
+  "version": "0.1.10",
   "description": "Complete wallet background logic for UniSat wallet, cross-platform compatible",
   "main": "lib/index.js",
   "module": "lib/index.mjs",
@@ -42,7 +42,8 @@
     "@unisat/wallet-api": "workspace:*",
     "@unisat/wallet-bitcoin": "workspace:*",
     "@unisat/wallet-types": "workspace:*",
-    "@unisat/base-utils": "workspace:*"
+    "@unisat/base-utils": "workspace:*",
+    "@unisat/wallet-shared": "workspace:*"
   },
   "dependencies": {
     "bignumber.js": "^9.1.1",

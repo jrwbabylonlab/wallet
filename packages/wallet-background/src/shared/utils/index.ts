@@ -1,5 +1,6 @@
 import { keyBy } from 'lodash'
-import { AddressFlagType, CHAINS, CHAINS_MAP, ChainType, NETWORK_TYPES } from '../constants'
+import { AddressFlagType, CHAINS, CHAINS_MAP, NETWORK_TYPES } from '@unisat/wallet-shared'
+import { ChainType } from '@unisat/wallet-types'
 
 declare global {
   const langLocales: Record<string, Record<'message', string>>
@@ -28,11 +29,11 @@ export const checkAddressFlag = (currentFlag: number, flag: AddressFlagType): bo
 }
 
 export function getChainInfo(chainType: ChainType) {
-  const chain = CHAINS_MAP[chainType]
+  const chain = CHAINS_MAP[chainType]!
   return {
     enum: chainType,
     name: chain.label,
-    network: NETWORK_TYPES[chain.networkType].name,
+    network: NETWORK_TYPES[chain.networkType]!.name,
   }
 }
 

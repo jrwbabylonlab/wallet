@@ -1,5 +1,27 @@
 # @unisat/wallet-background
 
+## 0.1.10
+
+### Patch Changes
+
+- Updated dependencies
+  - @unisat/base-utils@0.1.3
+
+## 0.1.9
+
+### Patch Changes
+
+- fix
+
+## 0.1.8
+
+### Patch Changes
+
+- fix
+- Updated dependencies
+  - @unisat/wallet-shared@0.1.2
+  - @unisat/preference-service@0.1.6
+
 ## 0.1.7
 
 ### Patch Changes

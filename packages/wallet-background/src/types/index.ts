@@ -1,6 +1,5 @@
 // Shared types and constants
 export * from '../shared/types'
-export * from '../shared/constants'
 /**
  * Types for wallet background
  */

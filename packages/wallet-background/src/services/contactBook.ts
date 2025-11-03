@@ -1,5 +1,5 @@
 import { createPersistStore } from '../utils'
-import { ChainType } from '../shared/constants'
+import { ChainType } from '@unisat/wallet-types'
 import { ContactBook, ExtensionPersistStoreAdapter } from '@unisat/contact-book'
 
 // Export interfaces for compatibility

@@ -1,6 +1,5 @@
 import { AddressType, ChainType } from '@unisat/wallet-types'
-
-import { PaymentChannelType } from './constants'
+import { PaymentChannelType } from '@unisat/wallet-shared'
 
 export { AddressType } from '@unisat/wallet-types'
 

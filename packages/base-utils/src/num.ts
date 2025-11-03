@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 export function numberWithCommas(value: string, maxFixed: number, isFixed = false) {
   const [integerPart, decimalPart] = value.toString().split('.')
   const integerPartWithCommas = integerPart!.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -35,8 +36,6 @@ export function showLongNumber(num: string | number | undefined, maxFixed = 8, i
   }
   return numberWithCommas(num.toString(), maxFixed, isFixed)
 }
-
-BigNumber.config({ EXPONENTIAL_AT: 1e9, DECIMAL_PLACES: 38 })
 
 export function satoshisToAmount(val: number) {
   const num = new BigNumber(val)

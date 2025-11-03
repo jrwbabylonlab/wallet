@@ -31,6 +31,8 @@ export interface AddressSummary {
 }
 
 export enum AddressFlagType {
-  Is_Enable_Atomicals = 1,
-  CONFIRMED_UTXO_MODE = 2,
+  Is_Enable_Atomicals = 0b1, // deprecated
+  CONFIRMED_UTXO_MODE = 0b10,
+  DISABLE_AUTO_SWITCH_CONFIRMED = 0b100, // deprecated
+  DISABLE_ARC20 = 0b1000, // deprecated
 }

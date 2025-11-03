@@ -1,5 +1,12 @@
 # @unisat/preference-service
 
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies
+  - @unisat/wallet-shared@0.1.2
+
 ## 0.1.5
 
 ### Patch Changes

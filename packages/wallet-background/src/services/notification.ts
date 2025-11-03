@@ -1,6 +1,5 @@
 import { EventEmitter } from 'eventemitter3'
 import type { NotificationAdapter } from '../adapters'
-import { IS_CHROME, IS_LINUX } from '../shared/constants'
 import { ErrorCodes, WalletError } from '../utils/error'
 
 interface Approval {
@@ -101,13 +100,13 @@ class NotificationService extends EventEmitter {
       // Close existing notification
       this.notifiWindowId = 0
     }
-    
+
     // Platform-specific implementation will be handled by adapters
     if (this.adapter) {
       await this.adapter.create('approval-notification', {
         title: 'UniSat Wallet',
         message: 'Approval required',
-        type: 'basic'
+        type: 'basic',
       })
     }
   }

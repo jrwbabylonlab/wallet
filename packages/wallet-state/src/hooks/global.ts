@@ -4,9 +4,10 @@ import { AddressType } from '@unisat/wallet-types'
 
 import { AppState } from '..'
 import { useAppDispatch, useAppSelector } from './base'
-import { TabOption, globalActions } from '../reducers/global'
+import { globalActions } from '../reducers/global'
 import { useWallet } from '../context/WalletContext'
 import { useApproval } from './approval'
+import { TabOption } from '../types'
 
 export function useGlobalState(): AppState['global'] {
   return useAppSelector(state => state.global)

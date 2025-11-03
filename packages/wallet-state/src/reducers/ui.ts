@@ -2,6 +2,13 @@ import { Inscription } from '@unisat/wallet-shared'
 import { createSlice, Slice } from '@reduxjs/toolkit'
 
 import { updateVersion } from '../actions/global'
+import {
+  AlkanesAssetTabKey,
+  AssetTabKey,
+  CATAssetTabKey,
+  NavigationSource,
+  OrdinalsAssetTabKey,
+} from '../types'
 
 export interface UIState {
   assetTabKey: AssetTabKey
@@ -24,37 +31,6 @@ export interface UIState {
   }
   navigationSource: NavigationSource
   isBalanceHidden: boolean
-}
-
-export enum AssetTabKey {
-  ORDINALS = 0,
-  ATOMICALS = 1, // IGNORED
-  RUNES = 2,
-  CAT = 3,
-  ALKANES = 4,
-}
-
-export enum OrdinalsAssetTabKey {
-  ALL = 0,
-  BRC20 = 1,
-  BRC20_6BYTE = 2,
-}
-
-export enum CATAssetTabKey {
-  CAT20,
-  CAT721,
-  CAT20_V2,
-  CAT721_V2,
-}
-
-export enum AlkanesAssetTabKey {
-  TOKEN,
-  COLLECTION,
-}
-
-export enum NavigationSource {
-  BACK,
-  NORMAL,
 }
 
 export const initialState: UIState = {

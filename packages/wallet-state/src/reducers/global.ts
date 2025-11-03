@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction, Slice, SliceCaseReducers } from '@reduxjs/toolkit'
 
 import { updateVersion } from '../actions/global'
-
-export type TabOption = 'home' | 'discover' | 'settings'
+import { TabOption } from '../types'
 
 export interface GlobalState {
   tab: TabOption
