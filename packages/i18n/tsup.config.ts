@@ -1,19 +1,17 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  entry: [
-    'src/index.ts',
-    'src/loaders/index.ts'
-  ],
+  entry: {
+    index: 'src/index.ts',
+    types: 'src/types/index.ts',
+  },
   format: ['cjs', 'esm'],
   dts: true,
   splitting: false,
   sourcemap: true,
   clean: true,
   outDir: 'lib',
-  target: 'es2020',
+  minify: false,
+  treeshake: true,
   external: [],
-  esbuildOptions(options, context) {
-    delete options.packages;
-  },
-});
+})
