@@ -182,6 +182,7 @@ export type TypeChain = {
   mempoolSpaceUrl: string
   unisatUrl: string
   ordinalsUrl: string
+  contentUrl: string
   unisatExplorerUrl: string
   okxExplorerUrl: string
   isViewTxHistoryInternally?: boolean
@@ -191,6 +192,7 @@ export type TypeChain = {
   defaultExplorer: 'mempool-space' | 'unisat-explorer'
   enableBrc20SingleStep?: boolean
   enableBrc20Prog?: boolean
+  svg?: string
 }
 
 export const CHAINS_MAP: { [key: string]: TypeChain } = {
@@ -205,6 +207,7 @@ export const CHAINS_MAP: { [key: string]: TypeChain } = {
     mempoolSpaceUrl: 'https://mempool.space',
     unisatUrl: 'https://unisat.io',
     ordinalsUrl: 'https://ordinals.com',
+    contentUrl: 'https://static.unisat.space/content',
     unisatExplorerUrl: 'https://uniscan.cc',
     okxExplorerUrl: '',
     showPrice: true,
@@ -222,6 +225,7 @@ export const CHAINS_MAP: { [key: string]: TypeChain } = {
     mempoolSpaceUrl: 'https://mempool.space/testnet',
     unisatUrl: 'https://testnet.unisat.io',
     ordinalsUrl: 'https://testnet.ordinals.com',
+    contentUrl: 'https://testnet-static.unisat.space/content',
     unisatExplorerUrl: '',
     okxExplorerUrl: '',
     showPrice: false,
@@ -238,6 +242,7 @@ export const CHAINS_MAP: { [key: string]: TypeChain } = {
     mempoolSpaceUrl: 'https://mempool.space/testnet4',
     unisatUrl: 'https://testnet4.unisat.io',
     ordinalsUrl: 'https://testnet4.ordinals.com',
+    contentUrl: 'https://testnet4-static.unisat.space/content',
     unisatExplorerUrl: '',
     okxExplorerUrl: '',
     showPrice: false,
@@ -254,6 +259,7 @@ export const CHAINS_MAP: { [key: string]: TypeChain } = {
     mempoolSpaceUrl: 'https://mempool.space/signet',
     unisatUrl: 'https://signet.unisat.io',
     ordinalsUrl: 'https://signet.ordinals.com',
+    contentUrl: 'https://signet-static.unisat.space/content',
     unisatExplorerUrl: 'https://uniscan.cc/signet',
     okxExplorerUrl: '',
     showPrice: false,
@@ -271,6 +277,7 @@ export const CHAINS_MAP: { [key: string]: TypeChain } = {
     mempoolSpaceUrl: 'https://mempool.fractalbitcoin.io',
     unisatUrl: 'https://fractal.unisat.io',
     ordinalsUrl: 'https://ordinals.fractalbitcoin.io',
+    contentUrl: 'https://fractal-static.unisat.space/content',
     unisatExplorerUrl: 'https://uniscan.cc/fractal',
     okxExplorerUrl: '',
     isViewTxHistoryInternally: false,
@@ -291,6 +298,7 @@ export const CHAINS_MAP: { [key: string]: TypeChain } = {
     mempoolSpaceUrl: 'https://mempool-testnet.fractalbitcoin.io',
     unisatUrl: 'https://fractal-testnet.unisat.io',
     ordinalsUrl: 'https://ordinals-testnet.fractalbitcoin.io',
+    contentUrl: 'https://fractal-testnet-static.unisat.space/content',
     unisatExplorerUrl: 'https://uniscan.cc/fractal-testnet',
     okxExplorerUrl: '',
     isViewTxHistoryInternally: false,
@@ -463,3 +471,54 @@ export const getAutoLockTimes = (t: any) => [
 ]
 
 export const DEFAULT_LOCKTIME_ID = 5
+
+export const RESTORE_WALLETS: {
+  value: RestoreWalletType
+  name: string
+  addressTypes: AddressType[]
+}[] = [
+  {
+    value: RestoreWalletType.UNISAT,
+    name: 'UniSat Wallet',
+    addressTypes: [
+      AddressType.P2WPKH,
+      AddressType.P2SH_P2WPKH,
+      AddressType.P2TR,
+      AddressType.P2PKH,
+      AddressType.M44_P2WPKH,
+      AddressType.M44_P2TR,
+    ],
+  },
+  {
+    value: RestoreWalletType.SPARROW,
+    name: 'Sparrow Wallet',
+    addressTypes: [
+      AddressType.P2PKH,
+      AddressType.P2WPKH,
+      AddressType.P2SH_P2WPKH,
+      AddressType.P2TR,
+    ],
+  },
+  {
+    value: RestoreWalletType.XVERSE,
+    name: 'Xverse Wallet',
+    addressTypes: [AddressType.P2SH_P2WPKH, AddressType.P2TR],
+  },
+  {
+    value: RestoreWalletType.OW,
+    name: 'Ordinals Wallet',
+    addressTypes: [AddressType.P2TR],
+  },
+  {
+    value: RestoreWalletType.OTHERS,
+    name: 'other_wallet',
+    addressTypes: [
+      AddressType.P2PKH,
+      AddressType.P2WPKH,
+      AddressType.P2SH_P2WPKH,
+      AddressType.P2TR,
+      AddressType.M44_P2WPKH,
+      AddressType.M44_P2TR,
+    ],
+  },
+]
