@@ -37,7 +37,7 @@ export class PermissionService {
   /**
    * Initialize the permission service
    */
-  async init(): Promise<void> {
+  async init(reset?: boolean): Promise<void> {
     try {
       const storedData = await this.storage.get(this.storageKey)
       this.store = storedData || this.store
@@ -71,6 +71,10 @@ export class PermissionService {
     } catch (error) {
       this.logger.error('Failed to sync permission data:', error)
     }
+  }
+
+  resetAllData = () => {
+    return this.init(true)
   }
 
   /**
