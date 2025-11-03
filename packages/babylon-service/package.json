@@ -20,21 +20,6 @@
       "types": "./lib/types.d.ts",
       "require": "./lib/types.js",
       "import": "./lib/types.mjs"
-    },
-    "./cosmos": {
-      "types": "./lib/cosmos.d.ts",
-      "require": "./lib/cosmos.js",
-      "import": "./lib/cosmos.mjs"
-    },
-    "./api": {
-      "types": "./lib/api.d.ts",
-      "require": "./lib/api.js",
-      "import": "./lib/api.mjs"
-    },
-    "./utils": {
-      "types": "./lib/utils.d.ts",
-      "require": "./lib/utils.js",
-      "import": "./lib/utils.mjs"
     }
   },
   "scripts": {

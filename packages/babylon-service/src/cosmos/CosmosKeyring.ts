@@ -23,7 +23,7 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 
 import { encodeSecp256k1Pubkey } from './utils'
 import { PubKeySecp256k1 } from './crypto'
-import type { Key, CosmosBalance, CosmosChainInfo } from './types'
+import type { Key, CosmosBalance, CosmosChainInfo } from '../types/cosmos'
 import { DEFAULT_BBN_GAS_PRICE } from 'types'
 
 const REWARD_GAUGE_KEY_BTC_DELEGATION = 'btc_delegation'

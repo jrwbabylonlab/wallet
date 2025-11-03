@@ -26,5 +26,5 @@ export {
 } from './utils'
 
 // Types
-export type { Key, CosmosBalance, CosmosChainInfo, BabylonAddressSummary } from './types'
-export { CosmosSignDataType } from './types'
+export type { Key, CosmosBalance, CosmosChainInfo, BabylonAddressSummary } from '../types/cosmos'
+export { CosmosSignDataType } from '../types/cosmos'

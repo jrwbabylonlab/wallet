@@ -34,23 +34,3 @@ export { calculateFeeOptions, formatFee } from './utils'
 // Re-export types and constants for convenience
 // Users can also import these from '@unisat/babylon-service/types' for better tree-shaking
 export type * from './types'
-export type { Key, CosmosBalance, CosmosChainInfo, BabylonAddressSummary } from './cosmos'
-
-// Constants and enums (these are actually needed at runtime)
-export {
-  BabylonPhaseState,
-  ChainType,
-  BABYLON_CONFIG_MAP,
-  PHASE1,
-  COSMOS_CHAINS,
-  COSMOS_CHAINS_MAP,
-  bbnTestnet5,
-  bbnDevnet,
-  bbnMainnet,
-  DelegationV2StakingState,
-  DELEGATION_STATUSES,
-  ErrorType,
-  CosmosSignDataType,
-  DEFAULT_BBN_GAS_PRICE,
-  DEFAULT_BBN_GAS_LIMIT,
-} from './types-only'

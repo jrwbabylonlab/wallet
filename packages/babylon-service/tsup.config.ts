@@ -1,12 +1,9 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsup'
 
 export default defineConfig({
   entry: {
-    'index': 'src/index.ts',
-    'types': 'src/types-only.ts',
-    'cosmos': 'src/cosmos/index.ts',
-    'api': 'src/api/index.ts',
-    'utils': 'src/utils/index.ts'
+    index: 'src/index.ts',
+    types: 'src/types/index.ts',
   },
   format: ['cjs', 'esm'],
   dts: true,
@@ -15,12 +12,8 @@ export default defineConfig({
   clean: true,
   outDir: 'lib',
   target: 'es2020',
-  external: [
-    'fs',
-    'fs/promises',
-    'path'
-  ],
+  external: ['fs', 'fs/promises', 'path'],
   esbuildOptions(options) {
-    delete options.packages;
+    delete options.packages
   },
-});
+})
