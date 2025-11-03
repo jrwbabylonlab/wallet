@@ -155,6 +155,29 @@ export class KeyringService extends EventEmitter {
     return !!this.store.getState().vault
   }
 
+  // reset total keyrings
+  resetAllData = () => {
+    this.password = null
+    this.cachedDisplayedKeyring = null
+    this.keyringTypes = Object.values(KEYRING_SDK_TYPES)
+    this.memStore = new ObservableStore({
+      isUnlocked: false,
+      keyringTypes: this.keyringTypes.map(krt => krt.type),
+      keyrings: [],
+      preMnemonics: '',
+      addressTypes: [],
+    })
+
+    this.keyrings = []
+    this.addressTypes = []
+
+    this.store.updateState({
+      booted: false,
+      vault: null,
+      face: null,
+    })
+  }
+
   /**
    * Get current memory store state
    */

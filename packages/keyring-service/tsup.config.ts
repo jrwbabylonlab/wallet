@@ -1,13 +1,10 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  entry: [
-    'src/index.ts',
-    'src/types/index.ts',
-    'src/adapters/memory.ts',
-    'src/adapters/extensionPersist.ts',
-    'src/adapters/filesystem.ts'
-  ],
+  entry: {
+    index: 'src/index.ts',
+    types: 'src/types/index.ts',
+  },
   format: ['cjs', 'esm'],
   dts: true,
   splitting: false,
@@ -23,6 +20,6 @@ export default defineConfig({
     '@unisat/wallet-types',
     'fs',
     'fs/promises',
-    'path'
+    'path',
   ],
-});
+})

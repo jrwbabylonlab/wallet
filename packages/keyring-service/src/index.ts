@@ -11,3 +11,5 @@ export { MemoryStorageAdapter } from './adapters/memory'
 // encryptor
 export { BrowserPassworderEncryptor } from './encryptor/browser-encryptor'
 export { SimpleEncryptor } from './encryptor/simple-encryptor'
+
+export type * from './types'
