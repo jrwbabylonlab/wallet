@@ -40,16 +40,16 @@ export interface BabylonConfigV2 {
 }
 
 // Chain types enum - imported from extension for compatibility
-export enum ChainType {
+export enum BabylonChainType {
   BITCOIN_MAINNET = 'BITCOIN_MAINNET',
   BITCOIN_SIGNET = 'BITCOIN_SIGNET',
 }
 
 export const BABYLON_CONFIG_MAP: { [key: string]: BabylonConfig } = {
-  [ChainType.BITCOIN_MAINNET]: {
+  [BabylonChainType.BITCOIN_MAINNET]: {
     chainId: 'bbn-1',
   },
-  [ChainType.BITCOIN_SIGNET]: {
+  [BabylonChainType.BITCOIN_SIGNET]: {
     chainId: 'bbn-test-5',
   },
 }

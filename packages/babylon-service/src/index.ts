@@ -33,4 +33,4 @@ export { calculateFeeOptions, formatFee } from './utils'
 
 // Re-export types and constants for convenience
 // Users can also import these from '@unisat/babylon-service/types' for better tree-shaking
-export type * from './types'
+export * from './types'
