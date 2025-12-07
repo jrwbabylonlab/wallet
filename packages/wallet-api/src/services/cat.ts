@@ -2,11 +2,11 @@
  * CAT20/CAT721-related API methods - Fully compatible with openapi.ts
  */
 
-import type { HttpClient } from '../client/http-client'
-import type { CAT_VERSION, CAT721CollectionInfo, CAT20Balance } from '../types'
-
+import type { BaseHttpClient, HttpClient } from '../client/http-client'
+import type { CAT721CollectionInfo, CAT20Balance } from '../types'
+import { CAT_VERSION } from '@unisat/wallet-shared'
 export class CATService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: BaseHttpClient) {}
 
   async getCAT20List(
     version: CAT_VERSION,

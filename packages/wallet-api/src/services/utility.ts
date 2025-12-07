@@ -2,11 +2,11 @@
  * Utility and tool related API methods
  */
 
-import type { HttpClient } from '../client/http-client'
-import { AppSummary } from '../types'
+import type { BaseHttpClient, HttpClient } from '../client/http-client'
+import { Announcement, AppSummary } from '../types'
 
 export class UtilityService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: BaseHttpClient) {}
 
   // ========================================
   // Website and domain related
@@ -86,5 +86,17 @@ export class UtilityService {
    */
   async getBlockActiveInfo(): Promise<{ allTransactions: number; allAddrs: number }> {
     return this.httpClient.get('/v5/default/block-active-info')
+  }
+
+  async getAnnouncements(
+    cursor: number,
+    size: number
+  ): Promise<{ hasMore: boolean; list: Announcement[] }> {
+    return this.httpClient.get('/global/announcement/list', {
+      query: {
+        cursor,
+        size,
+      },
+    })
   }
 }

@@ -2,7 +2,7 @@
  * Bitcoin-related API methods - Fully compatible with openapi.ts
  */
 
-import type { HttpClient } from '../client/http-client'
+import type { BaseHttpClient, HttpClient } from '../client/http-client'
 import type {
   AddressSummary,
   BitcoinBalance,
@@ -14,7 +14,7 @@ import type {
 } from '../types'
 
 export class BitcoinService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: BaseHttpClient) {}
 
   // ========================================
   // Basic configuration and information
@@ -64,6 +64,10 @@ export class BitcoinService {
    */
   async getFeeSummary(): Promise<FeeSummary> {
     return this.httpClient.get('/v5/default/fee-summary')
+  }
+
+  async getLowFeeSummary(): Promise<FeeSummary> {
+    return this.httpClient.get('/v5/default/fee-summary?lowFee=true')
   }
 
   // ========================================

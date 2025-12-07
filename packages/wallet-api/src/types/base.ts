@@ -16,11 +16,6 @@ export enum TxType {
   SEND_ALKANES,
 }
 
-export enum CAT_VERSION {
-  CAT20 = 'cat20',
-  CAT721 = 'cat721',
-}
-
 // ========================================
 // API response format
 // ========================================

@@ -1,7 +1,7 @@
-import { HttpClient } from '../client/http-client'
+import { BaseHttpClient, HttpClient } from '../client/http-client'
 
 export class DomainService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: BaseHttpClient) {}
 
   /**
    * Get domain information

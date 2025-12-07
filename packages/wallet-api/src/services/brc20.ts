@@ -2,7 +2,7 @@
  * BRC20-related API methods - Fully compatible with openapi.ts
  */
 
-import type { HttpClient } from '../client/http-client'
+import type { BaseHttpClient, HttpClient } from '../client/http-client'
 import type {
   TokenBalance,
   TokenInfo,
@@ -16,7 +16,7 @@ import type {
 } from '../types'
 
 export class BRC20Service {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: BaseHttpClient) {}
 
   // ========================================
   // BRC20 token list and balance

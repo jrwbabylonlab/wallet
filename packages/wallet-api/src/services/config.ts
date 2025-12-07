@@ -2,7 +2,7 @@
  * Configuration and utility API methods
  */
 
-import type { HttpClient } from '../client/http-client'
+import type { BaseHttpClient, HttpClient } from '../client/http-client'
 import type {
   WalletConfig,
   AppInfo,
@@ -14,7 +14,7 @@ import type {
 } from '../types'
 
 export class ConfigService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: BaseHttpClient) {}
 
   /**
    * Get wallet configuration

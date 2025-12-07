@@ -2,11 +2,11 @@
  * Market and pricing related API methods
  */
 
-import type { HttpClient } from '../client/http-client'
+import type { BaseHttpClient, HttpClient } from '../client/http-client'
 import type { CoinPrice, FeeSummary, TickPriceItem } from '../types'
 
 export class MarketService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: BaseHttpClient) {}
 
   // ========================================
   // Price related
@@ -17,13 +17,6 @@ export class MarketService {
    */
   async getCoinPrice(): Promise<CoinPrice> {
     return this.httpClient.get('/v5/default/price')
-  }
-
-  /**
-   * Get fee summary
-   */
-  async getFeeSummary(): Promise<FeeSummary> {
-    return this.httpClient.get('/v5/default/fee-summary')
   }
 
   async getBrc20sPrice(ticks: string[]): Promise<TickPriceItem> {

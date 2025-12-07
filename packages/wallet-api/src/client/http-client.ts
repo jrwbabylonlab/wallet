@@ -26,10 +26,18 @@ export interface RequestOptions extends RequestConfig {
   query?: Record<string, any>
 }
 
+export interface BaseHttpClient {
+  get<T = any>(url: string, options?: RequestOptions): Promise<T>
+  post<T = any>(url: string, body?: any, options?: RequestOptions): Promise<T>
+
+  setBaseURL(baseURL: string): void
+  setHeaders(headers: Record<string, string>): void
+}
+
 /**
  * HTTP client implementation
  */
-export class HttpClient {
+export class HttpClient implements BaseHttpClient {
   private readonly baseURL: string
   private readonly defaultConfig: Required<Pick<ClientConfig, 'timeout' | 'retries'>>
   private readonly defaultHeaders: Record<string, string>
@@ -40,7 +48,7 @@ export class HttpClient {
       timeout: config.timeout || 30000,
       retries: config.retries || 3,
     }
-    
+
     this.defaultHeaders = {
       'Content-Type': 'application/json',
       'User-Agent': config.userAgent || 'UniSat-API-Client/1.0',
@@ -56,10 +64,7 @@ export class HttpClient {
   /**
    * Make an HTTP request
    */
-  async request<T = any>(
-    path: string,
-    options: RequestOptions = {}
-  ): Promise<T> {
+  async request<T = any>(path: string, options: RequestOptions = {}): Promise<T> {
     const {
       method = 'GET',
       body,
@@ -73,7 +78,7 @@ export class HttpClient {
     const requestHeaders = { ...this.defaultHeaders, ...headers }
 
     let lastError: Error
-    
+
     for (let attempt = 1; attempt <= retries + 1; attempt++) {
       try {
         const requestInit: RequestInit = {
@@ -81,17 +86,17 @@ export class HttpClient {
           headers: requestHeaders,
           signal: AbortSignal.timeout(timeout),
         }
-        
+
         if (body) {
           requestInit.body = JSON.stringify(body)
         }
-        
+
         const response = await this.makeRequest(url, requestInit)
 
         return await this.handleResponse<T>(response)
       } catch (error) {
         lastError = error as Error
-        
+
         // Don't retry on the last attempt or non-retryable errors
         if (attempt === retries + 1 || !isRetryableError(lastError)) {
           break
@@ -109,28 +114,42 @@ export class HttpClient {
   /**
    * Make a GET request
    */
-  async get<T = any>(path: string, options: Omit<RequestOptions, 'method' | 'body'> = {}): Promise<T> {
+  async get<T = any>(
+    path: string,
+    options: Omit<RequestOptions, 'method' | 'body'> = {}
+  ): Promise<T> {
     return this.request<T>(path, { ...options, method: 'GET' })
   }
 
   /**
    * Make a POST request
    */
-  async post<T = any>(path: string, body?: any, options: Omit<RequestOptions, 'method' | 'body'> = {}): Promise<T> {
+  async post<T = any>(
+    path: string,
+    body?: any,
+    options: Omit<RequestOptions, 'method' | 'body'> = {}
+  ): Promise<T> {
     return this.request<T>(path, { ...options, method: 'POST', body })
   }
 
   /**
    * Make a PUT request
    */
-  async put<T = any>(path: string, body?: any, options: Omit<RequestOptions, 'method' | 'body'> = {}): Promise<T> {
+  async put<T = any>(
+    path: string,
+    body?: any,
+    options: Omit<RequestOptions, 'method' | 'body'> = {}
+  ): Promise<T> {
     return this.request<T>(path, { ...options, method: 'PUT', body })
   }
 
   /**
    * Make a DELETE request
    */
-  async delete<T = any>(path: string, options: Omit<RequestOptions, 'method' | 'body'> = {}): Promise<T> {
+  async delete<T = any>(
+    path: string,
+    options: Omit<RequestOptions, 'method' | 'body'> = {}
+  ): Promise<T> {
     return this.request<T>(path, { ...options, method: 'DELETE' })
   }
 
@@ -142,7 +161,7 @@ export class HttpClient {
     const normalizedBaseURL = this.baseURL.endsWith('/') ? this.baseURL : this.baseURL + '/'
     const normalizedPath = path.startsWith('/') ? path.slice(1) : path
     const url = new URL(normalizedPath, normalizedBaseURL)
-    
+
     if (query) {
       Object.entries(query).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -182,7 +201,9 @@ export class HttpClient {
     // Handle other HTTP errors
     if (!response.ok) {
       if (response.status >= 500) {
-        throw new ServiceUnavailableError(`Service unavailable: ${response.status} ${response.statusText}`)
+        throw new ServiceUnavailableError(
+          `Service unavailable: ${response.status} ${response.statusText}`
+        )
       }
       throw new HttpError(response.status, response.statusText)
     }
@@ -197,7 +218,8 @@ export class HttpClient {
 
     // Handle API-level errors
     if (this.isApiResponse(data)) {
-      if (data.code !== 0) { // Assuming 0 is success
+      if (data.code !== 0) {
+        // Assuming 0 is success
         throw new ApiClientError(data.msg || 'API error', data.code)
       }
       return data.data
@@ -224,7 +246,7 @@ export class HttpClient {
    * Update base URL
    */
   setBaseURL(baseURL: string): void {
-    (this as any).baseURL = baseURL
+    ;(this as any).baseURL = baseURL
   }
 
   /**

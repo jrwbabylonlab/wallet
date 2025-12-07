@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "lib",
     "rootDir": "src",
-    "lib": ["ES2020", "DOM"]
+    "lib": ["ES2020", "DOM"],
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*"

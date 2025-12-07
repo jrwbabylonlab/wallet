@@ -2,7 +2,7 @@
  * Alkanes-related API methods - Fully compatible with openapi.ts
  */
 
-import type { HttpClient } from '../client/http-client'
+import type { BaseHttpClient, HttpClient } from '../client/http-client'
 import type {
   AlkanesBalance,
   AddressAlkanesTokenSummary,
@@ -13,7 +13,7 @@ import type {
 } from '../types'
 
 export class AlkanesService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: BaseHttpClient) {}
 
   // ========================================
   // Alkanes related

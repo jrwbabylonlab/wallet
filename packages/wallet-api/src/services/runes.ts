@@ -2,11 +2,11 @@
  * Runes-related API methods - Fully compatible with openapi.ts
  */
 
-import type { HttpClient } from '../client/http-client'
+import type { BaseHttpClient, HttpClient } from '../client/http-client'
 import type { RuneBalance, AddressRunesTokenSummary, UTXO } from '../types'
 
 export class RunesService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: BaseHttpClient) {}
 
   // ========================================
   // Runes related

@@ -2,7 +2,7 @@
  * Inscriptions-related API methods - Fully compatible with openapi.ts
  */
 
-import type { HttpClient } from '../client/http-client'
+import type { BaseHttpClient, HttpClient } from '../client/http-client'
 import type {
   Inscription,
   InscriptionSummary,
@@ -13,7 +13,7 @@ import type {
 } from '../types'
 
 export class InscriptionsService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: BaseHttpClient) {}
 
   // ========================================
   // Inscription UTXO related
