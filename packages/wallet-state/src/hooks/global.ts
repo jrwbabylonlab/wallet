@@ -2,12 +2,11 @@ import { useCallback } from 'react'
 
 import { AddressType } from '@unisat/wallet-types'
 
-import { AppState, useNavigation } from '..'
-import { useAppDispatch, useAppSelector } from './base'
-import { globalActions } from '../reducers/global'
+import { AppState, useApproval, useNavigation } from '..'
 import { useWallet } from '../context/WalletContext'
-import { useApproval } from './approval'
+import { globalActions } from '../reducers/global'
 import { TabOption } from '../types'
+import { useAppDispatch, useAppSelector } from './base'
 
 export function useGlobalState(): AppState['global'] {
   return useAppSelector(state => state.global)
@@ -115,9 +114,17 @@ export function useIsUnlockTimeRefres() {
   return globalState.isUnlockTimeRefres
 }
 
-export function useIsScrollViewModel() {
+export function useInfiniteListScrollOffset() {
   const globalState = useGlobalState()
-  return globalState.isScrollViewModel
+  return globalState.infiniteListScrollOffset
+}
+
+export function useInfiniteListScrollState() {
+  const globalState = useGlobalState()
+  return {
+    offset: globalState.infiniteListScrollOffset,
+    direction: globalState.infiniteListScrollDirection,
+  }
 }
 
 export function useIsScrollViewTop() {
@@ -130,14 +137,14 @@ export function useIsScrollViewBot() {
   return globalState.isScrollViewBot
 }
 
-export function useIsBiometrics() {
+export function useIsBiometricsSupported() {
   const globalState = useGlobalState()
-  return globalState.isBiometrics
+  return globalState.isBiometricsSupported
 }
 
-export function useIsBiometricsKey() {
+export function useHasBiometricsKey() {
   const globalState = useGlobalState()
-  return globalState.isBiometricsKey
+  return globalState.hasBiometricsKey
 }
 
 export function useSwitchChainModalVisible() {
@@ -145,21 +152,47 @@ export function useSwitchChainModalVisible() {
   return globalState.switchChainModalVisible
 }
 
+export function useSetLockedOverlayVisibleCallback() {
+  const dispatch = useAppDispatch()
+  return useCallback(
+    (visible: boolean) => {
+      dispatch(
+        globalActions['update']!({
+          isLockedOverlayVisible: visible,
+        })
+      )
+    },
+    [dispatch]
+  )
+}
+
+export function useLockedOverlayVisible() {
+  const globalState = useGlobalState()
+  return globalState.isLockedOverlayVisible
+}
+
 export function useLockCallback() {
   const dispatch = useAppDispatch()
   const wallet = useWallet()
   const navigation = useNavigation()
   return useCallback(async () => {
+    dispatch(globalActions.update({ isLockedOverlayVisible: true }))
     await wallet.lockWallet()
     const isBooted = await wallet.isBooted()
     const isUnlocked = await wallet.isUnlocked()
+    dispatch(globalActions.update({ isUnlocked: false }))
+
+    setTimeout(() => {
+      dispatch(globalActions.update({ isLockedOverlayVisible: false }))
+    }, 300)
+
     if (!isBooted) {
-      navigation.navToWelcome
+      navigation.navToWelcome()
       return
     }
 
     if (!isUnlocked && !isBooted) {
-      navigation.navToWelcome
+      navigation.navToWelcome()
       return
     }
 
@@ -169,17 +202,15 @@ export function useLockCallback() {
     }
     const currentAccount = await wallet.getCurrentAccount()
     if (!currentAccount) {
-      navigation.navToWelcome
+      navigation.navToWelcome()
     }
-
-    dispatch(globalActions.update({ isUnlocked: false }))
   }, [dispatch, wallet])
 }
 
 export function useUnlockCallback() {
   const dispatch = useAppDispatch()
   const wallet = useWallet()
-  const [, resolveApproval] = useApproval()
+  const { resolveApproval } = useApproval()
   return useCallback(
     async (password: string) => {
       await wallet.unlock(password)

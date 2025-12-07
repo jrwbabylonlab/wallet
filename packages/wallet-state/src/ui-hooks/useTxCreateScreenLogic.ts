@@ -1,44 +1,40 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import { numUtils } from '@unisat/base-utils'
+import { COIN_DUST, RawTxInfo } from '@unisat/wallet-shared'
 import {
-  getSpecialLocale,
   useAccountBalance,
   useBitcoinTx,
   useBTCUnit,
   useChain,
+  useFeeRateBar,
   useFetchUtxosCallback,
   useI18n,
+  useNavigation,
   usePrepareSendBTCCallback,
+  useTools,
   useUiTxCreateScreen,
   useUpdateUiTxCreateScreen,
   useWalletConfig,
 } from '..'
-import { useNavigation, useTools } from '..'
-import { COIN_DUST, RawTxInfo } from '@unisat/wallet-shared'
-import { numUtils } from '@unisat/base-utils'
 import { isValidAddress } from '../utils/bitcoin-utils'
 
 export function useTxCreateScreenLogic() {
-  const { t } = useI18n()
+  const { t, isSpecialLocale } = useI18n()
   const accountBalance = useAccountBalance()
   const nav = useNavigation()
   const bitcoinTx = useBitcoinTx()
   const btcUnit = useBTCUnit()
-  const [isSpecialLocale, setIsSpecialLocale] = useState(false)
-  useEffect(() => {
-    getSpecialLocale().then(({ isSpecialLocale }) => {
-      setIsSpecialLocale(isSpecialLocale)
-    })
-  }, [])
+
   const [disabled, setDisabled] = useState(true)
 
   const setUiState = useUpdateUiTxCreateScreen()
   const uiState = useUiTxCreateScreen()
+  const feeRateBarState = useFeeRateBar()
 
   const toInfo = uiState.toInfo
   const inputAmount = uiState.inputAmount
-  const enableRBF = uiState.enableRBF
-  const feeRate = uiState.feeRate
+  const feeRate = feeRateBarState.feeRate
 
   const [error, setError] = useState('')
 
@@ -73,7 +69,6 @@ export function useTxCreateScreenLogic() {
   useEffect(() => {
     setError('')
     setDisabled(true)
-
     if (!isValidAddress(toInfo.address)) {
       return
     }
@@ -97,15 +92,14 @@ export function useTxCreateScreenLogic() {
     if (
       toInfo.address == bitcoinTx.toAddress &&
       toSatoshis == bitcoinTx.toSatoshis &&
-      feeRate == bitcoinTx.feeRate &&
-      enableRBF == bitcoinTx.enableRBF
+      feeRate == bitcoinTx.feeRate
     ) {
       //Prevent repeated triggering caused by setAmount
       setDisabled(false)
       return
     }
 
-    prepareSendBTC({ toAddressInfo: toInfo, toAmount: toSatoshis, feeRate, enableRBF })
+    prepareSendBTC({ toAddressInfo: toInfo, toAmount: toSatoshis, feeRate })
       .then(data => {
         // if (data.fee < data.estimateFee) {
         //   setError(`Network fee must be at leat ${data.estimateFee}`);
@@ -118,7 +112,7 @@ export function useTxCreateScreenLogic() {
         console.log(e)
         setError(e.message)
       })
-  }, [toInfo, inputAmount, feeRate, enableRBF])
+  }, [toInfo, inputAmount, feeRate])
 
   const walletConfig = useWalletConfig()
 
@@ -150,14 +144,6 @@ export function useTxCreateScreenLogic() {
     setUiState({ inputAmount: availableAmount.toString() })
   }
 
-  const onFeeRateChange = (newFeeRate: number) => {
-    setUiState({ feeRate: newFeeRate })
-  }
-
-  const onRBFChange = (enable: boolean) => {
-    setUiState({ enableRBF: enable })
-  }
-
   const onClickNext = () => {
     nav.navigate('TxConfirmScreen', { rawTxInfo })
   }
@@ -174,11 +160,6 @@ export function useTxCreateScreenLogic() {
     onAmountInputChange,
     onAmountMaxClick,
 
-    onFeeRateChange,
-
-    enableRBF,
-    onRBFChange,
-
     showUnavailable,
     availableAmount,
     unavailableAmount,
@@ -190,7 +171,6 @@ export function useTxCreateScreenLogic() {
     isSpecialLocale,
 
     error,
-    rawTxInfo,
     disabled,
 
     onClickNext,

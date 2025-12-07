@@ -14,31 +14,35 @@ import ui from './reducers/ui'
 import browser from './reducers/browser'
 
 const PERSISTED_KEYS: string[] = ['ui', 'discovery']
-const store = configureStore({
-  reducer: {
-    accounts,
-    transactions,
-    settings,
-    global,
-    keyrings,
-    ui,
-    discovery,
-    browser,
-  },
-  middleware: getDefaultMiddleware =>
-    // @ts-ignore
-    getDefaultMiddleware({ thunk: true }),
-  // preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: true }),
-})
 
-store.dispatch(updateVersion())
+export function createAppStore() {
+  const store = configureStore({
+    reducer: {
+      accounts,
+      transactions,
+      settings,
+      global,
+      keyrings,
+      ui,
+      discovery,
+      browser,
+    },
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware({ thunk: true }).concat(
+        save({ states: PERSISTED_KEYS, debounce: 1000 })
+      ),
+    preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: true }),
+  })
 
-setupListeners(store.dispatch)
+  store.dispatch(updateVersion())
+  setupListeners(store.dispatch)
 
-export default store
+  return store
+}
 
-export type AppState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type AppStore = ReturnType<typeof createAppStore>
+export type AppState = ReturnType<AppStore['getState']>
+export type AppDispatch = AppStore['dispatch']
 
 export * from './context'
 export * from './hooks'
@@ -46,3 +50,5 @@ export * from './updater'
 export * from './reducers'
 export * from './types'
 export * from './ui-hooks'
+export { uiEventBus } from './utils/eventBus'
+export { useAsyncEffect } from './utils/ui-utils'

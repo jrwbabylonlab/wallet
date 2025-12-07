@@ -1,12 +1,11 @@
 import compareVersions from 'compare-versions'
 import { useCallback } from 'react'
 
-import { CHAINS_MAP, CAT_VERSION, VERSION } from '@unisat/wallet-shared'
+import { CHAINS_MAP, CAT_VERSION, PlatformEnv } from '@unisat/wallet-shared'
 import { AddressType, ChainType, NetworkType } from '@unisat/wallet-types'
 import { useWallet } from '../context/WalletContext'
 import { getAddressType } from '../utils/bitcoin-utils'
 import { BABYLON_CONFIG_MAP } from '@unisat/babylon-service/types'
-import { t } from '@unisat/i18n'
 
 import { AppState } from '..'
 import { useCurrentAccount } from '../hooks/accounts'
@@ -178,7 +177,7 @@ export function useVersionInfo() {
   const walletConfig = accountsState.walletConfig
   const newVersion = walletConfig.version
   const skippedVersion = accountsState.skippedVersion
-  const currentVesion = VERSION!
+  const currentVesion = PlatformEnv.VERSION
   let skipped = false
   let latestVersion = ''
   // skip if new version is empty
@@ -192,7 +191,7 @@ export function useVersionInfo() {
   }
 
   // skip if current version is greater or equal to new version
-  if (newVersion) {
+  if (currentVesion && newVersion) {
     if (compareVersions(currentVesion, newVersion) >= 0) {
       skipped = true
     } else {
@@ -229,7 +228,12 @@ export function useAutoLockTimeId() {
   return state.autoLockTimeId
 }
 
-export function getAddressTips(address: string, chanEnum: ChainType) {
+export function useAddressTips() {
+  const chain = useChain()!
+  const account = useCurrentAccount()
+  const address = account.address
+  const chanEnum = chain.enum
+  const { t } = useI18n()
   let ret = {
     homeTip: '',
     sendTip: '',
@@ -248,12 +252,6 @@ export function getAddressTips(address: string, chanEnum: ChainType) {
   }
 
   return ret
-}
-
-export function useAddressTips() {
-  const chain = useChain()!
-  const account = useCurrentAccount()
-  return getAddressTips(account.address, chain.enum)
 }
 
 export function useCAT721NFTContentBaseUrl(version: CAT_VERSION) {

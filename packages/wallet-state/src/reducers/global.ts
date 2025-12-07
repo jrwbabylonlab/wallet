@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, Slice, SliceCaseReducers } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, SliceCaseReducers } from '@reduxjs/toolkit'
 
 import { updateVersion } from '../actions/global'
 import { TabOption } from '../types'
@@ -20,14 +20,16 @@ export interface GlobalState {
   unlockRead: boolean
   layerState: boolean
   isUnlockTimeRefres: boolean
-  isScrollViewModel: number
+  infiniteListScrollOffset: number
+  infiniteListScrollDirection: 'up' | 'down'
   isScrollViewTop: number
   isScrollViewBot: number
-  isBiometrics: boolean
-  isBiometricsKey: boolean
+  isBiometricsSupported: boolean
+  hasBiometricsKey: boolean
   wallTabFocusRefresh: 0
   goBackRefresh: 0
   switchChainModalVisible: boolean
+  isLockedOverlayVisible: boolean
 }
 
 export const initialState: GlobalState = {
@@ -44,14 +46,16 @@ export const initialState: GlobalState = {
   unlockRead: false,
   layerState: false,
   isUnlockTimeRefres: false,
-  isScrollViewModel: 0,
+  infiniteListScrollOffset: 0,
+  infiniteListScrollDirection: 'down',
   isScrollViewTop: 0,
   isScrollViewBot: 0,
-  isBiometrics: false,
-  isBiometricsKey: false,
+  isBiometricsSupported: false,
+  hasBiometricsKey: false,
   wallTabFocusRefresh: 0,
   goBackRefresh: 0,
   switchChainModalVisible: false,
+  isLockedOverlayVisible: false,
 }
 
 const reducers: SliceCaseReducers<GlobalState> = {
@@ -75,14 +79,16 @@ const reducers: SliceCaseReducers<GlobalState> = {
       layerState?: boolean
       unlockRead?: boolean
       isUnlockTimeRefres?: boolean
-      isScrollViewModel?: number
+      infiniteListScrollOffset?: number
+      infiniteListScrollDirection?: 'up' | 'down'
       isScrollViewTop?: number
       isScrollViewBot?: number
-      isBiometrics?: boolean
-      isBiometricsKey?: boolean
+      isBiometricsSupported?: boolean
+      hasBiometricsKey?: boolean
       wallTabFocusRefresh?: number
       goBackRefresh?: number
       switchChainModalVisible?: boolean
+      lockedOverlayVisible?: boolean
     }>
   ) => {
     const { payload } = action

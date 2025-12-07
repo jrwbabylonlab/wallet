@@ -1,17 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { numUtils } from '@unisat/base-utils'
 import { ADDRESS_TYPES, KeyringType } from '@unisat/keyring-service/types'
+import { AddressType } from '@unisat/wallet-types'
 import {
   useAppDispatch,
   useCurrentAccount,
   useCurrentKeyring,
   useI18n,
+  useNavigation,
   useReloadAccounts,
   useTools,
   useWallet,
 } from '..'
-import { numUtils } from '@unisat/base-utils'
-import { AddressType } from '@unisat/wallet-types'
 
 interface AddressTypeItem {
   address: string
@@ -28,7 +29,7 @@ export function useAddressTypeScreenLogic() {
   const currentKeyring = useCurrentKeyring()
   const account = useCurrentAccount()
 
-  //   const navigate = useNavigate()
+  const nav = useNavigation()
   const dispatch = useAppDispatch()
   const reloadAccounts = useReloadAccounts()
   const [addresses, setAddresses] = useState<string[]>([])
@@ -140,6 +141,8 @@ export function useAddressTypeScreenLogic() {
     reloadAccounts()
     // navigate('MainScreen')
     tools.toastSuccess(t('address_type_changed'))
+
+    nav.navToTab()
   }
 
   return {

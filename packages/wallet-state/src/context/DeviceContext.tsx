@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useContext } from 'react'
 
 export interface DeviceContextType {
   isMobile: boolean
@@ -9,6 +9,8 @@ export interface DeviceContextType {
   isExtension: boolean
   isMobileScreenSize: boolean
   isDesktopScreenSize: boolean
+  platform: string
+  hasBottomButton: boolean
 }
 
 const initContext = {
@@ -20,6 +22,8 @@ const initContext = {
   isExtensionInSideBar: false,
   isMobileScreenSize: false,
   isDesktopScreenSize: false,
+  platform: 'unknown',
+  hasBottomButton: false,
 }
 
 export const DeviceContext = React.createContext<DeviceContextType>(initContext)

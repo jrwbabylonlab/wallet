@@ -1,11 +1,19 @@
-import { useState } from 'react'
-
-import { AlkanesBalance, TickPriceItem } from '@unisat/wallet-shared'
-
-import { getSupportedAssets, useChainType, useCurrentAccount, useNavigation, useWallet } from '..'
+import { useEffect, useState } from 'react'
+import { TickPriceItem, TokenBalance } from '@unisat/wallet-shared'
+import {
+  useChainType,
+  useCurrentAccount,
+  useI18n,
+  useWallet,
+  useTools,
+  useNavigation,
+  useSupportedAssets,
+  useChain,
+  getSupportedAssets,
+} from '..'
 import { useInfiniteList } from './useInfiniteList'
 
-export function useAlkanesListLogic() {
+export function useBRC20ProgListLogic() {
   const nav = useNavigation()
   const wallet = useWallet()
   const currentAccount = useCurrentAccount()
@@ -19,24 +27,24 @@ export function useAlkanesListLogic() {
     hasMore,
     onRefresh,
     onLoadMore,
-  } = useInfiniteList<AlkanesBalance>({
+  } = useInfiniteList<TokenBalance>({
     fetcher: async (page, pageSize) => {
       const supportedAssets = getSupportedAssets(chainType, currentAccount.address)
-      if (!supportedAssets.assets.alkanes) {
+      if (!supportedAssets.assets.brc20Prog) {
         return { list: [], total: 0 }
       }
 
-      const { list, total } = await wallet.getAlkanesList(currentAccount.address, page, pageSize)
+      const { list, total } = await wallet.getBRC20ProgList(currentAccount.address, page, pageSize)
       if (list.length > 0) {
-        wallet.getAlkanesPrice(list.map(item => item.alkaneid)).then(setPriceMap)
+        wallet.getBrc20sPrice(list.map(item => item.ticker)).then(setPriceMap)
       }
       return { list, total }
     },
     dependencies: [currentAccount.address, chainType],
   })
 
-  const onClickItem = (item: AlkanesBalance) => {
-    nav.navigate('AlkanesTokenScreen', { alkaneid: item.alkaneid })
+  const onClickItem = (item: TokenBalance) => {
+    nav.navigate('BRC20TokenScreen', { tokenBalance: item, ticker: item.ticker })
   }
 
   return { items, total, loading, hasMore, onRefresh, onLoadMore, onClickItem, priceMap }

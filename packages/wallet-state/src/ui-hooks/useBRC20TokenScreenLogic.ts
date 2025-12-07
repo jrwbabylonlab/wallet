@@ -1,43 +1,49 @@
 import { AddressTokenSummary, BRC20HistoryItem, Inscription } from '@unisat/wallet-shared'
+import { ChainType } from '@unisat/wallet-types'
+import { useEffect, useMemo, useState } from 'react'
 import {
   useChain,
   useChainType,
   useCurrentAccount,
   useI18n,
   useNavigation,
+  useResetTxState,
   useTools,
   useWallet,
 } from '..'
-import { useEffect, useMemo, useState } from 'react'
 import { shortAddress } from '../utils/ui-utils'
-import { ChainType } from '@unisat/wallet-types'
 
 import BigNumber from 'bignumber.js'
-const PIZZASWAP_MODULE_ADDRESS =
-  '6a2095ee19329a210f8d5ded9b5cfa55b74fdd3b1e9af1e202072db6d1be82d45bfd'
+const SWAP_MODULE_ADDRESS = '6a2095ee19329a210f8d5ded9b5cfa55b74fdd3b1e9af1e202072db6d1be82d45bfd'
 const BRIDGE_BURN_ADDRESS = '6a20ada13e56859a2ab2eeb93cb4dc19c6e3f5e94d0ed38ed95a30ddc43711a0ff14'
 
-enum TabKey {
+export enum BRC20TokenScreenTabKey {
   DETAILS = 'details',
   HISTORY = 'history',
 }
 
-export function useBRC20TokenHistoryLogic(props: { ticker: string }) {
+export function useBRC20TokenHistoryLogic(props: { ticker: string; displayName?: string }) {
   const wallet = useWallet()
   const { t } = useI18n()
 
   const account = useCurrentAccount()
 
+  const nav = useNavigation()
+  const { ticker, displayName } = props
+
   const [items, setItems] = useState<BRC20HistoryItem[]>([])
+
+  const [loading, setLoading] = useState(true)
 
   const [failed, setFailed] = useState(false)
 
   useEffect(() => {
     wallet
-      .getBRC20RecentHistory(account.address, props.ticker)
+      .getBRC20RecentHistory(account.address, ticker)
       .then(setItems)
       .catch(() => setFailed(true))
-  }, [account.address, props.ticker])
+      .finally(() => setLoading(false))
+  }, [account.address, ticker])
 
   const groupedItems = useMemo(() => {
     const groups: { [date: string]: BRC20HistoryItem[] } = {}
@@ -73,10 +79,12 @@ export function useBRC20TokenHistoryLogic(props: { ticker: string }) {
           if (item.type === 'send') {
             mainTitle = t('brc20_history_type_send')
             subTitle = t('brc20_history_to') + ' ' + shortAddress(item.to)
-            if (item.to === PIZZASWAP_MODULE_ADDRESS) {
-              subTitle = t('brc20_history_to') + ' ' + 'PizzaSwap'
-            }
             icon = 'history_send'
+            if (item.to === SWAP_MODULE_ADDRESS) {
+              mainTitle = t('brc20_history_type_wrap')
+              subTitle = t('brc20_history_to') + ' ' + 'InSwap'
+              icon = 'history_wrap'
+            }
           } else if (item.type === 'single-step-transfer') {
             if (item.from === account.address) {
               mainTitle = t('brc20_history_type_send')
@@ -92,14 +100,17 @@ export function useBRC20TokenHistoryLogic(props: { ticker: string }) {
             subTitle = t('brc20_history_from') + ' ' + shortAddress(item.from)
             icon = 'history_receive'
           } else if (item.type === 'withdraw') {
-            mainTitle = t('brc20_history_type_withdraw')
-            subTitle = t('brc20_history_from') + ' ' + 'PizzaSwap'
-            icon = 'history_receive'
+            mainTitle = t('brc20_history_type_unwrap')
+            subTitle = t('brc20_history_from') + ' ' + 'InSwap'
+            icon = 'history_unwrap'
           } else if (item.type === 'inscribe-transfer') {
             mainTitle = t('brc20_history_type_inscribe_transfer')
             icon = 'history_inscribe'
           } else if (item.type === 'inscribe-mint') {
             mainTitle = t('brc20_history_type_inscribe_mint')
+            icon = 'history_inscribe'
+          } else if (item.type === 'inscribe-deploy') {
+            mainTitle = t('brc20_history_type_inscribe_deploy')
             icon = 'history_inscribe'
           } else {
             return null
@@ -125,6 +136,7 @@ export function useBRC20TokenHistoryLogic(props: { ticker: string }) {
     displayItems,
     isFailed: failed,
     isEmpty: displayItems.length === 0,
+    isLoading: loading,
   }
 }
 
@@ -135,7 +147,7 @@ export function useBRC20TokenScreenLogic() {
   }>()
   const { t } = useI18n()
 
-  const [activeTab, setActiveTab] = useState<TabKey>(TabKey.HISTORY)
+  const [activeTab, setActiveTab] = useState<BRC20TokenScreenTabKey>(BRC20TokenScreenTabKey.HISTORY)
 
   const [tokenSummary, setTokenSummary] = useState<AddressTokenSummary>({
     tokenBalance: {
@@ -169,23 +181,29 @@ export function useBRC20TokenScreenLogic() {
 
   const [deployInscription, setDeployInscription] = useState<Inscription>()
 
+  const resetTxState = useResetTxState()
   useEffect(() => {
-    wallet.getBRC20Summary(account.address, ticker).then(tokenSummary => {
-      if (tokenSummary.tokenInfo.holder == account.address) {
-        wallet
-          .getInscriptionInfo(tokenSummary.tokenInfo.inscriptionId)
-          .then(data => {
-            setDeployInscription(data)
-          })
-          .finally(() => {
-            setTokenSummary(tokenSummary)
-            setLoading(false)
-          })
-      } else {
-        setTokenSummary(tokenSummary)
+    wallet
+      .getBRC20Summary(account.address, ticker)
+      .then(tokenSummary => {
+        if (tokenSummary.tokenInfo.holder == account.address) {
+          wallet
+            .getInscriptionInfo(tokenSummary.tokenInfo.inscriptionId)
+            .then(data => {
+              setDeployInscription(data)
+            })
+            .finally(() => {
+              setTokenSummary(tokenSummary)
+              setLoading(false)
+            })
+        } else {
+          setTokenSummary(tokenSummary)
+          setLoading(false)
+        }
+      })
+      .finally(() => {
         setLoading(false)
-      }
-    })
+      })
   }, [])
 
   const enableMint = useMemo(() => {
@@ -248,11 +266,11 @@ export function useBRC20TokenScreenLogic() {
     if (enableHistory) {
       const items = [
         {
-          key: TabKey.HISTORY,
+          key: BRC20TokenScreenTabKey.HISTORY,
           label: t('history'),
         },
         {
-          key: TabKey.DETAILS,
+          key: BRC20TokenScreenTabKey.DETAILS,
           label: t('details'),
         },
       ]
@@ -260,14 +278,14 @@ export function useBRC20TokenScreenLogic() {
     } else {
       return [
         {
-          key: TabKey.DETAILS,
+          key: BRC20TokenScreenTabKey.DETAILS,
           label: t('details'),
         },
       ]
     }
   }, [t, enableHistory])
 
-  const onPizzaSwapBalance = tokenSummary?.tokenBalance?.swapBalance
+  const onSwapBalance = tokenSummary?.tokenBalance?.swapBalance
   const onProgBalance = tokenSummary?.tokenBalance?.progBalance
   const inWalletBalance = tokenSummary?.tokenBalance?.overallBalance
   const totalBalance = useMemo(() => {
@@ -275,15 +293,75 @@ export function useBRC20TokenScreenLogic() {
       return '--'
     }
     return new BigNumber(inWalletBalance)
-      .plus(new BigNumber(onPizzaSwapBalance || 0))
+      .plus(new BigNumber(onSwapBalance || 0))
       .plus(new BigNumber(onProgBalance || 0))
       .toString()
-  }, [onPizzaSwapBalance, onProgBalance, inWalletBalance])
+  }, [onSwapBalance, onProgBalance, inWalletBalance])
 
-  const hasOutWalletBalance = (onPizzaSwapBalance || onProgBalance || '0')! !== '0'
+  const hasOutWalletBalance = (onSwapBalance || onProgBalance || '0')! !== '0'
+
+  const onClickWrapBrc20Prog = () => {
+    const url = `https://unisat.io/wrap?tick=${encodeURIComponent(ticker)}`
+    nav.navToUrl(url)
+  }
+
+  const onClickUnwrapBrc20Prog = () => {
+    const url = `https://unisat.io/wrap?action=unwrap&tick=${encodeURIComponent(ticker)}`
+    nav.navToUrl(url)
+  }
+
+  const onClickSendBrc20Prog = () => {
+    const url = `https://bestinslot.xyz/brc2.0/${encodeURIComponent(ticker)}/transfer`
+    nav.navToUrl(url)
+  }
+
+  const onClickSwapInSwap = () => {
+    const url = `https://inswap.cc/swap?t0=${encodeURIComponent(ticker)}`
+    nav.navToUrl(url)
+  }
+
+  const onClickWrapInSwap = () => {
+    const url = `https://inswap.cc/swap?tab=deposit`
+    nav.navToUrl(url)
+  }
+
+  const onClickUnwrapInSwap = () => {
+    const url = `https://inswap.cc/swap?tab=withdraw&t=${encodeURIComponent(ticker)}`
+    nav.navToUrl(url)
+  }
+
+  const onClickSendInSwap = () => {
+    const url = `https://inswap.cc/swap/assets/account`
+    nav.navToUrl(url)
+  }
+
+  const onClickMint = () => {
+    nav.navToInscribeBrc20(ticker)
+  }
+
+  const onClickSend = () => {
+    resetTxState()
+    nav.navigate('BRC20SendScreen', {
+      tokenBalance: tokenSummary.tokenBalance,
+      tokenInfo: tokenSummary.tokenInfo,
+    })
+  }
+
+  const onClickTrade = () => {
+    nav.navToMarketPlaceBrc20(ticker)
+  }
+
+  const onClickSingleStepSend = () => {
+    resetTxState()
+    nav.navigate('BRC20SingleStepScreen', {
+      tokenBalance: tokenSummary.tokenBalance,
+      tokenInfo: tokenSummary.tokenInfo,
+    })
+  }
+
   return {
     totalBalance,
-    onPizzaSwapBalance,
+    onSwapBalance,
     onProgBalance,
     inWalletBalance,
     hasOutWalletBalance,
@@ -302,5 +380,18 @@ export function useBRC20TokenScreenLogic() {
     chain,
     tools,
     isBrc20Prog,
+    onClickWrapBrc20Prog,
+    onClickUnwrapBrc20Prog,
+    onClickSendBrc20Prog,
+
+    onClickSwapInSwap,
+    onClickWrapInSwap,
+    onClickUnwrapInSwap,
+    onClickSendInSwap,
+
+    onClickMint,
+    onClickSend,
+    onClickTrade,
+    onClickSingleStepSend,
   }
 }

@@ -17,6 +17,7 @@ export interface NavigationContextType {
   navToUrl: (url: string) => void
 
   navToExplorerTx: (txid: string) => void
+  navToExplorerAddress: (address: string) => void
 
   navToMarketPlaceBrc20: (ticker: string) => void
   navToInscribeBrc20: (ticker: string) => void
@@ -40,6 +41,7 @@ const initContext = {
 
   navToUrl: (url: string) => {},
   navToExplorerTx: (txid: string) => {},
+  navToExplorerAddress: (address: string) => {},
 
   navToMarketPlaceBrc20: (ticker: string) => {},
   navToInscribeBrc20: (ticker: string) => {},

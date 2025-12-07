@@ -1,17 +1,20 @@
 import { createContext, ReactNode, useContext } from 'react'
 
+import { BabylonConfigV2 } from '@unisat/babylon-service/types'
 import {
   Account,
   AddressAlkanesTokenSummary,
   AddressCAT20TokenSummary,
   AddressCAT20UtxoSummary,
   AddressCAT721CollectionSummary,
+  AddressFlagType,
   AddressRunesTokenSummary,
   AddressSummary,
   AddressTokenSummary,
   AlkanesBalance,
   AlkanesCollection,
   AlkanesInfo,
+  Announcement,
   AppInfo,
   AppSummary,
   BabylonAddressSummary,
@@ -23,6 +26,7 @@ import {
   CAT20MergeOrder,
   CAT721Balance,
   CoinPrice,
+  ConnectedSite,
   CosmosBalance,
   CosmosSignDataType,
   DecodedPsbt,
@@ -30,12 +34,15 @@ import {
   InscribeOrder,
   Inscription,
   InscriptionSummary,
+  RateUsStatus,
   RuneBalance,
   SignPsbtOptions,
   TickPriceItem,
   TokenBalance,
   TokenTransfer,
+  ToSignInput,
   TxHistoryItem,
+  UnspentOutput,
   UserToSignInput,
   UTXO,
   UTXO_Detail,
@@ -43,13 +50,7 @@ import {
   WalletConfig,
   WalletKeyring,
   WebsiteResult,
-  ToSignInput,
-  UnspentOutput,
-  AddressFlagType,
-  ConnectedSite,
-  RateUsStatus,
 } from '@unisat/wallet-shared'
-import { BabylonConfigV2 } from '@unisat/babylon-service/types'
 import { AddressType, ChainType, NetworkType } from '@unisat/wallet-types'
 
 interface ContactBookItem {
@@ -67,6 +68,7 @@ export interface WalletController {
     [key: string]: (...params: any) => Promise<any>
   }
 
+  getDesc: () => string
   boot(password: string): Promise<void>
   isBooted(): Promise<boolean>
 
@@ -76,7 +78,7 @@ export interface WalletController {
 
   hasVault(): Promise<boolean>
 
-  verifyPassword(password: string): Promise<void>
+  verifyPassword(password: string): Promise<boolean>
   changePassword: (password: string, newPassword: string) => Promise<void>
 
   unlock(password: string): Promise<void>
@@ -127,6 +129,11 @@ export interface WalletController {
     password: string,
     keyring: WalletKeyring
   ): Promise<{
+    hdPath: string
+    mnemonic: string
+    passphrase: string
+  }>
+  getMnemonicsForBackup(keyring: WalletKeyring): Promise<{
     hdPath: string
     mnemonic: string
     passphrase: string
@@ -189,6 +196,22 @@ export interface WalletController {
     addressType: AddressType,
     accountCount?: number
   ): Promise<WalletKeyring>
+
+  createTmpKeyringWithMnemonics2(
+    mnemonic: string,
+    passphrase: string,
+    hdPaths: string[],
+    addressTypes: AddressType[]
+  ): Promise<WalletKeyring[]>
+
+  createTmpKeyringWithMnemonicsScan(
+    mnemonic: string,
+    hdPath: string,
+    passphrase: string,
+    addressType: AddressType,
+    accountCount: number
+  ): Promise<WalletKeyring>
+
   removeKeyring(keyring: WalletKeyring): Promise<WalletKeyring>
   deriveNewAccountFromMnemonic(keyring: WalletKeyring, alianName?: string): Promise<string[]>
   getAccountsCount(): Promise<number>
@@ -212,7 +235,6 @@ export interface WalletController {
     amount: number
     btcUtxos: UnspentOutput[]
     feeRate: number
-    enableRBF: boolean
     memo?: string
     memos?: string[]
   }): Promise<{
@@ -221,12 +243,7 @@ export interface WalletController {
     fee: number
   }>
 
-  sendAllBTC(data: {
-    to: string
-    btcUtxos: UnspentOutput[]
-    feeRate: number
-    enableRBF: boolean
-  }): Promise<{
+  sendAllBTC(data: { to: string; btcUtxos: UnspentOutput[]; feeRate: number }): Promise<{
     psbtHex: string
     rawtx: string
     fee: number
@@ -237,7 +254,6 @@ export interface WalletController {
     inscriptionId: string
     feeRate: number
     outputValue?: number
-    enableRBF: boolean
     btcUtxos: UnspentOutput[]
   }): Promise<{
     psbtHex: string
@@ -249,7 +265,6 @@ export interface WalletController {
     to: string
     inscriptionIds: string[]
     feeRate: number
-    enableRBF: boolean
     btcUtxos: UnspentOutput[]
   }): Promise<{
     psbtHex: string
@@ -261,7 +276,6 @@ export interface WalletController {
     inscriptionId: string
     feeRate: number
     outputValue: number
-    enableRBF: boolean
     btcUtxos: UnspentOutput[]
   }): Promise<{
     psbtHex: string
@@ -291,6 +305,7 @@ export interface WalletController {
 
   getCurrentKeyring(): Promise<WalletKeyring>
   getKeyrings(): Promise<WalletKeyring[]>
+  getTotalKeyringCount(): Promise<number>
   changeKeyring(keyring: WalletKeyring, accountIndex?: number): Promise<void>
   getAllAddresses(keyring: WalletKeyring, index: number): Promise<string[]>
 
@@ -299,6 +314,7 @@ export interface WalletController {
 
   setAccountAlianName(account: Account, name: string): Promise<Account>
   getFeeSummary(): Promise<FeeSummary>
+  getLowFeeSummary(): Promise<FeeSummary>
   getCoinPrice(): Promise<CoinPrice>
   getBrc20sPrice(ticks: string[]): Promise<{ [tick: string]: TickPriceItem }>
   getRunesPrice(ticks: string[]): Promise<{ [tick: string]: TickPriceItem }>
@@ -435,7 +451,6 @@ export interface WalletController {
     runeid: string
     runeAmount: string
     feeRate: number
-    enableRBF: boolean
     btcUtxos?: UnspentOutput[]
     assetUtxos?: UnspentOutput[]
     outputValue?: number
@@ -602,6 +617,7 @@ export interface WalletController {
     orderId: string
     commitTx: string
     toSignInputs: UserToSignInput[]
+    signed?: boolean
   }): Promise<{
     psbtHex: string
     toSignInputs: UserToSignInput[]
@@ -611,6 +627,7 @@ export interface WalletController {
     orderId: string
     revealTx: string
     toSignInputs: UserToSignInput[]
+    signed?: boolean
   }): Promise<{ txid: string }>
 
   setLastActiveTime(): void
@@ -663,7 +680,6 @@ export interface WalletController {
     alkaneid: string
     amount: string
     feeRate: number
-    enableRBF: boolean
   }): Promise<string>
 
   getAlkanesCollectionList(
@@ -691,6 +707,16 @@ export interface WalletController {
   setRatePromptDismissedAt(timestamp: number | null): Promise<void>
   setHasShownSecondPrompt(hasShown: boolean): Promise<void>
   resetRateUsStatus(): Promise<void>
+  getAnnouncements(
+    cursor: number,
+    size: number
+  ): Promise<{
+    hasMore: boolean
+    list: Announcement[]
+  }>
+
+  getAcceptLowFeeMode(): Promise<boolean>
+  setAcceptLowFeeMode(accept: boolean): Promise<void>
 }
 
 const WalletContext = createContext<{

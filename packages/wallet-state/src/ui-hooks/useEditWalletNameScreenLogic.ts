@@ -12,10 +12,14 @@ export function useEditWalletNameScreenLogic() {
   const [alianName, setAlianName] = useState(keyring.alianName || '')
   const dispatch = useAppDispatch()
   const handleOnClick = async () => {
-    const newKeyring = await wallet.setKeyringAlianName(keyring, alianName || keyring.alianName)
-    //@ts-ignore
-    dispatch(keyringsActions.updateKeyringName(newKeyring))
-    // window.history.go(-1);
+    try {
+      const newKeyring = await wallet.setKeyringAlianName(keyring, alianName || keyring.alianName)
+      //@ts-ignore SAFE
+      dispatch(keyringsActions.updateKeyringName(newKeyring))
+      nav.goBack()
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   const handleOnKeyUp = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -38,9 +42,10 @@ export function useEditWalletNameScreenLogic() {
     return keyring.alianName || ''
   }, [keyring.alianName])
 
-  const onInputChange = e => {
-    if (e.target.value.length <= 20) {
-      setAlianName(e.target.value)
+  const onInputChange = (e: { target: { value: string } } | string) => {
+    const value = typeof e === 'string' ? e : e.target.value
+    if (value.length <= 20) {
+      setAlianName(value)
     }
   }
 

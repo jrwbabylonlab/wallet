@@ -1,0 +1,36 @@
+import { RuneBalance, TickPriceItem } from '@unisat/wallet-shared'
+import { useState } from 'react'
+import { useChainType, useCurrentAccount, useNavigation, useWallet } from '..'
+import { useInfiniteList } from './useInfiniteList'
+
+export function useRunesListLogic() {
+  const nav = useNavigation()
+  const wallet = useWallet()
+  const currentAccount = useCurrentAccount()
+  const chainType = useChainType()
+  const [priceMap, setPriceMap] = useState<{ [key: string]: TickPriceItem }>({})
+
+  const {
+    data: items,
+    total,
+    loading,
+    hasMore,
+    onRefresh,
+    onLoadMore,
+  } = useInfiniteList<RuneBalance>({
+    fetcher: async (page, pageSize) => {
+      const { list, total } = await wallet.getRunesList(currentAccount.address, page, pageSize)
+      if (list.length > 0) {
+        wallet.getRunesPrice(list.map(item => item.spacedRune)).then(setPriceMap)
+      }
+      return { list, total }
+    },
+    dependencies: [currentAccount.address, chainType],
+  })
+
+  const onClickItem = (item: RuneBalance) => {
+    nav.navigate('RunesTokenScreen', { runeid: item.runeid })
+  }
+
+  return { items, total, loading, hasMore, onRefresh, onLoadMore, onClickItem, priceMap }
+}

@@ -1,5 +1,5 @@
-import { Inscription } from '@unisat/wallet-shared'
 import { createSlice, Slice } from '@reduxjs/toolkit'
+import { Inscription } from '@unisat/wallet-shared'
 
 import { updateVersion } from '../actions/global'
 import {
@@ -30,8 +30,21 @@ export interface UIState {
       inscription?: Inscription
     }
     inputAmount: string
-    enableRBF: boolean
+  }
+  addressInput: {
+    address: string
+    domain: string
+    inscription?: Inscription
+  }
+  amountInput: {
+    amount: string
+  }
+  feeRateBar: {
     feeRate: number
+    feeRateInputVal: string
+    enableLowFeeRate: boolean
+    feeOptionIndex: number
+    showCustomInput: boolean
   }
   babylonSendScreen: {
     inputAmount: string
@@ -56,8 +69,20 @@ export const initialState: UIState = {
       domain: '',
     },
     inputAmount: '',
-    enableRBF: false,
+  },
+  addressInput: {
+    address: '',
+    domain: '',
+  },
+  amountInput: {
+    amount: '',
+  },
+  feeRateBar: {
     feeRate: 1,
+    feeRateInputVal: '',
+    enableLowFeeRate: false,
+    feeOptionIndex: 1, // Default to AVG
+    showCustomInput: false,
   },
   babylonSendScreen: {
     inputAmount: '',
@@ -115,8 +140,6 @@ const slice: Slice<UIState> = createSlice({
             inscription?: Inscription
           }
           inputAmount?: string
-          enableRBF?: boolean
-          feeRate?: number
         }
       }
     ) {
@@ -126,13 +149,82 @@ const slice: Slice<UIState> = createSlice({
       if (action.payload.inputAmount !== undefined) {
         state.uiTxCreateScreen.inputAmount = action.payload.inputAmount
       }
-      if (action.payload.enableRBF !== undefined) {
-        state.uiTxCreateScreen.enableRBF = action.payload.enableRBF
-      }
-      if (action.payload.feeRate !== undefined) {
-        state.uiTxCreateScreen.feeRate = action.payload.feeRate
-      }
+
+      state.uiTxCreateScreen = { ...state.uiTxCreateScreen }
     },
+    updateFeeRateBar(
+      state,
+      action: {
+        payload: {
+          feeRate?: number
+          feeRateInputVal?: string
+          enableLowFeeRate?: boolean
+          feeOptionIndex?: number
+          showCustomInput?: boolean
+        }
+      }
+    ) {
+      if (action.payload.feeRate !== undefined) {
+        state.feeRateBar.feeRate = action.payload.feeRate
+      }
+      if (action.payload.feeRateInputVal !== undefined) {
+        state.feeRateBar.feeRateInputVal = action.payload.feeRateInputVal
+      }
+      if (action.payload.enableLowFeeRate !== undefined) {
+        state.feeRateBar.enableLowFeeRate = action.payload.enableLowFeeRate
+      }
+      if (action.payload.feeOptionIndex !== undefined) {
+        state.feeRateBar.feeOptionIndex = action.payload.feeOptionIndex
+      }
+      if (action.payload.showCustomInput !== undefined) {
+        state.feeRateBar.showCustomInput = action.payload.showCustomInput
+      }
+      state.feeRateBar = { ...state.feeRateBar }
+    },
+    resetFeeRateBar(state) {
+      state.feeRateBar = initialState.feeRateBar
+    },
+
+    updateAddressInput(
+      state,
+      action: {
+        payload: {
+          address?: string
+          domain?: string
+        }
+      }
+    ) {
+      if (action.payload.address !== undefined) {
+        state.addressInput.address = action.payload.address
+      }
+      if (action.payload.domain !== undefined) {
+        state.addressInput.domain = action.payload.domain
+      }
+      state.addressInput = { ...state.addressInput }
+    },
+
+    resetAddressInput(state) {
+      state.addressInput = initialState.addressInput
+    },
+
+    updateAmountInput(
+      state,
+      action: {
+        payload: {
+          amount?: string
+        }
+      }
+    ) {
+      if (action.payload.amount !== undefined) {
+        state.amountInput.amount = action.payload.amount
+      }
+      state.amountInput = { ...state.amountInput }
+    },
+
+    resetAmountInput(state) {
+      state.amountInput = initialState.amountInput
+    },
+
     resetTxCreateScreen(state) {
       state.uiTxCreateScreen = initialState.uiTxCreateScreen
     },
@@ -179,6 +271,9 @@ const slice: Slice<UIState> = createSlice({
       }
       if (!state.uiTxCreateScreen) {
         state.uiTxCreateScreen = initialState.uiTxCreateScreen
+      }
+      if (!state.feeRateBar) {
+        state.feeRateBar = initialState.feeRateBar
       }
       if (!state.babylonSendScreen) {
         state.babylonSendScreen = initialState.babylonSendScreen

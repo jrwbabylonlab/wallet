@@ -1,5 +1,7 @@
+import { Inscription, RawTxInfo } from '@unisat/wallet-shared'
 import { useEffect, useMemo, useState } from 'react'
 import {
+  useFeeRateBar,
   useFetchUtxosCallback,
   useI18n,
   useNavigation,
@@ -8,7 +10,6 @@ import {
   useTools,
   useWallet,
 } from '..'
-import { Inscription, RawTxInfo } from '@unisat/wallet-shared'
 import { getAddressUtxoDust, isValidAddress } from '../utils/bitcoin-utils'
 
 export function useSendOrdinalsInscriptionScreenLogic() {
@@ -36,9 +37,7 @@ export function useSendOrdinalsInscriptionScreenLogic() {
 
   const [error, setError] = useState('')
   const prepareSendOrdinalsInscription = usePrepareSendOrdinalsInscriptionCallback()
-
-  const [feeRate, setFeeRate] = useState(5)
-  const [enableRBF, setEnableRBF] = useState(false)
+  const { feeRate } = useFeeRateBar()
   const defaultOutputValue = inscription ? inscription.outputValue : 10000
 
   const [outputValue, setOutputValue] = useState(defaultOutputValue)
@@ -101,8 +100,7 @@ export function useSendOrdinalsInscriptionScreenLogic() {
     if (
       toInfo.address == ordinalsTx.toAddress &&
       feeRate == ordinalsTx.feeRate &&
-      outputValue == ordinalsTx.outputValue &&
-      enableRBF == ordinalsTx.enableRBF
+      outputValue == ordinalsTx.outputValue
     ) {
       //Prevent repeated triggering caused by setAmount
       setDisabled(false)
@@ -114,7 +112,6 @@ export function useSendOrdinalsInscriptionScreenLogic() {
       inscriptionId: inscription.inscriptionId,
       feeRate,
       outputValue,
-      enableRBF,
     })
       .then(data => {
         setRawTxInfo(data)
@@ -124,27 +121,32 @@ export function useSendOrdinalsInscriptionScreenLogic() {
         console.log(e)
         setError(e.message)
       })
-  }, [toInfo, feeRate, outputValue, enableRBF, inscriptions])
+  }, [toInfo, feeRate, outputValue, inscriptions])
 
   const onAddressInputChange = val => {
     setToInfo(val)
+  }
+
+  const onClickBack = () => {
+    nav.goBack()
+  }
+
+  const onClickNext = () => {
+    nav.navigate('SignOrdinalsTransactionScreen', { rawTxInfo })
   }
 
   return {
     t,
     onAddressInputChange,
     toInfo,
-    feeRate,
-    setFeeRate,
     outputValue,
     minOutputValue,
     defaultOutputValue,
     setOutputValue,
-    enableRBF,
-    setEnableRBF,
     inscriptions,
     disabled,
     error,
-    rawTxInfo,
+    onClickBack,
+    onClickNext,
   }
 }

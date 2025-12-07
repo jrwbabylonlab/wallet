@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-import { Account } from '@unisat/wallet-shared'
-import eventBus from '../utils/eventBus'
+import { Account, BUS_METHODS } from '@unisat/wallet-shared'
+import { uiEventBus } from '../utils/eventBus'
 
 import { useIsUnlocked } from '../hooks/global'
 import { globalActions } from '../reducers/global'
@@ -18,7 +18,7 @@ export function AccountUpdater() {
   const currentAccount = useCurrentAccount()
   const isUnlocked = useIsUnlocked()
   const selfRef = useRef({
-    preAccountKey: '',
+    preAccountKey: '_',
     loadingBalance: false,
     loadingHistory: false,
   })
@@ -61,9 +61,9 @@ export function AccountUpdater() {
         dispatch((accountActions as any).setCurrent(account))
       }
     }
-    eventBus.addEventListener('accountsChanged', accountChangeHandler)
+    uiEventBus.addEventListener(BUS_METHODS.ACCOUNTS_CHANGED, accountChangeHandler)
     return () => {
-      eventBus.removeEventListener('accountsChanged', accountChangeHandler)
+      uiEventBus.removeEventListener(BUS_METHODS.ACCOUNTS_CHANGED, accountChangeHandler)
     }
   }, [dispatch])
 
@@ -77,9 +77,9 @@ export function AccountUpdater() {
 
       reloadAccounts()
     }
-    eventBus.addEventListener('chainChanged', chaintChangeHandler)
+    uiEventBus.addEventListener(BUS_METHODS.CHAIN_CHANGED, chaintChangeHandler)
     return () => {
-      eventBus.removeEventListener('chainChanged', chaintChangeHandler)
+      uiEventBus.removeEventListener(BUS_METHODS.CHAIN_CHANGED, chaintChangeHandler)
     }
   }, [dispatch])
 
@@ -87,9 +87,9 @@ export function AccountUpdater() {
     const lockHandler = () => {
       dispatch(globalActions.update({ isUnlocked: false }))
     }
-    eventBus.addEventListener('lock', lockHandler)
+    uiEventBus.addEventListener(BUS_METHODS.LOCKED, lockHandler)
     return () => {
-      eventBus.removeEventListener('lock', lockHandler)
+      uiEventBus.removeEventListener(BUS_METHODS.LOCKED, lockHandler)
     }
   }, [dispatch])
 
@@ -97,9 +97,9 @@ export function AccountUpdater() {
     const unlockHandler = () => {
       dispatch(globalActions.update({ isUnlocked: true }))
     }
-    eventBus.addEventListener('unlock', unlockHandler)
+    uiEventBus.addEventListener(BUS_METHODS.UNLOCKED, unlockHandler)
     return () => {
-      eventBus.removeEventListener('unlock', unlockHandler)
+      uiEventBus.removeEventListener(BUS_METHODS.UNLOCKED, unlockHandler)
     }
   }, [dispatch])
 

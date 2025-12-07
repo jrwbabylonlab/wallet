@@ -17,7 +17,6 @@ export interface BitcoinTx {
   psbtHex: string
   feeRate: number
   toDomain: string
-  enableRBF: boolean
 }
 
 export interface OrdinalsTx {
@@ -34,7 +33,6 @@ export interface OrdinalsTx {
   feeRate: number
   toDomain: string
   outputValue: number
-  enableRBF: boolean
 }
 
 export interface RunesTx {
@@ -50,7 +48,6 @@ export interface RunesTx {
   feeRate: number
   toDomain: string
   outputValue: number
-  enableRBF: boolean
   runeid?: string
   runeAmount?: string
 }
@@ -80,7 +77,6 @@ export const initialState: TransactionsState = {
     psbtHex: '',
     feeRate: 5,
     toDomain: '',
-    enableRBF: false,
   },
   ordinalsTx: {
     fromAddress: '',
@@ -113,7 +109,6 @@ export const initialState: TransactionsState = {
     feeRate: 5,
     toDomain: '',
     outputValue: 10000,
-    enableRBF: false,
   },
 
   runesTx: {
@@ -129,7 +124,6 @@ export const initialState: TransactionsState = {
     feeRate: 5,
     toDomain: '',
     outputValue: 10000,
-    enableRBF: false,
   },
   utxos: [],
   spendUnavailableUtxos: [],
@@ -158,7 +152,6 @@ const slice: Slice<TransactionsState> = createSlice({
           psbtHex?: string
           feeRate?: number
           toDomain?: string
-          enableRBF?: boolean
         }
       }
     ) {
@@ -182,7 +175,6 @@ const slice: Slice<TransactionsState> = createSlice({
           feeRate?: number
           toDomain?: string
           outputValue?: number
-          enableRBF?: boolean
         }
       }
     ) {
@@ -206,7 +198,6 @@ const slice: Slice<TransactionsState> = createSlice({
           feeRate?: number
           toDomain?: string
           outputValue?: number
-          enableRBF?: boolean
           runeid?: string
           runeAmount?: string
         }

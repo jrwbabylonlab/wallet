@@ -1,15 +1,15 @@
+import { FALLBACK_LOCALE } from '@unisat/wallet-shared'
 import log from 'loglevel'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
-import { FALLBACK_LOCALE } from '@unisat/i18n'
-
 export interface I18nContextType {
-  t: (key: string, substitutions?: string | string[]) => string
+  t: (key: string, substitutions?: string | string[] | Record<string, string | number>) => string
   locale: string
   supportedLocales: string[]
   localeNames: Record<string, string>
   changeLocale: (locale: string) => Promise<void>
   addResourceBundle?: (locale: string) => Promise<void>
+  isSpecialLocale: boolean
 }
 
 // Create context
@@ -18,9 +18,9 @@ export const I18nContext = createContext<I18nContextType>({
   locale: FALLBACK_LOCALE,
   supportedLocales: [],
   localeNames: {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   changeLocale: async () => {},
   addResourceBundle: async () => {},
+  isSpecialLocale: false,
 })
 
 export function useI18n() {

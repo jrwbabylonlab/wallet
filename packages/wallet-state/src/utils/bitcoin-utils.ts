@@ -1,5 +1,5 @@
 import { AddressType, NetworkType } from '@unisat/wallet-types'
-
+import * as bip39 from 'bip39'
 export function getAddressType(address: string, networkType?: NetworkType) {
   if (address.startsWith('bc1q') || address.startsWith('tb1q')) {
     return AddressType.P2WPKH
@@ -78,4 +78,13 @@ export function isValidHdPath(path: string): boolean {
   }
 
   return true
+}
+
+export function validateMnemonic(mnemonic: string): boolean {
+  // do not use bip39.validateMnemonic here to reduce bundle size
+  // const words = mnemonic.trim().split(/\s+/);
+  // const wordCount = words.length;
+  // return [12, 15, 18, 21, 24].includes(wordCount);
+
+  return bip39.validateMnemonic(mnemonic)
 }

@@ -1,16 +1,13 @@
-import { useState } from 'react'
-
-import { AlkanesBalance, TickPriceItem } from '@unisat/wallet-shared'
+import { AlkanesCollection } from '@unisat/wallet-shared'
 
 import { getSupportedAssets, useChainType, useCurrentAccount, useNavigation, useWallet } from '..'
 import { useInfiniteList } from './useInfiniteList'
 
-export function useAlkanesListLogic() {
+export function useAlkanesCollectionListLogic() {
   const nav = useNavigation()
   const wallet = useWallet()
   const currentAccount = useCurrentAccount()
   const chainType = useChainType()
-  const [priceMap, setPriceMap] = useState<{ [key: string]: TickPriceItem }>({})
 
   const {
     data: items,
@@ -19,25 +16,26 @@ export function useAlkanesListLogic() {
     hasMore,
     onRefresh,
     onLoadMore,
-  } = useInfiniteList<AlkanesBalance>({
+  } = useInfiniteList<AlkanesCollection>({
     fetcher: async (page, pageSize) => {
       const supportedAssets = getSupportedAssets(chainType, currentAccount.address)
       if (!supportedAssets.assets.alkanes) {
         return { list: [], total: 0 }
       }
+      const { list, total } = await wallet.getAlkanesCollectionList(
+        currentAccount.address,
+        page,
+        pageSize
+      )
 
-      const { list, total } = await wallet.getAlkanesList(currentAccount.address, page, pageSize)
-      if (list.length > 0) {
-        wallet.getAlkanesPrice(list.map(item => item.alkaneid)).then(setPriceMap)
-      }
       return { list, total }
     },
     dependencies: [currentAccount.address, chainType],
   })
 
-  const onClickItem = (item: AlkanesBalance) => {
-    nav.navigate('AlkanesTokenScreen', { alkaneid: item.alkaneid })
+  const onClickItem = (item: AlkanesCollection) => {
+    nav.navigate('AlkanesCollectionScreen', { alkaneid: item.alkaneid })
   }
 
-  return { items, total, loading, hasMore, onRefresh, onLoadMore, onClickItem, priceMap }
+  return { items, total, loading, hasMore, onRefresh, onLoadMore, onClickItem }
 }

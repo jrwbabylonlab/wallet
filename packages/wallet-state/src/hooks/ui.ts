@@ -1,17 +1,14 @@
 import { useCallback, useMemo } from 'react'
 
-import { ChainType } from '@unisat/wallet-types'
-import { Inscription } from '@unisat/wallet-shared'
+import { CHAINS_MAP, Inscription } from '@unisat/wallet-shared'
+import { AddressType, ChainType } from '@unisat/wallet-types'
 import { getAddressType } from '../utils/bitcoin-utils'
-import { AddressType } from '@unisat/wallet-types'
 
 import { AppState, AssetTabKey } from '..'
-import { useCurrentAccount, useCurrentAddress } from '../hooks/accounts'
+import { useCurrentAddress } from '../hooks/accounts'
 import { useAppDispatch, useAppSelector } from '../hooks/base'
-import { useChain, useChainType, useNetworkType } from '../hooks/settings'
+import { useChainType } from '../hooks/settings'
 import { uiActions } from '../reducers/ui'
-import { TypeChain } from '@unisat/wallet-shared'
-import { useLocation } from 'react-router-dom'
 export function useUIState(): AppState['ui'] {
   return useAppSelector(state => state.ui)
 }
@@ -46,15 +43,110 @@ export function useUpdateUiTxCreateScreen() {
   return ({
     toInfo,
     inputAmount,
-    enableRBF,
-    feeRate,
   }: {
     toInfo?: { address: string; domain: string; inscription?: Inscription }
     inputAmount?: string
-    enableRBF?: boolean
-    feeRate?: number
   }) => {
-    dispatch((uiActions as any).updateTxCreateScreen({ toInfo, inputAmount, enableRBF, feeRate }))
+    dispatch(
+      (uiActions as any).updateTxCreateScreen({
+        toInfo,
+        inputAmount,
+      })
+    )
+  }
+}
+
+export function useFeeRateBar() {
+  const uiState = useUIState()
+  return uiState.feeRateBar
+}
+
+export function useUpdateFeeRateBar() {
+  const dispatch = useAppDispatch()
+  return ({
+    feeRate,
+    feeRateInputVal,
+    enableLowFeeRate,
+    feeOptionIndex,
+    showCustomInput,
+  }: {
+    feeRate?: number
+    feeRateInputVal?: string
+    enableLowFeeRate?: boolean
+    feeOptionIndex?: number
+    showCustomInput?: boolean
+  }) => {
+    dispatch(
+      (uiActions as any).updateFeeRateBar({
+        feeRate,
+        feeRateInputVal,
+        enableLowFeeRate,
+        feeOptionIndex,
+        showCustomInput,
+      })
+    )
+  }
+}
+
+export function useResetFeeRateBar() {
+  const dispatch = useAppDispatch()
+  return () => {
+    dispatch((uiActions as any).resetFeeRateBar())
+  }
+}
+
+export function useAddressInput() {
+  const uiState = useUIState()
+  return uiState.addressInput
+}
+
+export function useUpdateAddressInput() {
+  const dispatch = useAppDispatch()
+  return ({ address, domain }: { address?: string; domain?: string }) => {
+    dispatch(
+      (uiActions as any).updateAddressInput({
+        address,
+        domain,
+      })
+    )
+  }
+}
+
+export function useResetAddressInput() {
+  const dispatch = useAppDispatch()
+  return () => {
+    dispatch((uiActions as any).resetAddressInput())
+  }
+}
+
+export function useAmountInput() {
+  const uiState = useUIState()
+  return uiState.amountInput
+}
+
+export function useUpdateAmountInput() {
+  const dispatch = useAppDispatch()
+  return ({ amount }: { amount?: string }) => {
+    dispatch(
+      (uiActions as any).updateAmountInput({
+        amount,
+      })
+    )
+  }
+}
+
+export function useResetAmountInput() {
+  const dispatch = useAppDispatch()
+  return () => {
+    dispatch((uiActions as any).resetAmountInput())
+  }
+}
+
+export function useResetTxState() {
+  const dispatch = useAppDispatch()
+  return () => {
+    dispatch((uiActions as any).resetTxCreateScreen())
+    dispatch((uiActions as any).resetFeeRateBar())
   }
 }
 
@@ -78,18 +170,19 @@ export const useThrottle = (callback, delay, lastCallRef) => {
   )
 }
 
-export function useSupportedAssets() {
-  const chainType = useChainType()
-  const currentAddress = useCurrentAddress()
-  const networkType = useNetworkType()
-  const currentAccount = useCurrentAccount()
-
+export function getSupportedAssets(chainType: ChainType, address: string) {
   const assetTabKeys: AssetTabKey[] = []
+
+  const chain = CHAINS_MAP[chainType]
+  const networkType = chain.networkType
+  const addressType = getAddressType(address, networkType)
+
   const assets = {
     ordinals: false,
     runes: false,
     CAT20: false,
     alkanes: false,
+    brc20Prog: false,
   }
 
   assets.ordinals = true
@@ -99,26 +192,34 @@ export function useSupportedAssets() {
   assetTabKeys.push(AssetTabKey.RUNES)
 
   if (
-    chainType === ChainType.FRACTAL_BITCOIN_MAINNET ||
-    chainType === ChainType.FRACTAL_BITCOIN_TESTNET
+    (chainType === ChainType.FRACTAL_BITCOIN_MAINNET ||
+      chainType === ChainType.FRACTAL_BITCOIN_TESTNET) &&
+    (addressType == AddressType.P2TR || addressType == AddressType.P2WPKH)
   ) {
-    const addressType = getAddressType(currentAddress, networkType)
-    if (addressType == AddressType.P2TR || addressType == AddressType.P2WPKH) {
-      assets.CAT20 = true
-      assetTabKeys.push(AssetTabKey.CAT)
-    }
+    assets.CAT20 = true
+    assetTabKeys.push(AssetTabKey.CAT)
   }
 
-  if (chainType === ChainType.BITCOIN_SIGNET || chainType === ChainType.BITCOIN_MAINNET) {
+  if (chainType === ChainType.BITCOIN_MAINNET || chainType === ChainType.BITCOIN_SIGNET) {
     assets.alkanes = true
     assetTabKeys.push(AssetTabKey.ALKANES)
   }
 
+  if (chainType === ChainType.BITCOIN_MAINNET || chainType === ChainType.BITCOIN_SIGNET) {
+    assets.brc20Prog = true
+  }
+
   return {
-    tabKeys: assetTabKeys,
     assets,
+    tabKeys: assetTabKeys,
     key: assetTabKeys.join(','),
   }
+}
+export function useSupportedAssets() {
+  const chainType = useChainType()
+  const currentAddress = useCurrentAddress()
+  const supportedAssets = getSupportedAssets(chainType, currentAddress)
+  return supportedAssets
 }
 
 export const useIsInExpandView = () => {
