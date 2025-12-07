@@ -11,17 +11,28 @@ export enum EccType {
   bitcoinlab = 'bitcoinlab',
 }
 
+let isReactNative = false
+try {
+  const { Platform } = require('react-native')
+  isReactNative = Platform.OS === 'android' || Platform.OS === 'ios'
+} catch {
+  isReactNative = false
+}
+
 class ECCManager {
-  eccType: EccType = EccType.tiny
+  eccType: EccType = isReactNative ? EccType.bitcoinlab : EccType.tiny
 
   private tinyEcc: any = tinysecp256k1
+  // @ts-ignore
   private tinyEccPair: ECPairAPI
   private bitcoinlabEcc: any = bitcoinlabSecp256k1
   private bitcoinlabEccPair: ECPairAPI
 
   constructor() {
-    // @ts-ignore
-    this.tinyEccPair = (ECPairModule.default ? ECPairModule.default : ECPairModule)(this.tinyEcc)
+    if (typeof tinysecp256k1.isPoint == 'function') {
+      // @ts-ignore
+      this.tinyEccPair = (ECPairModule.default ? ECPairModule.default : ECPairModule)(this.tinyEcc)
+    }
     // @ts-ignore
     this.bitcoinlabEccPair = (ECPairModule.default ? ECPairModule.default : ECPairModule)(
       this.bitcoinlabEcc
