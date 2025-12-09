@@ -17,6 +17,13 @@ export enum TabType {
   CHOOSE_ADDRESS_TYPE = 'CHOOSE_ADDRESS_TYPE',
 }
 
+function normalizeWhitespace(str: string) {
+  str = str.replace(/[\n\r\t]+/g, ' ')
+  str = str.replace(/\s+/g, ' ')
+  str = str.trim()
+  return str
+}
+
 export interface ContextData {
   mnemonics: string
   hdPath: string
@@ -75,10 +82,6 @@ function textToWordsArray(text: string) {
   return text.split(' ').filter(v => v.trim() !== '')
 }
 
-function textToMnemonic(text: string) {
-  return textToWordsArray(text).join(' ')
-}
-
 export function useCreateWalletLogicImportWordsStep(params: CreateWalletLogicParams) {
   const { contextData, updateContextData } = params
   const { t } = useI18n()
@@ -90,7 +93,7 @@ export function useCreateWalletLogicImportWordsStep(params: CreateWalletLogicPar
     } else {
       return [getWords12Item(t), getWords24Item(t)]
     }
-  }, [contextData])
+  }, [contextData.restoreWalletType, t])
 
   const wallet = useWallet()
 
@@ -155,8 +158,6 @@ export function useCreateWalletLogicImportWordsStep(params: CreateWalletLogicPar
       return key.trim() != ''
     }).length
 
-    console.log(words, text, enteredWordsCount)
-
     setEnteredWordsCount(enteredWordsCount)
 
     if (!validateMnemonic(text) && enteredWordsCount >= maxWordsCount) {
@@ -168,7 +169,7 @@ export function useCreateWalletLogicImportWordsStep(params: CreateWalletLogicPar
 
   const onInputWordsTextChange = (e: { target: { value: string } } | string) => {
     let value = typeof e === 'string' ? e : e.target.value
-    value = value.trim()
+    value = normalizeWhitespace(value)
 
     const wordsArr = textToWordsArray(value)
     updateWords(wordsArr)
@@ -176,7 +177,7 @@ export function useCreateWalletLogicImportWordsStep(params: CreateWalletLogicPar
 
   const onInputWordsChange = (e: { target: { value: string } } | string, index: number) => {
     let value = typeof e === 'string' ? e : e.target.value
-    value = value.trim()
+    value = normalizeWhitespace(value)
 
     const newKeys = [...inputWords]
     newKeys.splice(index, 1, value)
@@ -186,7 +187,7 @@ export function useCreateWalletLogicImportWordsStep(params: CreateWalletLogicPar
   // extension
   const onHandleEventPaste = (event, index: number) => {
     const copyText = event.clipboardData?.getData('text/plain')
-    const textArr = copyText.trim().split(' ')
+    const textArr = normalizeWhitespace(copyText).split(' ')
     const newKeys = [...inputWords]
     if (textArr) {
       for (let i = 0; i < inputWords.length - index; i++) {
