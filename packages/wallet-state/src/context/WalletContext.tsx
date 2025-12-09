@@ -68,6 +68,9 @@ export interface WalletController {
     [key: string]: (...params: any) => Promise<any>
   }
 
+  setBackgroundInited(value: boolean): Promise<void>
+  getBackgroundInited(): Promise<boolean>
+
   getDesc: () => string
   boot(password: string): Promise<void>
   isBooted(): Promise<boolean>

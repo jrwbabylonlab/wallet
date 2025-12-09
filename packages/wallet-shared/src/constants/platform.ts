@@ -6,6 +6,7 @@ interface PlatformEnvType {
   UDID: string
   UDID2: string
   REVIEW_URL: string
+  READY_TO_RENDER?: boolean
 }
 
 export const PlatformEnv: PlatformEnvType = {
@@ -16,4 +17,5 @@ export const PlatformEnv: PlatformEnvType = {
   UDID: '',
   UDID2: '',
   REVIEW_URL: '',
+  READY_TO_RENDER: false,
 }

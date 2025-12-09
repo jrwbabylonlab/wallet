@@ -110,6 +110,15 @@ export class WalletController extends BaseController {
 
   cosmosChainInfoMap: Record<string, CosmosChainInfo> = Object.assign({}, COSMOS_CHAINS_MAP)
 
+  private backgroundInited = false
+
+  setBackgroundInited = async (value: boolean) => {
+    this.backgroundInited = value
+  }
+  getBackgroundInited = async () => {
+    return this.backgroundInited
+  }
+
   async init(adapters?: any): Promise<void> {
     console.log('[WalletController] Initialized')
   }
