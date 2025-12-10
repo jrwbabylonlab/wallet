@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface UseInfiniteListOptions<T> {
   fetcher: (page: number, pageSize: number) => Promise<{ list: T[]; total: number }>
@@ -13,16 +13,31 @@ export function useInfiniteList<T>({
 }: UseInfiniteListOptions<T>) {
   const [data, setData] = useState<T[]>([])
   const [total, setTotal] = useState(0)
-  const [loading, setLoading] = useState(false)
+  const [loading, _setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(true)
-  const [page, setPage] = useState(1)
+  const [page, _setPage] = useState(1)
+
+  const pageRef = useRef(1)
+  const loadingRef = useRef(false)
+
+  const setLoading = (v: boolean) => {
+    loadingRef.current = v
+    _setLoading(v)
+  }
+
+  const setPage = (v: number) => {
+    pageRef.current = v
+    _setPage(v)
+  }
 
   const loadData = useCallback(
     async (isRefresh = false) => {
-      if (loading) return
+      if (loadingRef.current) return
+
+      loadingRef.current = true
       setLoading(true)
       try {
-        const pageToLoad = isRefresh ? 1 : page
+        const pageToLoad = isRefresh ? 1 : pageRef.current
         const { list, total } = await fetcher(pageToLoad, pageSize)
 
         setTotal(total)
@@ -31,22 +46,26 @@ export function useInfiniteList<T>({
         const loadedCount = (pageToLoad - 1) * pageSize + list.length
         setHasMore(loadedCount < total)
 
-        setPage(isRefresh ? 2 : page + 1)
+        const nextPage = isRefresh ? 2 : pageToLoad + 1
+        pageRef.current = nextPage
+        setPage(nextPage)
       } catch (e) {
         console.error(e)
       } finally {
+        loadingRef.current = false
         setLoading(false)
       }
     },
-    [fetcher, page, pageSize, loading]
+    [fetcher, pageSize]
   )
 
   const onRefresh = () => loadData(true)
   const onLoadMore = () => {
-    if (hasMore && !loading) loadData(false)
+    if (hasMore && !loadingRef.current) loadData(false)
   }
 
   useEffect(() => {
+    // reset
     setData([])
     setPage(1)
     setHasMore(true)
