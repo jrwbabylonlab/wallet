@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 export interface AmountInputProps {}
 
@@ -15,66 +15,60 @@ export function useAmountInputLogic(props: {
   const { disableDecimal, enableBrc20Decimal, runesDecimal, onAmountInputChange, min, step } = props
 
   const [inputValue, setInputValue] = useState(props.value || '')
-  const [validAmount, setValidAmount] = useState(props.value || '')
 
   useEffect(() => {
-    onAmountInputChange(validAmount)
-  }, [validAmount])
+    onAmountInputChange(inputValue)
+  }, [inputValue])
 
+  const propValueRef = useRef(props.value)
   useEffect(() => {
-    handleInputAmount(props.value || '')
+    if (props.value !== propValueRef.current) {
+      propValueRef.current = props.value
+      setInputValue(props.value || '')
+    }
   }, [props.value])
 
-  const handleInputAmount = (e: { target: { value: string } } | string) => {
-    const value = typeof e === 'string' ? e : e.target.value
-    if (disableDecimal) {
-      if (/^[1-9]\d*$/.test(value) || value === '') {
-        setValidAmount(value)
-        setInputValue(value)
-      }
-    } else {
-      if (enableBrc20Decimal) {
-        if (/^(0(\.\d{0,18})?|[1-9]\d*\.?\d{0,18})$/.test(value) || value === '') {
-          setValidAmount(value)
-          setInputValue(value)
-        }
+  const handleInputAmount = useCallback(
+    (e: { target: { value: string } } | string) => {
+      const raw = typeof e === 'string' ? e : e.target.value
+
+      let regex: RegExp
+      if (disableDecimal) {
+        regex = /^[1-9]\d*$/
+      } else if (enableBrc20Decimal) {
+        regex = /^(0(\.\d{0,18})?|[1-9]\d*\.?\d{0,18})$/
       } else if (runesDecimal !== undefined) {
-        const regex = new RegExp(
-          `^(0(\\.\\d{0,${runesDecimal}})?|[1-9]\\d*\\.?\\d{0,${runesDecimal}})$`
-        )
-        if (regex.test(value) || value === '') {
-          setValidAmount(value)
-          setInputValue(value)
-        }
+        regex = new RegExp(`^(0(\\.\\d{0,${runesDecimal}})?|[1-9]\\d*\\.?\\d{0,${runesDecimal}})$`)
       } else {
-        if (/^(0(\.\d{0,8})?|[1-9]\d*\.?\d{0,8})$/.test(value) || value === '') {
-          setValidAmount(value)
-          setInputValue(value)
-        }
+        regex = /^(0(\.\d{0,8})?|[1-9]\d*\.?\d{0,8})$/
       }
-    }
-  }
 
-  const handleStepUp = () => {
-    const currentVal = parseFloat(props.value!) || 0
-    const decimal = runesDecimal !== undefined ? runesDecimal : 2
-    const newVal = (currentVal + step).toFixed(decimal)
-    setValidAmount(newVal)
-    setInputValue(newVal)
-  }
+      if (regex.test(raw) || raw === '') {
+        setInputValue(raw)
+      }
+    },
+    [disableDecimal, enableBrc20Decimal, runesDecimal]
+  )
 
-  const handleStepDown = () => {
-    const currentVal = parseFloat(props.value!) || 0
-    const decimal = runesDecimal !== undefined ? runesDecimal : 2
-    const newVal = Math.max(min, currentVal - step).toFixed(decimal)
-    setValidAmount(newVal)
-    setInputValue(newVal)
-  }
+  const handleStepUp = useCallback(() => {
+    setInputValue(prev => {
+      const currentVal = parseFloat(prev) || 0
+      const decimal = runesDecimal ?? 2
+      return (currentVal + step).toFixed(decimal)
+    })
+  }, [step, runesDecimal])
 
-  const handleReset = () => {
-    setValidAmount('')
+  const handleStepDown = useCallback(() => {
+    setInputValue(prev => {
+      const currentVal = parseFloat(prev) || 0
+      const decimal = runesDecimal ?? 2
+      return Math.max(min, currentVal - step).toFixed(decimal)
+    })
+  }, [step, min, runesDecimal])
+
+  const handleReset = useCallback(() => {
     setInputValue('')
-  }
+  }, [])
 
   return {
     handleInputAmount,
@@ -82,6 +76,5 @@ export function useAmountInputLogic(props: {
     handleStepDown,
     handleReset,
     inputValue,
-    validAmount,
   }
 }
