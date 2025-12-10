@@ -301,12 +301,12 @@ export function useBRC20TokenScreenLogic() {
   const hasOutWalletBalance = (onSwapBalance || onProgBalance || '0')! !== '0'
 
   const onClickWrapBrc20Prog = () => {
-    const url = `https://unisat.io/wrap?tick=${encodeURIComponent(ticker)}`
+    const url = `https://link.unisat.space/btc/wrap?tick=${encodeURIComponent(ticker)}`
     nav.navToUrl(url)
   }
 
   const onClickUnwrapBrc20Prog = () => {
-    const url = `https://unisat.io/wrap?action=unwrap&tick=${encodeURIComponent(ticker)}`
+    const url = `https://link.unisat.space/btc/wrap?action=unwrap&tick=${encodeURIComponent(ticker)}`
     nav.navToUrl(url)
   }
 
