@@ -28,8 +28,6 @@ type AutoLockTime = {
   label: string
 }
 
-const defaultAutoLockTime: AutoLockTime = { id: 2, time: 180000, label: `3 minutes` }
-
 type WebSearchHistoryItem = string
 
 type WebRiskWarningItem = {
@@ -47,8 +45,11 @@ type ThemeMode = 'light' | 'dark'
 const defaultThemeMode = 'light'
 
 export interface BaseStorageProvider {
+  // storage should json.parse value after get
   get: (key: string) => Promise<any>
-  set: (key: string, value: string) => Promise<void>
+
+  // storage should json.stringify value before set
+  set: (key: string, value: any) => Promise<void>
 }
 
 export interface StorageContextType {
@@ -57,7 +58,6 @@ export interface StorageContextType {
   clear: () => Promise<void>
 
   getAutomaticLockTime: () => Promise<AutoLockTime>
-  setAutomaticLockTime: (time: AutoLockTime) => Promise<void>
   clearAutomaticLockTime: () => Promise<void>
 
   getAnnouncementDismissedIds: () => Promise<string[]>
@@ -114,9 +114,8 @@ const defaultContext: StorageContextType = {
   async clear() {},
 
   async getAutomaticLockTime() {
-    return defaultAutoLockTime
+    return null
   },
-  async setAutomaticLockTime(time: AutoLockTime) {},
   async clearAutomaticLockTime() {},
 
   async getAnnouncementDismissedIds() {
@@ -186,45 +185,73 @@ const defaultContext: StorageContextType = {
   async clearUtxoManageVisited() {},
 }
 
+function legacyParseObjectValue(val: any) {
+  let parsedObj = null
+  if (val && typeof val !== 'string') {
+    return val
+  }
+
+  if (typeof val === 'string' && val.length > 0) {
+    try {
+      parsedObj = JSON.parse(val)
+    } catch (e) {
+      parsedObj = null
+    }
+  }
+
+  // legacy double stringify
+  val = parsedObj
+  if (val && typeof val === 'string' && val.length > 0) {
+    try {
+      parsedObj = JSON.parse(val)
+    } catch (e) {
+      parsedObj = null
+    }
+  }
+
+  return parsedObj
+}
+
+function isLegacyStringifiedObject(val: any) {
+  if (typeof val === 'string' && val.length > 0) {
+    try {
+      const parsedObj = JSON.parse(val)
+      if (parsedObj && typeof parsedObj === 'string' && parsedObj.length > 0) {
+        try {
+          JSON.parse(parsedObj)
+          return true
+        } catch (e) {
+          return false
+        }
+      }
+    } catch (e) {
+      return false
+    }
+  }
+  return false
+}
+
 export function createStorageProvider(base: BaseStorageProvider): StorageContextType {
   const funcs = {
     ...base,
 
-    async getAutomaticLockTime() {
+    async getAutomaticLockTime(): Promise<AutoLockTime | null> {
       const val = await base.get(StorageType.AUTO_LOCK_TIME)
-      if (val) {
-        return val as AutoLockTime
-      } else {
-        return null
-      }
-    },
-    async setAutomaticLockTime(time: AutoLockTime) {
-      await base.set(StorageType.AUTO_LOCK_TIME, JSON.stringify(time))
+      return legacyParseObjectValue(val)
     },
     async clearAutomaticLockTime() {
-      const time: AutoLockTime = defaultAutoLockTime
-      await base.set(StorageType.AUTO_LOCK_TIME, JSON.stringify(time))
+      await base.set(StorageType.AUTO_LOCK_TIME, null)
     },
 
-    async getAnnouncementDismissedIds() {
+    async getAnnouncementDismissedIds(): Promise<string[]> {
       const val = await base.get(StorageType.ANNOUNCEMENT_DISMISSED_IDS_KEY)
-      if (val) {
-        try {
-          const ids = JSON.parse(val)
-          if (Array.isArray(ids)) {
-            return ids
-          }
-        } catch (e) {
-          return []
-        }
-      }
-      return []
+      return legacyParseObjectValue(val) || []
     },
     async setAnnouncementDismissedIds(ids: string[]) {
-      await base.set(StorageType.ANNOUNCEMENT_DISMISSED_IDS_KEY, JSON.stringify(ids))
+      await base.set(StorageType.ANNOUNCEMENT_DISMISSED_IDS_KEY, ids)
     },
     async clearAnnouncementDismissedIds() {
-      await base.set(StorageType.ANNOUNCEMENT_DISMISSED_IDS_KEY, JSON.stringify([]))
+      await base.set(StorageType.ANNOUNCEMENT_DISMISSED_IDS_KEY, [])
     },
 
     async getI18nSavedLang() {
@@ -238,46 +265,26 @@ export function createStorageProvider(base: BaseStorageProvider): StorageContext
       await base.set(StorageType.I18N_SAVED_LANG, '')
     },
 
-    async getWebSearchHistory() {
+    async getWebSearchHistory(): Promise<WebSearchHistoryItem[]> {
       const val = await base.get(StorageType.WEB_SEARCH_HISTORY)
-      if (val) {
-        try {
-          const history = JSON.parse(val)
-          if (Array.isArray(history)) {
-            return history
-          }
-        } catch (e) {
-          return []
-        }
-      }
-      return []
+      return legacyParseObjectValue(val) || []
     },
     async setWebSearchHistory(history: WebSearchHistoryItem[]) {
-      await base.set(StorageType.WEB_SEARCH_HISTORY, JSON.stringify(history))
+      await base.set(StorageType.WEB_SEARCH_HISTORY, history)
     },
     async clearWebSearchHistory() {
-      await base.set(StorageType.WEB_SEARCH_HISTORY, JSON.stringify([]))
+      await base.set(StorageType.WEB_SEARCH_HISTORY, [])
     },
 
-    async getWebRiskWarning() {
+    async getWebRiskWarning(): Promise<WebRiskWarningItem[]> {
       const val = await base.get(StorageType.WEB_RISK_WARNING)
-      if (val) {
-        try {
-          const warnings = JSON.parse(val)
-          if (Array.isArray(warnings)) {
-            return warnings
-          }
-        } catch (e) {
-          return []
-        }
-      }
-      return []
+      return legacyParseObjectValue(val) || []
     },
     async setWebRiskWarning(warnings: WebRiskWarningItem[]) {
-      await base.set(StorageType.WEB_RISK_WARNING, JSON.stringify(warnings))
+      await base.set(StorageType.WEB_RISK_WARNING, warnings)
     },
     async clearWebRiskWarning() {
-      await base.set(StorageType.WEB_RISK_WARNING, JSON.stringify([]))
+      await base.set(StorageType.WEB_RISK_WARNING, [])
     },
 
     async getEnableExplore() {
@@ -291,27 +298,15 @@ export function createStorageProvider(base: BaseStorageProvider): StorageContext
       await base.set(StorageType.ENABLE_EXPLORE, 'false')
     },
 
-    async getUnbackupKeyringIds() {
+    async getUnbackupKeyringIds(): Promise<string[]> {
       const val = await base.get(StorageType.UNBACKUP_KEYRINGS)
-      if (Array.isArray(val)) {
-        return val
-      } else if (typeof val === 'string') {
-        try {
-          const keyrings = JSON.parse(val)
-          if (Array.isArray(keyrings)) {
-            return keyrings
-          }
-        } catch (e) {
-          return []
-        }
-      }
-      return []
+      return legacyParseObjectValue(val) || []
     },
     async setUnbackupKeyringIds(keyringIds: string[]) {
-      await base.set(StorageType.UNBACKUP_KEYRINGS, JSON.stringify(keyringIds))
+      await base.set(StorageType.UNBACKUP_KEYRINGS, keyringIds)
     },
     async clearUnbackupKeyringIds() {
-      await base.set(StorageType.UNBACKUP_KEYRINGS, JSON.stringify([]))
+      await base.set(StorageType.UNBACKUP_KEYRINGS, [])
     },
 
     //
@@ -339,21 +334,13 @@ export function createStorageProvider(base: BaseStorageProvider): StorageContext
 
     async getVersionDetail() {
       const val = await base.get(StorageType.VERSION_DETAIL)
-      if (val) {
-        try {
-          const detail = JSON.parse(val)
-          return detail
-        } catch (e) {
-          return defaultVersionDetail
-        }
-      }
-      return defaultVersionDetail
+      return legacyParseObjectValue(val) || defaultVersionDetail
     },
     async setVersionDetail(detail: VersionDetail) {
-      await base.set(StorageType.VERSION_DETAIL, JSON.stringify(detail))
+      await base.set(StorageType.VERSION_DETAIL, detail)
     },
     async clearVersionDetail() {
-      await base.set(StorageType.VERSION_DETAIL, JSON.stringify(defaultVersionDetail))
+      await base.set(StorageType.VERSION_DETAIL, defaultVersionDetail)
     },
 
     async getThemeMode() {
