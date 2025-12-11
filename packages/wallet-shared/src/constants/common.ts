@@ -24,6 +24,7 @@ export const BRAND_ALIAN_TYPE_TEXT = {
   [KeyringType.SimpleKeyring]: 'Private Key',
   [KeyringType.KeystoneKeyring]: 'Account',
   [KeyringType.ColdWalletKeyring]: 'Account',
+  [KeyringType.ReadonlyKeyring]: 'Readonly',
 }
 
 export const KEYRING_TYPES: {
@@ -52,6 +53,11 @@ export const KEYRING_TYPES: {
     name: 'Cold Wallet',
     tag: 'COLD',
     alianName: 'Cold Wallet',
+  },
+  Readonly: {
+    name: 'Readonly',
+    tag: 'READONLY',
+    alianName: 'Readonly',
   },
 }
 
