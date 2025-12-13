@@ -149,10 +149,10 @@ export function useCreateWalletLogicImportWordsStep(params: CreateWalletLogicPar
     setDisabled(false)
   }, [inputWordsText])
 
-  const updateWords = (words: Array<string>) => {
+  const updateWords = (words: Array<string>, isEndedWithSpace?: boolean) => {
     setInputWords(words)
     let text = words.join(' ')
-    setInputWordsText(text)
+    setInputWordsText(isEndedWithSpace ? text + ' ' : text)
 
     const enteredWordsCount = words.filter(key => {
       return key.trim() != ''
@@ -169,10 +169,11 @@ export function useCreateWalletLogicImportWordsStep(params: CreateWalletLogicPar
 
   const onInputWordsTextChange = (e: { target: { value: string } } | string) => {
     let value = typeof e === 'string' ? e : e.target.value
+    let isEndedWithSpace = /\s$/.test(value)
     value = normalizeWhitespace(value)
 
     const wordsArr = textToWordsArray(value)
-    updateWords(wordsArr)
+    updateWords(wordsArr, isEndedWithSpace)
   }
 
   const onInputWordsChange = (e: { target: { value: string } } | string, index: number) => {
