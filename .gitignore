@@ -5,7 +5,6 @@ node_modules/
 
 # Build outputs
 dist/
-build/
 lib/
 es/
 coverage/
@@ -21,6 +20,7 @@ coverage/
 .idea/
 *.swp
 *.swo
+.claude/
 
 # OS files
 .DS_Store
@@ -56,3 +56,4 @@ coverage/
 
 # TypeScript
 *.tsbuildinfo
+
