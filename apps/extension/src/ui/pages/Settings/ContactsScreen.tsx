@@ -414,8 +414,10 @@ export default function ContactsScreen() {
         key={`${contact.address}_${contact.chain}`}
         style={{ cursor: 'pointer' }}
         onClick={() =>
-          navigate(`/settings/contact/${contact.address}/${contact.chain}`, {
-            state: { selectedNetworkFilter }
+          nav.navigate(`EditContactScreen`, {
+            selectedNetworkFilter,
+            address: contact.address,
+            chain: contact.chain
           })
         }>
         <Card
@@ -618,8 +620,9 @@ export default function ContactsScreen() {
             isSortingMode
               ? toggleSortDirection
               : () => {
-                  navigate('/settings/contacts/edit', {
-                    state: { selectedNetworkFilter }
+                  setSearchKeyword('');
+                  nav.navigate('EditContactScreen', {
+                    selectedNetworkFilter
                   });
                 }
           }
