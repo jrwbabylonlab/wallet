@@ -22,6 +22,7 @@ export interface GlobalState {
   isUnlockTimeRefres: boolean
   infiniteListScrollOffset: number
   infiniteListScrollDirection: 'up' | 'down'
+  infiniteListScrollActiveTime: number
   isScrollViewTop: number
   isScrollViewBot: number
   isBiometricsSupported: boolean
@@ -48,6 +49,7 @@ export const initialState: GlobalState = {
   isUnlockTimeRefres: false,
   infiniteListScrollOffset: 0,
   infiniteListScrollDirection: 'down',
+  infiniteListScrollActiveTime: 0,
   isScrollViewTop: 0,
   isScrollViewBot: 0,
   isBiometricsSupported: false,
@@ -81,6 +83,7 @@ const reducers: SliceCaseReducers<GlobalState> = {
       isUnlockTimeRefres?: boolean
       infiniteListScrollOffset?: number
       infiniteListScrollDirection?: 'up' | 'down'
+      infiniteListScrollActiveTime?: number
       isScrollViewTop?: number
       isScrollViewBot?: number
       isBiometricsSupported?: boolean

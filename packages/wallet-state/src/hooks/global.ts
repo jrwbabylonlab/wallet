@@ -124,6 +124,7 @@ export function useInfiniteListScrollState() {
   return {
     offset: globalState.infiniteListScrollOffset,
     direction: globalState.infiniteListScrollDirection,
+    activeTime: globalState.infiniteListScrollActiveTime,
   }
 }
 
