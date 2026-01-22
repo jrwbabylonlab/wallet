@@ -9,7 +9,6 @@ import {
 } from '@unisat/wallet-background';
 import { BUS_EVENTS, MESSAGE_TYPE, PORT_CHANNELS } from '@unisat/wallet-shared';
 import { browserRuntimeOnConnect } from '../webapi/browser';
-
 export function initMessaging() {
   // for page provider
   browserRuntimeOnConnect((port) => {
@@ -22,11 +21,16 @@ export function initMessaging() {
       // listen the message from UI
       pm.listen((data) => {
         if (!data?.type) return;
-
         switch (data.type) {
           case MESSAGE_TYPE.UI_BROADCAST:
             bgEventBus.emit(data.method, data.params);
             break;
+          case MESSAGE_TYPE.UI_REQUEST_METHOD:
+            if (process.env.NODE_ENV === 'development') {
+              return providerController.handleRequest(data.params);
+            } else {
+              throw new Error('UI_REQUEST_METHOD is only available in development mode');
+            }
           case MESSAGE_TYPE.UI_OPENAPI:
             if (typeof walletApiService[data.method] === 'function') {
               return walletApiService[data.method](...data.params);

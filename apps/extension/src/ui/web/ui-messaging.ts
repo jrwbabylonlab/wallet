@@ -70,6 +70,14 @@ export function createWalletProxy(portMessageChannel: InstanceType<typeof PortMe
                 }
               }
             );
+          case 'requestMethod':
+            return function (params: any) {
+              return portMessageChannel.request({
+                type: MESSAGE_TYPE.UI_REQUEST_METHOD,
+                method: 'requestMethod',
+                params
+              });
+            };
           default:
             return function (...params: any) {
               return portMessageChannel.request({
