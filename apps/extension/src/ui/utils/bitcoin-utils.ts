@@ -1,5 +1,6 @@
 import * as bip39 from 'bip39';
 
+import { addressUtils } from '@unisat/base-utils';
 import { AddressType, NetworkType } from '@unisat/wallet-types';
 
 export function getAddressType(address: string, networkType?: NetworkType) {
@@ -17,12 +18,7 @@ export function getAddressType(address: string, networkType?: NetworkType) {
 }
 
 export function isValidAddress(address: string, networkType?: NetworkType) {
-  const addressType = getAddressType(address, networkType);
-  if (addressType === AddressType.UNKNOWN) {
-    return false;
-  }
-
-  return true;
+  return addressUtils.isAddressLikelyValid(address);
 }
 
 export function getAddressUtxoDust(address: string) {

@@ -151,28 +151,28 @@ export const AddressInput = (props: InputProps) => {
             setSearching(false);
           });
       } else {
-        const names = SUPPORTED_DOMAINS.map((v) => `.${v}`);
-        let str = '';
-        for (let i = 0; i < names.length; i++) {
-          if (i == 0) {
-            // empty
-          } else if (i < names.length - 1) {
-            str += ', ';
-          } else {
-            str += ' and ';
-          }
-          str += `${names[i]}`;
-        }
-        setFormatError(`${t('currently_only')} ${str} ${t('are_supported')}.`);
         return;
       }
     } else {
+      if (!inputAddress) {
+        return;
+      }
+
       const isValid = isValidAddress(inputAddress);
       if (!isValid) {
-        setFormatError(t('recipient_address_is_invalid'));
         return;
       }
       setValidAddress(inputAddress);
+    }
+  };
+
+  const onAddressBlur = () => {
+    setFormatError('');
+    const inputAddress = inputVal;
+    if (inputAddress == '') return;
+
+    if (!validAddress) {
+      setFormatError(t('recipient_address_is_invalid'));
     }
   };
 
@@ -197,6 +197,7 @@ export const AddressInput = (props: InputProps) => {
             placeholder={inputAddressPlaceholder}
             style={Object.assign({}, $baseTextareaStyle, $inputStyleOverride)}
             onChange={handleInputAddress}
+            onBlur={onAddressBlur}
             value={inputVal}
             rows={inputVal && inputVal.length > 50 ? 2 : 1}
             {...rest}
