@@ -11,9 +11,7 @@ export default function Step1({ onNext }: Step1Props) {
   const { t } = useI18n();
 
   const nav = useNavigation();
-  const state = nav.getRouteState<{
-    fromUnlock: boolean;
-  }>();
+  const state = nav.getRouteState<'CreateColdWalletScreen'>();
 
   const onBack = useCallback(() => {
     if (state && state.fromUnlock) {

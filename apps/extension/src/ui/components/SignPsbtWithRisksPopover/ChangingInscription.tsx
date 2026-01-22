@@ -1,7 +1,7 @@
-import { DecodedPsbt } from '@/shared/types';
 import { colors } from '@/ui/theme/colors';
 import { useI18n } from '@unisat/wallet-state';
 
+import { DecodedPsbt } from '@unisat/wallet-shared';
 import { Column } from '../Column';
 import { Icon } from '../Icon';
 import InscriptionPreview from '../InscriptionPreview';

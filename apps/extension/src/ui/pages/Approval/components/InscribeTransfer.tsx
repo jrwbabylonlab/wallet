@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 
-import { InscribeOrder, RawTxInfo, TokenBalance, TokenInfo } from '@/shared/types';
 import {
   Button,
   Card,
@@ -27,6 +26,7 @@ import WebsiteBar from '@/ui/components/WebsiteBar';
 import { fontSizes } from '@/ui/theme/font';
 import { spacing } from '@/ui/theme/spacing';
 import { amountToSatoshis } from '@/ui/utils';
+import { RawTxInfo } from '@unisat/wallet-shared';
 import {
   BRC20InscribeTransferParams,
   useBRC20InscribeTransferLogic,
@@ -36,6 +36,8 @@ import {
   useBRC20InscribeTransferLogicStep4
 } from '@unisat/wallet-state';
 
+import { paramsUtils } from '@unisat/base-utils';
+import { InscribeOrder, TokenBalance, TokenInfo } from '@unisat/wallet-shared';
 import SignPsbt from './SignPsbt';
 
 interface Props {
@@ -323,7 +325,9 @@ function Step2(params: BRC20InscribeTransferParams) {
                 <Text text={t('preview')} preset="sub-bold" />
                 <Card preset="style2">
                   <Text
-                    text={`{"p":"brc-20","op":"transfer","tick":"${tokenBalance.ticker}","amt":"${amount}"}`}
+                    text={`{"p":"brc-20","op":"transfer","tick":"${
+                      tokenBalance.ticker
+                    }","amt":"${paramsUtils.formatAmount(amount)}"}`}
                     size="xs"
                     wrap
                   />

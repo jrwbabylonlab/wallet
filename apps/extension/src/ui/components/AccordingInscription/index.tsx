@@ -1,4 +1,4 @@
-import { Inscription } from '@/shared/types';
+import { Inscription } from '@unisat/wallet-shared';
 import { useI18n, useOrdinalsWebsite } from '@unisat/wallet-state';
 
 import { Text } from '../Text';

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { AlkanesCollection } from '@/shared/types';
+import { AlkanesCollection } from '@unisat/wallet-shared';
 import { useI18n } from '@unisat/wallet-state';
 
 import { Column } from '../Column';

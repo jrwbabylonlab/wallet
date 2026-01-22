@@ -38,7 +38,7 @@ function Step1({ onNext, setIsUSB }) {
 
   const nav = useNavigation();
 
-  const { fromUnlock } = nav.getRouteState<{ fromUnlock?: boolean }>();
+  const { fromUnlock } = nav.getRouteState<'CreateKeystoneWalletScreen'>();
 
   const { t } = useI18n();
   const onBack = useCallback(() => {

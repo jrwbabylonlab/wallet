@@ -10,10 +10,10 @@ import {
   RequestMethodSendInscriptionParams,
   RequestMethodSendRunesParams,
   RequestMethodSignMessageParams,
-  RequestMethodSignMessagesParams,
-  TxType
-} from '@/shared/types';
+  RequestMethodSignMessagesParams
+} from '@unisat/wallet-shared';
 
+import { TxType } from '@unisat/wallet-shared';
 import { requestMethodKey } from './providerState';
 
 export class BitcoinAPIMethods {

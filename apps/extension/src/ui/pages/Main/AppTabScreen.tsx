@@ -1,7 +1,7 @@
-import { AppInfo } from '@/shared/types';
 import { Card, Column, Content, Footer, Header, Image, Layout, Row, Text } from '@/ui/components';
 import { fontSizes } from '@/ui/theme/font';
 import { shortDesc } from '@/ui/utils';
+import { AppInfo } from '@unisat/wallet-shared';
 import { useAppSummary, useI18n, useReadApp } from '@unisat/wallet-state';
 
 function AppItem({ info }: { info: AppInfo }) {

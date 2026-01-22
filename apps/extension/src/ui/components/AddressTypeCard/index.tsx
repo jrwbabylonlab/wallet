@@ -1,7 +1,7 @@
 import { ReactEventHandler } from 'react';
 
-import { AddressAssets } from '@/shared/types';
 import { fontSizes } from '@/ui/theme/font';
+import { AddressAssets } from '@unisat/wallet-shared';
 import { useBTCUnit, useChain, useI18n } from '@unisat/wallet-state';
 
 import { IMAGE_SOURCE_MAP } from '@/shared/constant';

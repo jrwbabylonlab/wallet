@@ -1,11 +1,11 @@
 import { Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
 
-import { BtcChannelItem } from '@/shared/types';
 import { Card, Column, Image, Row, Text } from '@/ui/components';
 import { BottomModal } from '@/ui/components/BottomModal';
 import { colors } from '@/ui/theme/colors';
 import { CloseOutlined } from '@ant-design/icons';
+import { BtcChannelItem } from '@unisat/wallet-shared';
 import { useChain, useI18n, useTools, useWallet } from '@unisat/wallet-state';
 
 import { PAYMENT_CHANNELS, PaymentChannelType } from '@unisat/wallet-shared';

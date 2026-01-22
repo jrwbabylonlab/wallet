@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { Account, WebsiteState } from '@/shared/types';
 import { Button, Column, Content, Footer, Header, Icon, Layout, Row, Text } from '@/ui/components';
 import { Section } from '@/ui/components/Section';
 import WebsiteBar from '@/ui/components/WebsiteBar';
 import { fontSizes } from '@/ui/theme/font';
 import { LoadingOutlined } from '@ant-design/icons';
+import { Account, WebsiteState } from '@unisat/wallet-shared';
 import { useApproval, useI18n, useWallet } from '@unisat/wallet-state';
 
 export interface ItemData {

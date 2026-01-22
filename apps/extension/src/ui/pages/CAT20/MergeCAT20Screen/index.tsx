@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { useEffect, useMemo, useState } from 'react';
 
-import { AddressCAT20UtxoSummary, CAT20Balance, CAT20MergeOrder, CAT20TokenInfo, CAT_VERSION } from '@/shared/types';
 import { Button, Card, Column, Content, Header, Input, Layout, Row, Slider, Text } from '@/ui/components';
 import { BRC20Ticker } from '@/ui/components/BRC20Ticker';
 import { BtcUsd } from '@/ui/components/BtcUsd';
@@ -10,6 +9,7 @@ import { MergeBTCPopover } from '@/ui/components/MergeBTCPopover';
 import { colors } from '@/ui/theme/colors';
 import { satoshisToAmount, showLongNumber, sleep } from '@/ui/utils';
 import { bnUtils } from '@unisat/base-utils';
+import { AddressCAT20UtxoSummary, CAT20MergeOrder } from '@unisat/wallet-shared';
 import {
   useBTCUnit,
   useCurrentAccount,
@@ -24,15 +24,9 @@ import { MergeProgressLayout } from './MergeProgressLayout';
 import { ItemStatus, MergeItem, MergeState } from './MergingItem';
 import { NoMergeLayout } from './NoMergeLayout';
 
-interface LocationState {
-  cat20Balance: CAT20Balance;
-  cat20Info: CAT20TokenInfo;
-  version: CAT_VERSION;
-}
-
 export default function MergeCAT20Screen() {
   const nav = useNavigation();
-  const props = nav.getRouteState<LocationState>();
+  const props = nav.getRouteState<'MergeCAT20Screen'>();
 
   const { t } = useI18n();
 

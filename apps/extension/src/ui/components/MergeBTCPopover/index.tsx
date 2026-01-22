@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 
-import { useNavigate } from '@/ui/pages/MainRoute';
 import {
   useChain,
   useCurrentAccount,
   useFeeRateBar,
   useFetchUtxosCallback,
   useI18n,
+  useNavigation,
   usePrepareSendBTCCallback,
   useSafeBalance,
   useUtxos
@@ -44,10 +44,10 @@ export const MergeBTCPopover = ({ onClose }: { onClose: () => void }) => {
   const { feeRate } = useFeeRateBar();
 
   const chain = useChain();
-  const navigate = useNavigate();
+  const nav = useNavigation();
   const onConfirm = async () => {
     try {
-      const rawTxInfo = await prepareSendBTC({
+      const toSignData = await prepareSendBTC({
         toAddressInfo: {
           address: currentAccount.address
         },
@@ -55,7 +55,7 @@ export const MergeBTCPopover = ({ onClose }: { onClose: () => void }) => {
         feeRate
       });
 
-      navigate('TxConfirmScreen', { rawTxInfo });
+      nav.navigate('TxConfirmScreen', { toSignData });
     } catch (e) {
       tools.toastError(t('merge_utxos_failed'));
       console.error('Merge UTXOs failed:', e);

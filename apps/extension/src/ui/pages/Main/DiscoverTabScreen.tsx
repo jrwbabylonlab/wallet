@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import { AddressType, AppInfo } from '@/shared/types';
 import { Card, Carousel, Column, Content, Footer, Header, Image, Layout, Row, Text, Tooltip } from '@/ui/components';
 import { NavTabBar } from '@/ui/components/NavTabBar';
 import { SwitchNetworkBar } from '@/ui/components/SwitchNetworkBar';
 import { TabBar } from '@/ui/components/TabBar';
 import { SearchBar } from '@/ui/pages/Main/DiscoverTabComponents/SearchBar';
 import { getAddressType } from '@/ui/utils/bitcoin-utils';
+import { AppInfo } from '@unisat/wallet-shared';
 import {
   discoveryActions,
   useAppDispatch,
@@ -22,7 +22,7 @@ import {
   useWallet
 } from '@unisat/wallet-state';
 
-import { ChainType } from '@unisat/wallet-types';
+import { AddressType, ChainType } from '@unisat/wallet-types';
 import { useNavigate } from '../MainRoute';
 import { SwitchChainModal } from '../Settings/SwitchChainModal';
 

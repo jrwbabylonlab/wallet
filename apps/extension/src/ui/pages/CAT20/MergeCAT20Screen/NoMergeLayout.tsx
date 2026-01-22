@@ -1,7 +1,7 @@
-import { AddressCAT20UtxoSummary, CAT20Balance } from '@/shared/types';
 import { Column, Content, Header, Layout, Row, Text } from '@/ui/components';
 import { BRC20Ticker } from '@/ui/components/BRC20Ticker';
 import { bnUtils } from '@unisat/base-utils';
+import { AddressCAT20UtxoSummary, CAT20Balance } from '@unisat/wallet-shared';
 import { useI18n } from '@unisat/wallet-state';
 
 export function NoMergeLayout({

@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { BabylonAddressSummary } from '@/shared/types';
 import { Button, Card, Column, Content, Header, Icon, Input, Layout, Row, Text } from '@/ui/components';
 import { FeeOptionsPopover } from '@/ui/components/FeeOptionsPopover';
 import { FeeSettings } from '@/ui/components/FeeOptionsPopover/interface';
 import { useNavigate } from '@/ui/pages/MainRoute';
 import { COSMOS_CHAINS_MAP, DEFAULT_BBN_GAS_LIMIT } from '@unisat/babylon-service/types';
 import { bnUtils } from '@unisat/base-utils';
+import { BabylonAddressSummary } from '@unisat/wallet-shared';
 import {
   NavigationSource,
   uiActions,
@@ -14,6 +14,7 @@ import {
   useAppSelector,
   useBabylonConfig,
   useI18n,
+  useNavigation,
   useWallet
 } from '@unisat/wallet-state';
 
@@ -23,6 +24,7 @@ import { NotSupportedLayout } from './BabylonStakingScreen';
 const BABYLON_FEE_SETTINGS_KEY = 'babylonFeeSettings';
 
 export default function SendBabyScreen() {
+  const nav = useNavigation();
   const navigate = useNavigate();
   const wallet = useWallet();
   const dispatch = useAppDispatch();
@@ -390,7 +392,7 @@ export default function SendBabyScreen() {
       <Header
         onBack={() => {
           clearReduxState();
-          navigate('BabylonStakingScreen');
+          nav.navigate('BabylonStakingScreen');
         }}
         title={`${t('send')} ${babylonChain.stakeCurrency.coinDenom}`}
       />

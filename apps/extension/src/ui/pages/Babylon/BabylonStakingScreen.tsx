@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { BabylonAddressSummary } from '@/shared/types';
 import { Button, Column, Content, Header, Icon, Image, Layout, Loading, Row, Text } from '@/ui/components';
 import { CopyableAddress } from '@/ui/components/CopyableAddress';
 import { Popover } from '@/ui/components/Popover';
@@ -8,6 +7,7 @@ import { colors } from '@/ui/theme/colors';
 import { satoshisToAmount } from '@/ui/utils';
 import { BabylonConfigV2, BabylonPhaseState, COSMOS_CHAINS_MAP } from '@unisat/babylon-service/types';
 import { bnUtils } from '@unisat/base-utils';
+import { BabylonAddressSummary } from '@unisat/wallet-shared';
 import { useBabylonConfig, useChain, useChainType, useI18n, useTools, useWallet } from '@unisat/wallet-state';
 
 import { ChainType } from '@unisat/wallet-types';

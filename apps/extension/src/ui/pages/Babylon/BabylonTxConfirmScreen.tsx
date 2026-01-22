@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { BabylonTxInfo, CosmosSignDataType } from '@/shared/types';
 import { Button, Card, Column, Content, Footer, Header, Icon, Image, Layout, Row, Text } from '@/ui/components';
 import { AddressText } from '@/ui/components/AddressText';
 import { colors } from '@/ui/theme/colors';
 import { spacing } from '@/ui/theme/spacing';
 import { COSMOS_CHAINS_MAP } from '@unisat/babylon-service/types';
+import { BabylonTxInfo, CosmosSignDataType } from '@unisat/wallet-shared';
 import {
   NavigationSource,
   uiActions,
@@ -46,7 +46,7 @@ function Section({ title, children, extra }: { title: string; children?: React.R
 
 export default function BabylonTxConfirmScreen() {
   const nav = useNavigation();
-  const { txInfo } = nav.getRouteState<LocationState>();
+  const { txInfo } = nav.getRouteState<'BabylonTxConfirmScreen'>();
   const wallet = useWallet();
   const dispatch = useAppDispatch();
   const { t } = useI18n();
@@ -196,8 +196,8 @@ export default function BabylonTxConfirmScreen() {
         txInfo.toAddress,
         txInfo.memo || '',
         {
-          gasLimit: txInfo.gasLimit,
-          gasPrice: txInfo.gasPrice,
+          gasLimit: txInfo.gasLimit!,
+          gasPrice: txInfo.gasPrice!,
           gasAdjustment: txInfo.gasAdjustment || 1.3
         }
       );

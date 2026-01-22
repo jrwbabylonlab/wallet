@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 
-import { Inscription } from '@/shared/types';
 import { colors } from '@/ui/theme/colors';
+import { Inscription } from '@unisat/wallet-shared';
 
 import { ChainType } from '@unisat/wallet-types';
 import { $textPresets } from '../Text';

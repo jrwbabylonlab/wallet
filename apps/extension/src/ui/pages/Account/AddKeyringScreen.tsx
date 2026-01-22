@@ -53,7 +53,7 @@ export default function AddKeyringScreen() {
             justifyCenter
             onClick={() => {
               if (isExtensionInExpandView) {
-                nav.navigate('CreateKeystoneWalletScreen');
+                nav.navigate('CreateKeystoneWalletScreen', {});
               } else {
                 window.open('#/account/create-keystone-wallet');
               }
@@ -70,7 +70,7 @@ export default function AddKeyringScreen() {
               <Card
                 justifyCenter
                 onClick={() => {
-                  nav.navigate('CreateColdWalletScreen');
+                  nav.navigate('CreateColdWalletScreen', {});
                 }}>
                 <Column full justifyCenter>
                   <Text text={t('create_cold_wallet')} size="sm" />

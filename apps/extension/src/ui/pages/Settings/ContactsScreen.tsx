@@ -155,10 +155,7 @@ function SortableContactItem({ contact, index }: { contact: ContactBookItem; ind
 export default function ContactsScreen() {
   const navigate = useNavigate();
   const nav = useNavigation();
-  const { returnWithNetwork, lastEditedContactAddress } = nav.getRouteState<{
-    returnWithNetwork?: ChainType;
-    lastEditedContactAddress?: string;
-  }>();
+  const { returnWithNetwork, lastEditedContactAddress } = nav.getRouteState<'ContactsScreen'>();
   const wallet = useWallet();
   const chain = useChain();
   const [contacts, setContacts] = useState<ContactBookItem[]>([]);

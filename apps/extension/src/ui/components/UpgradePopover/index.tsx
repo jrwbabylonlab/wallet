@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { VersionDetail } from '@/shared/types';
 import { fontSizes } from '@/ui/theme/font';
+import { VersionDetail } from '@unisat/wallet-shared';
 import { useVersionInfo, useWallet } from '@unisat/wallet-state';
 
 import { Button } from '../Button';

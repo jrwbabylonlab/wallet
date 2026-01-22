@@ -1,4 +1,4 @@
-import { VersionDetail } from '@/shared/types';
+import { VersionDetail } from '@unisat/wallet-shared';
 
 import { Button } from '../Button';
 import { Column } from '../Column';

@@ -1,4 +1,4 @@
-import { RuneBalance, TickPriceItem } from '@/shared/types';
+import { RuneBalance, TickPriceItem } from '@unisat/wallet-shared';
 
 import { useRunesBalanceCardLogic } from '@unisat/wallet-state';
 import { Card } from '../Card';
@@ -18,7 +18,6 @@ export interface RunesBalanceCardProps {
 
 export default function RunesBalanceCard(props: RunesBalanceCardProps) {
   const { tokenBalance, onClick, showPrice, price, iconInfo, balance, balanceStr } = useRunesBalanceCardLogic(props);
-
   return (
     <Card
       style={{

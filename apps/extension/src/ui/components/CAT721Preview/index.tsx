@@ -1,4 +1,4 @@
-import { CAT_VERSION } from '@/shared/types';
+import { CAT_VERSION } from '@unisat/wallet-shared';
 import { useCAT721NFTContentBaseUrl } from '@unisat/wallet-state';
 
 import { Column } from '../Column';

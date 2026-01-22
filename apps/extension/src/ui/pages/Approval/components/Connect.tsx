@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { Account, WebsiteState } from '@/shared/types';
 import { Button, Card, Column, Content, Footer, Header, Icon, Layout, Row, Text } from '@/ui/components';
 import WebsiteBar from '@/ui/components/WebsiteBar';
 import { fontSizes } from '@/ui/theme/font';
 import { shortAddress } from '@/ui/utils';
 import { CheckCircleFilled, LoadingOutlined } from '@ant-design/icons';
+import { Account, WebsiteState } from '@unisat/wallet-shared';
 import { useApproval, useCurrentAccount, useCurrentKeyring, useI18n, useWallet } from '@unisat/wallet-state';
 
 interface MyItemProps {

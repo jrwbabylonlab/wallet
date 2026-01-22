@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js';
 
-import { AlkanesBalance, DecodedPsbt, Inscription, RuneBalance } from '@/shared/types';
 import { colors } from '@/ui/theme/colors';
+import { AlkanesBalance, Inscription, RuneBalance } from '@unisat/wallet-shared';
 import { useCurrentAccount, useI18n } from '@unisat/wallet-state';
 
+import { DecodedPsbt } from '@unisat/wallet-shared';
 import { Column } from '../Column';
 import { Icon } from '../Icon';
 import InscriptionPreview from '../InscriptionPreview';

@@ -1,4 +1,5 @@
-import { AddressType, RestoreWalletType } from '@/shared/types';
+import { RestoreWalletType } from '@unisat/wallet-shared';
+import { AddressType } from '@unisat/wallet-types';
 
 export enum TabType {
   SET_PASSWORD = 'SET_PASSWORD',

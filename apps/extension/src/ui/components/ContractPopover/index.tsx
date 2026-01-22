@@ -1,4 +1,4 @@
-import { ContractResult } from '@/shared/types';
+import { ContractResult } from '@unisat/wallet-shared';
 import { useI18n } from '@unisat/wallet-state';
 
 import { Button } from '../Button';

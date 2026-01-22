@@ -1,4 +1,4 @@
-import { BabylonTxInfo } from '@/shared/types';
+import { BabylonTxInfo } from '@unisat/wallet-shared';
 
 /**
  * Fee option interface

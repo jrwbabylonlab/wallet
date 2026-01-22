@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { AddressType, RestoreWalletType } from '@/shared/types';
 import { Content, Header, Layout, Row } from '@/ui/components';
 import { TabBar } from '@/ui/components/TabBar';
 import { Step0 } from '@/ui/pages/Account/createHDWalletComponents/Step0';
@@ -14,8 +13,10 @@ import {
   UpdateContextDataParams,
   WordsType
 } from '@/ui/pages/Account/createHDWalletComponents/types';
+import { RestoreWalletType } from '@unisat/wallet-shared';
 import { useI18n, useWallet } from '@unisat/wallet-state';
 
+import { AddressType } from '@unisat/wallet-types';
 import { useNavigate } from '../MainRoute';
 
 export default function CreateHDWalletScreen() {

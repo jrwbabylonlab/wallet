@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { AddressType } from '@/shared/types';
 import { Button, Column, Icon, Input, Row, Text } from '@/ui/components';
 import { AddressTypeCard2 } from '@/ui/components/AddressTypeCard';
 import { FooterButtonContainer } from '@/ui/components/FooterButtonContainer';
@@ -11,6 +10,7 @@ import { isValidHdPath } from '@/ui/utils/bitcoin-utils';
 import { LoadingOutlined } from '@ant-design/icons';
 import { ADDRESS_TYPES, getRestoreWallets } from '@unisat/wallet-shared';
 import { useCreateAccountCallback, useI18n, useTools, useWallet } from '@unisat/wallet-state';
+import { AddressType } from '@unisat/wallet-types';
 
 export function Step2({
   contextData,

@@ -1,11 +1,11 @@
 import { BigNumber } from 'bignumber.js';
 import { useEffect, useMemo, useState } from 'react';
 
-import { TickPriceItem } from '@/shared/types';
 import { Row, Text } from '@/ui/components';
 import { BtcUsd } from '@/ui/components/BtcUsd';
 import { Sizes, TextProps } from '@/ui/components/Text';
 import type { ColorTypes } from '@/ui/theme/colors';
+import { TickPriceItem } from '@unisat/wallet-shared';
 import { useWallet } from '@unisat/wallet-state';
 
 function PriceChangePercent({ change, size }: { change: number; size?: Sizes }) {

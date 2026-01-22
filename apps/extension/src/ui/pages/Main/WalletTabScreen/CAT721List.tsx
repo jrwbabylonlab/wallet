@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { CAT721Balance, CAT_VERSION } from '@/shared/types';
 import { Column, Row } from '@/ui/components';
 import { CAT721CollectionCard } from '@/ui/components/CAT721CollectionCard';
 import { Empty } from '@/ui/components/Empty';
@@ -16,6 +15,7 @@ import {
   useWallet
 } from '@unisat/wallet-state';
 
+import { CAT721Balance, CAT_VERSION } from '@unisat/wallet-shared';
 import { useNavigate } from '../../MainRoute';
 
 export function CAT721List(props: { version: CAT_VERSION }) {

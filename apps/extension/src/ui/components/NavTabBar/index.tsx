@@ -1,6 +1,5 @@
-import { useNavigate } from '@/ui/pages/MainRoute';
 import { colors } from '@/ui/theme/colors';
-import { TabOption, useHasNewBanner } from '@unisat/wallet-state';
+import { TabOption, useHasNewBanner, useNavigation } from '@unisat/wallet-state';
 
 import { BaseView } from '../BaseView';
 import { Column } from '../Column';
@@ -18,7 +17,7 @@ export function NavTabBar({ tab }: { tab: TabOption }) {
 }
 
 function TabButton({ tabName, icon, isActive }: { tabName: TabOption; icon: IconTypes; isActive: boolean }) {
-  const navigate = useNavigate();
+  const nav = useNavigation();
   const hasNewBanner = useHasNewBanner();
 
   return (
@@ -27,11 +26,11 @@ function TabButton({ tabName, icon, isActive }: { tabName: TabOption; icon: Icon
       itemsCenter
       onClick={(e) => {
         if (tabName === 'home') {
-          navigate('MainScreen');
+          nav.navigate('MainScreen');
         } else if (tabName === 'discover') {
-          navigate('DiscoverTabScreen');
+          nav.navigate('DiscoverTabScreen');
         } else if (tabName === 'settings') {
-          navigate('SettingsTabScreen');
+          nav.navigate('SettingsTabScreen');
         }
       }}>
       <Icon size={20} icon={icon} color={isActive ? 'white' : 'white_muted'} />

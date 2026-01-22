@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { DecodedPsbt, Risk, RiskType } from '@/shared/types';
 import { colors } from '@/ui/theme/colors';
 import { useI18n } from '@unisat/wallet-state';
 
+import { DecodedPsbt, Risk, RiskType } from '@unisat/wallet-shared';
 import { Button } from '../Button';
 import { Column } from '../Column';
 import { Icon } from '../Icon';

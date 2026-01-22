@@ -1,11 +1,17 @@
 import { useMemo } from 'react';
 
-import { WalletKeyring } from '@/shared/types';
-import { useNavigate } from '@/ui/pages/MainRoute';
 import { shortAddress } from '@/ui/utils';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { accountActions, keyringsActions, useAppDispatch, useI18n, useWallet } from '@unisat/wallet-state';
+import { WalletKeyring } from '@unisat/wallet-shared';
+import {
+  accountActions,
+  keyringsActions,
+  useAppDispatch,
+  useI18n,
+  useNavigation,
+  useWallet
+} from '@unisat/wallet-state';
 
 import { Button } from '../Button';
 import { Card } from '../Card';
@@ -16,7 +22,7 @@ import { Text } from '../Text';
 
 export const RemoveWalletPopover = ({ keyring, onClose }: { keyring: WalletKeyring; onClose: () => void }) => {
   const wallet = useWallet();
-  const navigate = useNavigate();
+  const nav = useNavigation();
   const dispatch = useAppDispatch();
   const displayAddress = useMemo(() => {
     if (!keyring.accounts[0]) {
@@ -82,7 +88,7 @@ export const RemoveWalletPopover = ({ keyring, onClose }: { keyring: WalletKeyri
                 return;
               }
 
-              navigate('WelcomeScreen');
+              nav.navigate('WelcomeScreen');
             }}
           />
         </Row>

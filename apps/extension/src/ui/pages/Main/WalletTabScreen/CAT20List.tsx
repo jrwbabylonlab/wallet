@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { CAT20Balance, CAT_VERSION, TickPriceItem } from '@/shared/types';
 import { Column, Row } from '@/ui/components';
 import { CAT20BalanceCard } from '@/ui/components/CAT20BalanceCard';
 import { Empty } from '@/ui/components/Empty';
 import { Pagination } from '@/ui/components/Pagination';
 import { LoadingOutlined } from '@ant-design/icons';
+import { CAT20Balance, CAT_VERSION, TickPriceItem } from '@unisat/wallet-shared';
 import {
   useChain,
   useChainType,

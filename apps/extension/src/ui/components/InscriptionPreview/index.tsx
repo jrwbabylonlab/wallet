@@ -1,10 +1,10 @@
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 
-import { Inscription } from '@/shared/types';
 import { colors } from '@/ui/theme/colors';
 import { fontSizes } from '@/ui/theme/font';
 import { getDateShowdate } from '@/ui/utils/getDateShowdate';
 import { LoadingOutlined } from '@ant-design/icons';
+import { Inscription } from '@unisat/wallet-shared';
 import { useI18n, useOrdinalsWebsite } from '@unisat/wallet-state';
 
 import { Column } from '../Column';

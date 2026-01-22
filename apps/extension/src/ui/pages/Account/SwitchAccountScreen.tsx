@@ -1,7 +1,6 @@
 import VirtualList, { ListRef } from 'rc-virtual-list';
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Account } from '@/shared/types';
 import { Card, Column, Content, Header, Icon, Layout, Row, Text } from '@/ui/components';
 import { colors } from '@/ui/theme/colors';
 import { copyToClipboard, shortAddress } from '@/ui/utils';
@@ -13,11 +12,12 @@ import {
   useCurrentAccount,
   useCurrentKeyring,
   useI18n,
+  useNavigation,
   useTools,
   useWallet
 } from '@unisat/wallet-state';
 
-import { KEYRING_CLASS } from '@unisat/wallet-shared';
+import { Account, KEYRING_CLASS } from '@unisat/wallet-shared';
 import { useNavigate } from '../MainRoute';
 
 export interface ItemData {
@@ -149,7 +149,7 @@ export function MyItem({ account, autoNav }: MyItemProps, ref) {
 }
 
 export default function SwitchAccountScreen() {
-  const navigate = useNavigate();
+  const nav = useNavigation();
   const keyring = useCurrentKeyring();
   const { t } = useI18n();
   const items = useMemo(() => {
@@ -198,7 +198,7 @@ export default function SwitchAccountScreen() {
           keyring.type == KEYRING_CLASS.PRIVATE_KEY ? null : (
             <Icon
               onClick={() => {
-                navigate('CreateAccountScreen');
+                nav.navigate('CreateAccountScreen', {});
               }}>
               <PlusCircleOutlined />
             </Icon>

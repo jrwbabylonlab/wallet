@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { AddressCAT721CollectionSummary, CAT_VERSION } from '@/shared/types';
 import { Card, Column, Content, Header, Icon, Layout, Row, Text } from '@/ui/components';
 import CAT721Preview from '@/ui/components/CAT721Preview';
 import { Line } from '@/ui/components/Line';
@@ -8,19 +7,15 @@ import { Section } from '@/ui/components/Section';
 import { colors } from '@/ui/theme/colors';
 import { fontSizes } from '@/ui/theme/font';
 import { LoadingOutlined } from '@ant-design/icons';
+import { AddressCAT721CollectionSummary } from '@unisat/wallet-shared';
 import { useCurrentAccount, useI18n, useIsInExpandView, useNavigation, useWallet } from '@unisat/wallet-state';
 
 import { useNavigate } from '../MainRoute';
 
-interface LocationState {
-  version: CAT_VERSION;
-  collectionId: string;
-}
-
 export default function CAT721CollectionScreen() {
   const { t } = useI18n();
   const nav = useNavigation();
-  const { version, collectionId } = nav.getRouteState<LocationState>();
+  const { version, collectionId } = nav.getRouteState<'CAT721CollectionScreen'>();
   const [collectionSummary, setCollectionSummary] = useState<AddressCAT721CollectionSummary>({
     collectionInfo: {
       collectionId: '',

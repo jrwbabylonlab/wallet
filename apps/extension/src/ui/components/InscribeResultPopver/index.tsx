@@ -1,5 +1,5 @@
-import { Inscription } from '@/shared/types';
 import { useNavigate } from '@/ui/pages/MainRoute';
+import { Inscription } from '@unisat/wallet-shared';
 import { useAppDispatch, useI18n, useWallet } from '@unisat/wallet-state';
 
 import { Button } from '../Button';

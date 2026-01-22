@@ -1,17 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { AlkanesInfo } from '@/shared/types';
 import { Card, Column, Content, Header, Layout, Row, Text } from '@/ui/components';
 import { Line } from '@/ui/components/Line';
 import LoadingPage from '@/ui/components/LoadingPage';
 import { Section } from '@/ui/components/Section';
+import { AlkanesInfo } from '@unisat/wallet-shared';
 import { useCurrentAccount, useI18n, useNavigation, useWallet } from '@unisat/wallet-state';
 
 import { AlkanesNFTList } from './AlkanesNFTList';
-
-interface LocationState {
-  collectionId: string;
-}
 
 interface AlkanesCollectionSummary {
   collectionInfo: AlkanesInfo;
@@ -21,7 +17,7 @@ interface AlkanesCollectionSummary {
 export default function AlkanesCollectionScreen() {
   const { t } = useI18n();
   const nav = useNavigation();
-  const { collectionId } = nav.getRouteState<LocationState>();
+  const { collectionId } = nav.getRouteState<'AlkanesCollectionScreen'>();
   const [collectionSummary, setCollectionSummary] = useState<AlkanesCollectionSummary>({
     collectionInfo: {
       alkaneid: '',

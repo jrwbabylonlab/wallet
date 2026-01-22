@@ -1,6 +1,6 @@
-import { RuneBalance, TickPriceItem } from '@/shared/types';
 import { TickUsd } from '@/ui/components/TickUsd';
 import { bnUtils } from '@unisat/base-utils';
+import { RuneBalance, TickPriceItem } from '@unisat/wallet-shared';
 
 import { Column } from '../Column';
 import { Row } from '../Row';

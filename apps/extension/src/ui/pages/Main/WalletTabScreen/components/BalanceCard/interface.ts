@@ -1,4 +1,4 @@
-import { BitcoinBalanceV2 } from '@/shared/types';
+import { BitcoinBalanceV2 } from '@unisat/wallet-shared';
 
 export interface BalanceCardProps {
   /**

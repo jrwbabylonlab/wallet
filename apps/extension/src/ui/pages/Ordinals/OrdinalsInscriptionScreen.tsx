@@ -1,7 +1,6 @@
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Inscription } from '@/shared/types';
 import { Button, Column, Content, Header, Icon, Layout, Row, Text } from '@/ui/components';
 import InscriptionPreview from '@/ui/components/InscriptionPreview';
 import { Line } from '@/ui/components/Line';
@@ -9,6 +8,7 @@ import { Section } from '@/ui/components/Section';
 import { Tabs } from '@/ui/components/Tabs';
 import { fontSizes } from '@/ui/theme/font';
 import { LoadingOutlined } from '@ant-design/icons';
+import { Inscription } from '@unisat/wallet-shared';
 import { useI18n, useOrdinalsInscriptionScreenLogic, useTxExplorerUrl, useWallet } from '@unisat/wallet-state';
 
 const HIGH_BALANCE = 10000;

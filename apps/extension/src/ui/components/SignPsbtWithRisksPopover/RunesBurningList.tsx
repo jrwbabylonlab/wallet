@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js';
 
-import { DecodedPsbt } from '@/shared/types';
 import { colors } from '@/ui/theme/colors';
 import { bnUtils } from '@unisat/base-utils';
 import { useI18n } from '@unisat/wallet-state';
 
+import { DecodedPsbt } from '@unisat/wallet-shared';
 import { Column } from '../Column';
 import { Icon } from '../Icon';
 import { Popover } from '../Popover';

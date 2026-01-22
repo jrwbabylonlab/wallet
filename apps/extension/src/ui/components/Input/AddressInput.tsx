@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 import { getSatsName } from '@/shared/lib/satsname-utils';
-import { Inscription } from '@/shared/types';
 import { Icon, Row, Text } from '@/ui/components';
 import { getAddressType, isValidAddress } from '@/ui/utils/bitcoin-utils';
+import { Inscription } from '@unisat/wallet-shared';
 import { useChain, useI18n, useWallet } from '@unisat/wallet-state';
 
 import { CHAINS_MAP, SAFE_DOMAIN_CONFIRMATION } from '@unisat/wallet-shared';

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { VersionDetail } from '@/shared/types';
 import { Card, Column, Content, Footer, Header, Layout, Row, Text } from '@/ui/components';
 import AccountSelect from '@/ui/components/AccountSelect';
 import { FeeRateIcon } from '@/ui/components/FeeRateIcon';
@@ -13,6 +12,7 @@ import { UpgradePopover } from '@/ui/components/UpgradePopover';
 import { VersionNotice } from '@/ui/components/VersionNotice';
 import { getCurrentTab } from '@/ui/web/tabs';
 import { KeyringType } from '@unisat/keyring-service/types';
+import { VersionDetail } from '@unisat/wallet-shared';
 import '@unisat/wallet-state';
 import {
   AssetTabKey,

@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 
-import { CAT_VERSION } from '@/shared/types';
 import { Column, Icon, Row, Text } from '@/ui/components';
 import { colors } from '@/ui/theme/colors';
+import { CAT_VERSION } from '@unisat/wallet-shared';
 import { CATAssetTabKey, uiActions, useAppDispatch, useCATAssetTabKey } from '@unisat/wallet-state';
 
 import { CAT20List } from './CAT20List';

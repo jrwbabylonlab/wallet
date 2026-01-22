@@ -1,5 +1,5 @@
-import { ContractResult } from '@/shared/types';
 import { Row, Text } from '@/ui/components';
+import { ContractResult } from '@unisat/wallet-shared';
 
 export default function ContractSection(props: {
   contract: ContractResult;

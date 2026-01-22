@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
-import { CosmosSignDataType } from '@/shared/types';
 import KeystoneSignBase, { KeystoneSignBaseProps } from '@/ui/components/Keystone/SignBase';
 import { COSMOS_CHAINS_MAP } from '@unisat/babylon-service/types';
 import { KeystoneSignEnum } from '@unisat/keyring-service/types';
+import { CosmosSignDataType } from '@unisat/wallet-shared';
 import {
   useAccountAddress,
   useBabylonConfig,
