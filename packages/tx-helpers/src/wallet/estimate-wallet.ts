@@ -1,6 +1,5 @@
 import { SimpleKeyring } from '@unisat/keyring-service'
-import { AddressUserToSignInput, PublicKeyUserToSignInput, SignPsbtOptions } from '../types'
-import { AbstractWallet } from './abstract-wallet'
+import { ToSignInput } from '@unisat/keyring-service/types'
 import {
   bitcoin,
   eccManager,
@@ -11,8 +10,10 @@ import {
   toPsbtNetwork,
   toXOnly,
 } from '@unisat/wallet-bitcoin'
+import { SignMessageType } from '@unisat/wallet-shared'
 import { AddressType, NetworkType } from '@unisat/wallet-types'
-import { ToSignInput } from '@unisat/keyring-service/types'
+import { AddressUserToSignInput, PublicKeyUserToSignInput, SignPsbtOptions } from '../types'
+import { AbstractWallet } from './abstract-wallet'
 
 /**
  * EstimateWallet is a wallet that can be used to estimate the size of a transaction.
@@ -174,8 +175,8 @@ export class EstimateWallet implements AbstractWallet {
     return pubkeys[0]!
   }
 
-  async signMessage(text: string, type: 'bip322-simple' | 'ecdsa'): Promise<string> {
-    if (type === 'bip322-simple') {
+  async signMessage(text: string, type: SignMessageType): Promise<string> {
+    if (type === SignMessageType.BIP322_SIMPLE) {
       return await signMessageOfBIP322Simple({
         message: text,
         address: this.address,

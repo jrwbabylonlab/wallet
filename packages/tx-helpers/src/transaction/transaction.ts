@@ -1,7 +1,7 @@
+import { ToSignInput } from '@unisat/keyring-service/types'
+import { AddressType, NetworkType } from '@unisat/wallet-types'
 import { EstimateWallet } from '../wallet'
 import { utxoHelper } from './utxo'
-import { AddressType, NetworkType } from '@unisat/wallet-types'
-import { ToSignInput } from '@unisat/keyring-service/types'
 
 import {
   addressToScriptPk,
@@ -10,8 +10,8 @@ import {
   toXOnly,
   UTXO_DUST,
 } from '@unisat/wallet-bitcoin'
-import { UnspentOutput } from 'src/types'
 import { ErrorCodes, WalletError } from '@unisat/wallet-shared'
+import { UnspentOutput } from 'src/types'
 interface TxInput {
   data: {
     hash: string
@@ -32,7 +32,7 @@ interface TxOutput {
 /**
  * Convert UnspentOutput to PSBT TxInput
  */
-function utxoToInput(utxo: UnspentOutput, estimate?: boolean) {
+export function utxoToInput(utxo: UnspentOutput, estimate?: boolean) {
   if (utxo.addressType === AddressType.P2TR || utxo.addressType === AddressType.M44_P2TR) {
     const data = {
       hash: utxo.txid,

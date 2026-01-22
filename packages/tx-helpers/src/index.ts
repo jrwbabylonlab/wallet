@@ -1,5 +1,6 @@
 // Transaction helpers for Bitcoin operations
-export { sendBTC, sendAllBTC } from './send-btc'
+export { createDummyTx } from './dummy-tx'
+export { sendAllBTC, sendBTC } from './send-btc'
 export { sendInscription } from './send-inscription'
 export { sendInscriptions } from './send-inscriptions'
 export { sendRunes } from './send-runes'

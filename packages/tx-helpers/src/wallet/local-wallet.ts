@@ -1,8 +1,6 @@
-import { AddressType, NetworkType } from '@unisat/wallet-types'
 import { ToSignInput } from '@unisat/keyring-service/types'
+import { AddressType, NetworkType } from '@unisat/wallet-types'
 
-import { AddressUserToSignInput, PublicKeyUserToSignInput, SignPsbtOptions } from '../types'
-import { AbstractWallet } from './abstract-wallet'
 import { HdKeyring, SimpleKeyring } from '@unisat/keyring-service'
 import {
   bitcoin,
@@ -13,6 +11,9 @@ import {
   toPsbtNetwork,
   toXOnly,
 } from '@unisat/wallet-bitcoin'
+import { SignMessageType } from '@unisat/wallet-shared'
+import { AddressUserToSignInput, PublicKeyUserToSignInput, SignPsbtOptions } from '../types'
+import { AbstractWallet } from './abstract-wallet'
 import { signMessageOfBIP322Simple } from './estimate-wallet'
 
 export class LocalWallet implements AbstractWallet {
@@ -198,8 +199,8 @@ export class LocalWallet implements AbstractWallet {
     return pubkeys[0]!
   }
 
-  async signMessage(text: string, type: 'bip322-simple' | 'ecdsa'): Promise<string> {
-    if (type === 'bip322-simple') {
+  async signMessage(text: string, type: SignMessageType): Promise<string> {
+    if (type === SignMessageType.BIP322_SIMPLE) {
       return await signMessageOfBIP322Simple({
         message: text,
         address: this.address,

@@ -37,6 +37,7 @@ export interface UnspentOutput {
   runes?: {
     runeid: string
     amount: string
+    spacedRune?: string
   }[]
   rawtx?: string
 }
