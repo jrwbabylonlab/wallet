@@ -473,7 +473,7 @@ In this version, we focused on security upgrades and introduced several new feat
 
 **Minor changes**
 
-- Fix error of BRC-20 with special characters
+- Fix error of brc-20 with special characters
 
 ## v1.1.18
 
@@ -512,8 +512,8 @@ In this version, we focused on security upgrades and introduced several new feat
 
 **Major changes**
 
-- BRC-20 related
-  - Add BRC-20 transfer and inscribing functions
+- brc-20 related
+  - Add brc-20 transfer and inscribing functions
 - Account related
   - Add support for modifying account name
   - Display both BTC balance and inscription count of different address type.

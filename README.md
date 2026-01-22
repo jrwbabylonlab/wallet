@@ -1,6 +1,6 @@
 # UniSat Wallet
 
-UniSat Wallet is an open-source Bitcoin wallet built for Ordinals, BRC-20, and the Bitcoin native ecosystem.
+UniSat Wallet is an open-source Bitcoin wallet built for Ordinals, brc-20, and the Bitcoin native ecosystem.
 
 You can find the latest version of UniSat Wallet on our official website.  
 For user guides, FAQs, and general documentation, please visit our documentation site.
