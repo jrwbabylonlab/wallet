@@ -11,6 +11,8 @@ export interface RequestMethodSendBitcoinParams {
     memos?: string[]
   }
   type: TxType
+
+  toSignDatas?: ToSignData[]
 }
 
 export interface RequestMethodSendInscriptionParams {
@@ -20,6 +22,8 @@ export interface RequestMethodSendInscriptionParams {
     feeRate: number | undefined
   }
   type: TxType
+
+  toSignDatas?: ToSignData[]
 }
 
 export interface RequestMethodSignPsbtParams {
@@ -39,6 +43,7 @@ export interface RequestMethodSendRunesParams {
     feeRate: number | undefined
   }
   type: TxType
+  toSignDatas?: ToSignData[]
 }
 
 export interface RequestMethodSignMessageParams {

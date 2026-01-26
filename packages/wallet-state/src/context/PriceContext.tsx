@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 
 import { CoinPrice } from '@unisat/wallet-shared'
 import { useWallet } from './WalletContext'
@@ -11,7 +11,7 @@ interface PriceContextType {
   refreshCoinPrice: () => void
 }
 
-const PriceContext = createContext<PriceContextType>({} as PriceContextType)
+const PriceContext = React.createContext<PriceContextType>({} as PriceContextType)
 
 export function usePrice() {
   const context = useContext(PriceContext)

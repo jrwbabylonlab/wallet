@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext } from 'react'
+import React, { ReactNode, useContext } from 'react'
 
 import { BabylonConfigV2 } from '@unisat/babylon-service/types'
 
@@ -674,7 +674,7 @@ export interface WalletController {
   createDummyPsbt(params: { txType: DummyTxType }): Promise<ToSignData>
 }
 
-const WalletContext = createContext<{
+const WalletContext = React.createContext<{
   wallet: WalletController
 } | null>(null)
 

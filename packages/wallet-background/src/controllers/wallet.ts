@@ -1174,7 +1174,7 @@ export class WalletController extends BaseController {
   }: {
     to: string
     amount: number
-    feeRate: number
+    feeRate?: number
     btcUtxos?: UnspentOutput[]
     memo?: string
     memos?: string[]
@@ -1201,12 +1201,17 @@ export class WalletController extends BaseController {
       throw new Error('Invalid address.')
     }
 
+    if (!feeRate) {
+      const feeSummary = await this.getFeeSummary()
+      feeRate = feeSummary.list[1]?.feeRate! // use normal fee rate
+    }
+
     const { psbt, toSignInputs } = await txHelpers.sendBTC({
       btcUtxos: btcUtxos!,
       tos: [{ address: to, satoshis: amount }],
       networkType,
       changeAddress: account.address,
-      feeRate,
+      feeRate: feeRate!,
       memo: memo!,
       memos: memos!,
     })
@@ -1314,7 +1319,7 @@ export class WalletController extends BaseController {
   }: {
     to: string
     inscriptionId: string
-    feeRate: number
+    feeRate?: number
     outputValue?: number
     btcUtxos?: txHelpers.UnspentOutput[]
   }): Promise<ToSignData> => {
@@ -1342,6 +1347,11 @@ export class WalletController extends BaseController {
       outputValue = assetUtxo.satoshis
     }
 
+    if (!feeRate) {
+      const feeSummary = await this.getFeeSummary()
+      feeRate = feeSummary.list[1]?.feeRate! // use normal fee rate
+    }
+
     const { psbt, toSignInputs } = await txHelpers.sendInscription({
       assetUtxo,
       btcUtxos: btcUtxos!,
@@ -1357,7 +1367,7 @@ export class WalletController extends BaseController {
       psbtHex: psbt.toHex(),
       options: {
         toSignInputs: toSignInputs as any,
-        autoFinalized: false,
+        autoFinalized: true,
       },
       action: {
         name: t('send_inscription2'),
@@ -1442,7 +1452,7 @@ export class WalletController extends BaseController {
       psbtHex: psbt.toHex(),
       options: {
         toSignInputs: toSignInputs as any,
-        autoFinalized: false,
+        autoFinalized: true,
       },
       action: {
         name: t('send_inscription2'),
@@ -2207,9 +2217,9 @@ export class WalletController extends BaseController {
     to: string
     runeid: string
     runeAmount: string
-    feeRate: number
+    feeRate?: number
     btcUtxos?: UnspentOutput[]
-    assetUtxos: UnspentOutput[]
+    assetUtxos?: UnspentOutput[]
     outputValue?: number
   }): Promise<ToSignData> => {
     runeAmount = paramsUtils.formatAmount(runeAmount)
@@ -2226,11 +2236,16 @@ export class WalletController extends BaseController {
       assetUtxos = await this.getAssetUtxosRunes(runeid)
     }
 
+    if (!feeRate) {
+      const feeSummary = await this.getFeeSummary()
+      feeRate = feeSummary.list[1]?.feeRate! // use normal fee rate
+    }
+
     const _assetUtxos: UnspentOutput[] = []
 
     // find the utxo that has the exact amount to split
-    for (let i = 0; i < assetUtxos.length; i++) {
-      const v = assetUtxos[i]!
+    for (let i = 0; i < assetUtxos!.length; i++) {
+      const v = assetUtxos![i]!
       if (v.runes && v.runes.length > 1) {
         const balance = v.runes.find(r => r.runeid == runeid)
         if (balance && balance.amount == runeAmount) {
@@ -2241,8 +2256,8 @@ export class WalletController extends BaseController {
     }
 
     if (_assetUtxos.length == 0) {
-      for (let i = 0; i < assetUtxos.length; i++) {
-        const v = assetUtxos[i]!
+      for (let i = 0; i < assetUtxos!.length; i++) {
+        const v = assetUtxos![i]!
         if (v.runes) {
           const balance = v.runes.find(r => r.runeid == runeid)
           if (balance && balance.amount == runeAmount) {
@@ -2255,8 +2270,8 @@ export class WalletController extends BaseController {
 
     if (_assetUtxos.length == 0) {
       let total = BigInt(0)
-      for (let i = 0; i < assetUtxos.length; i++) {
-        const v = assetUtxos[i]!
+      for (let i = 0; i < assetUtxos!.length; i++) {
+        const v = assetUtxos![i]!
         v.runes?.forEach(r => {
           if (r.runeid == runeid) {
             total = total + BigInt(r.amount)
@@ -2292,7 +2307,7 @@ export class WalletController extends BaseController {
       psbtHex: psbt.toHex(),
       options: {
         toSignInputs: toSignInputs as any,
-        autoFinalized: false,
+        autoFinalized: true,
       },
       action: {
         name: t('send_runes'),

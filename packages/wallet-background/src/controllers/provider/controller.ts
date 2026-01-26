@@ -222,10 +222,18 @@ class ProviderController extends BaseController {
       if (!params.sendBitcoinParams.satoshis) {
         throw new Error('satoshis is required')
       }
+      const toSignData = await wallet.createSendBTCPsbt({
+        to: params.sendBitcoinParams.toAddress,
+        amount: params.sendBitcoinParams.satoshis,
+        feeRate: params.sendBitcoinParams.feeRate!,
+        memo: params.sendBitcoinParams.memo!,
+        memos: params.sendBitcoinParams.memos!,
+      })
+      params.toSignDatas = [toSignData]
     },
   ])
-  sendBitcoin = async ({ approvalRes: { psbtHex } }) => {
-    const psbt = bitcoin.Psbt.fromHex(psbtHex)
+  sendBitcoin = async ({ approvalRes }: { approvalRes: SignPsbtResult }) => {
+    const psbt = bitcoin.Psbt.fromHex(approvalRes[0]!.psbtHex!)
     const tx = psbt.extractTransaction(true)
     const rawtx = tx.toHex()
     return await wallet.pushTx(rawtx)
@@ -241,10 +249,16 @@ class ProviderController extends BaseController {
       if (!params.sendInscriptionParams.inscriptionId) {
         throw new Error('inscriptionId is required')
       }
+      const toSignData = await wallet.createSendInscriptionPsbt({
+        to: params.sendInscriptionParams.toAddress,
+        inscriptionId: params.sendInscriptionParams.inscriptionId,
+        feeRate: params.sendInscriptionParams.feeRate!,
+      })
+      params.toSignDatas = [toSignData]
     },
   ])
-  sendInscription = async ({ approvalRes: { psbtHex } }) => {
-    const psbt = bitcoin.Psbt.fromHex(psbtHex)
+  sendInscription = async ({ approvalRes }: { approvalRes: SignPsbtResult }) => {
+    const psbt = bitcoin.Psbt.fromHex(approvalRes[0]!.psbtHex!)
     const tx = psbt.extractTransaction(true)
     const rawtx = tx.toHex()
     return await wallet.pushTx(rawtx)
@@ -263,10 +277,17 @@ class ProviderController extends BaseController {
       if (!params.sendRunesParams.amount) {
         throw new Error('amount is required')
       }
+      const toSignData = await wallet.createSendRunesPsbt({
+        to: params.sendRunesParams.toAddress,
+        runeid: params.sendRunesParams.runeid,
+        runeAmount: params.sendRunesParams.amount,
+        feeRate: params.sendRunesParams.feeRate!,
+      })
+      params.toSignDatas = [toSignData]
     },
   ])
-  sendRunes = async ({ approvalRes: { psbtHex } }) => {
-    const psbt = bitcoin.Psbt.fromHex(psbtHex)
+  sendRunes = async ({ approvalRes }: { approvalRes: SignPsbtResult }) => {
+    const psbt = bitcoin.Psbt.fromHex(approvalRes[0]!.psbtHex!)
     const tx = psbt.extractTransaction(true)
     const rawtx = tx.toHex()
     return await wallet.pushTx(rawtx)
@@ -305,8 +326,9 @@ class ProviderController extends BaseController {
         throw new Error('psbtHex is required')
       }
 
+      const psbtHex = formatPsbtHex(params.psbtHex)
       const toSignData = await wallet.getToSignData({
-        psbtHex: params.psbtHex,
+        psbtHex,
         options: params.options,
       })
       params.toSignDatas = [toSignData]
@@ -376,6 +398,11 @@ class ProviderController extends BaseController {
   }) => {
     const hexData = formatPsbtHex(psbtHex)
     const psbt = bitcoin.Psbt.fromHex(hexData)
+    try {
+      psbt.finalizeAllInputs()
+    } catch (e) {
+      // ignore
+    }
     const tx = psbt.extractTransaction(true)
     const rawtx = tx.toHex()
     return await wallet.pushTx(rawtx)
