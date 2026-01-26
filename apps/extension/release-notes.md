@@ -1,5 +1,13 @@
 # UniSat Wallet Release Notes
 
+## v1.7.9
+
+### Bug Fixes
+
+- Fixed compatibility issue with base64 encoding in `unisat.signPsbt` method
+- Fixed issues with `unisat.sendBTC`, `unisat.sendInscription`, and `unisat.sendRunes` methods not functioning properly
+- Fixed compatibility issue with legacy addresses
+
 ## v1.7.8
 
 ### New Features
