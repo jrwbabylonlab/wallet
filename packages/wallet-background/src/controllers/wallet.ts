@@ -767,7 +767,7 @@ export class WalletController extends BaseController {
     return toSignInputs
   }
 
-  formatPsbt = async (psbt: bitcoin.Psbt, toSignInputs: ToSignInput[], autoFinalized: boolean) => {
+  formatPsbt = async (psbt: bitcoin.Psbt, toSignInputs: ToSignInput[], autoFinalized?: boolean) => {
     const account = await this.getCurrentAccount()
     if (!account) throw new Error('no current account')
 
@@ -781,7 +781,6 @@ export class WalletController extends BaseController {
     if (!toSignInputs) {
       // Compatibility with legacy code.
       toSignInputs = await this.formatOptionsToSignInputs(psbt)
-      if (autoFinalized !== false) autoFinalized = true
     }
 
     const isKeystone = keyring.type === KeyringType.KeystoneKeyring
@@ -822,6 +821,7 @@ export class WalletController extends BaseController {
       }
     }
 
+    let willBeSignedInputCount = 0
     psbt.data.inputs.forEach((input, index) => {
       const isSigned =
         input.finalScriptSig ||
@@ -830,6 +830,7 @@ export class WalletController extends BaseController {
         input.partialSig ||
         input.tapScriptSig
       if (isSigned) {
+        willBeSignedInputCount++
         return
       }
 
@@ -837,6 +838,7 @@ export class WalletController extends BaseController {
       if (!isToBeSigned) {
         return
       }
+      willBeSignedInputCount++
 
       let isP2TR = false
       try {
@@ -909,6 +911,13 @@ export class WalletController extends BaseController {
         }
       }
     })
+
+    if (autoFinalized !== false && willBeSignedInputCount === psbt.inputCount) {
+      autoFinalized = true
+    } else {
+      autoFinalized = false
+    }
+
 
     return {
       psbt,
@@ -2337,11 +2346,15 @@ export class WalletController extends BaseController {
     action?: PsbtActionInfo
   }): Promise<ToSignData> => {
     const toSignInputs = await this.formatOptionsToSignInputs(psbtHex, options)
-    const result = await this.formatPsbt(bitcoin.Psbt.fromHex(psbtHex), toSignInputs, false)
+    const result = await this.formatPsbt(
+      bitcoin.Psbt.fromHex(psbtHex),
+      toSignInputs,
+      options?.autoFinalized
+    )
     return {
       psbtHex: result.psbt.toHex(),
       toSignInputs: result.toSignInputs,
-      autoFinalized: options?.autoFinalized || false,
+      autoFinalized: result.autoFinalized,
       action: action
         ? action
         : {
