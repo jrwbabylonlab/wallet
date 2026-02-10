@@ -73,7 +73,7 @@ export default function BRC20BalanceCard(props: BRC20BalanceCardProps) {
               </Row>
             </Row>
 
-            {onSwapBalance ? (
+            {onSwapBalance && onSwapBalance !== '0' ? (
               <Row fullY justifyBetween justifyCenter>
                 <Column fullY justifyCenter>
                   <Text text={t('brc20_on_swap')} color="textDim" size="xs" />
@@ -85,7 +85,7 @@ export default function BRC20BalanceCard(props: BRC20BalanceCardProps) {
               </Row>
             ) : null}
 
-            {onProgBalance ? (
+            {onProgBalance && onProgBalance !== '0' ? (
               <Row fullY justifyBetween justifyCenter>
                 <Column fullY justifyCenter>
                   <Text text={t('brc20_on_prog')} color="textDim" size="xs" />

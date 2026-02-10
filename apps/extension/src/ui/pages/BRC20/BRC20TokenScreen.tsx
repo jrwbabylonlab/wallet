@@ -105,7 +105,7 @@ export default function BRC20TokenScreen() {
 
               <Line />
 
-              {onProgBalance ? (
+              {onProgBalance && onProgBalance !== '0' ? (
                 <Row fullY justifyBetween justifyCenter>
                   <Column fullY justifyCenter>
                     <Text text={t('brc20_on_prog')} color="textDim" size="xs" />
@@ -117,7 +117,7 @@ export default function BRC20TokenScreen() {
                 </Row>
               ) : null}
 
-              {onProgBalance ? (
+              {onProgBalance && onProgBalance !== '0' ? (
                 <Row gap="sm">
                   <Button
                     text={t('swap_wrap')}
@@ -155,7 +155,7 @@ export default function BRC20TokenScreen() {
                 </Row>
               ) : null}
 
-              {onSwapBalance ? (
+              {onSwapBalance && onSwapBalance !== '0' ? (
                 <Row fullY justifyBetween justifyCenter>
                   <Column fullY justifyCenter>
                     <Text text={t('brc20_on_swap')} color="textDim" size="xs" />
@@ -167,7 +167,7 @@ export default function BRC20TokenScreen() {
                 </Row>
               ) : null}
 
-              {onSwapBalance ? (
+              {onSwapBalance && onSwapBalance !== '0' ? (
                 <Row gap="sm">
                   <Button
                     text={t('swap_swap')}

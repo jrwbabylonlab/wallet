@@ -113,6 +113,14 @@ export function useBRC20TokenHistoryLogic(props: { ticker: string; displayName?:
           } else if (item.type === 'inscribe-deploy') {
             mainTitle = t('brc20_history_type_inscribe_deploy')
             icon = 'history_inscribe'
+          } else if (item.type === 'brc20prog-withdraw-transfer') {
+            mainTitle = t('brc20_history_type_unwrap')
+            subTitle = t('brc20_history_from') + ' ' + 'brc2.0'
+            icon = 'history_unwrap'
+          } else if (item.type === 'brc20prog-withdraw-inscribe') {
+            mainTitle = t('brc20_history_type_inscribe_transfer')
+            subTitle = t('brc20_history_type_unwrap') + ' brc2.0'
+            icon = 'history_inscribe'
           } else {
             return null
           }
@@ -246,9 +254,6 @@ export function useBRC20TokenScreenLogic() {
   }, [ticker, chainType])
 
   const enableTrade = useMemo(() => {
-    if (isBrc20Prog && chainType === ChainType.BITCOIN_MAINNET) {
-      return true
-    }
     if (
       chainType === ChainType.BITCOIN_MAINNET ||
       chainType === ChainType.FRACTAL_BITCOIN_MAINNET
@@ -257,9 +262,9 @@ export function useBRC20TokenScreenLogic() {
     } else {
       return false
     }
-  }, [chainType, isBrc20Prog])
+  }, [chainType])
 
-  const enableHistory = isBrc20Prog ? false : true
+  const enableHistory = true
 
   const tabItems = useMemo(() => {
     if (enableHistory) {
@@ -297,7 +302,13 @@ export function useBRC20TokenScreenLogic() {
       .toString()
   }, [onSwapBalance, onProgBalance, inWalletBalance])
 
-  const hasOutWalletBalance = (onSwapBalance || onProgBalance || '0')! !== '0'
+  let hasOutWalletBalance = false
+  if (onSwapBalance && onSwapBalance !== '0') {
+    hasOutWalletBalance = true
+  }
+  if (onProgBalance && onProgBalance !== '0') {
+    hasOutWalletBalance = true
+  }
 
   const onClickWrapBrc20Prog = () => {
     const url = `https://link.unisat.space/btc/wrap?tick=${encodeURIComponent(ticker)}`

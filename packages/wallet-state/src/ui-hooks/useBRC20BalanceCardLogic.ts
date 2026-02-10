@@ -70,7 +70,13 @@ export function useBRC20BalanceCardLogic(props: BRC20BalanceCardProps) {
       .toString()
   }, [inWalletBalance, onSwapBalance, onProgBalance])
 
-  const hasOutWalletBalance = (onSwapBalance || onProgBalance || '0')! !== '0'
+  let hasOutWalletBalance = false
+  if (onSwapBalance && onSwapBalance !== '0') {
+    hasOutWalletBalance = true
+  }
+  if (onProgBalance && onProgBalance !== '0') {
+    hasOutWalletBalance = true
+  }
 
   // icon
   const iconInfo = useBRC20IconInfo(ticker)
