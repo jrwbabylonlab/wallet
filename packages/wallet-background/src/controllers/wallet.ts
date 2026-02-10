@@ -937,10 +937,14 @@ export class WalletController extends BaseController {
     psbt = await keyringService.signTransaction(_keyring, psbt, toSignInputs as any)
 
     if (autoFinalized) {
-      toSignInputs.forEach(v => {
-        // psbt.validateSignaturesOfInput(v.index, validator);
-        psbt.finalizeInput(v.index)
-      })
+      try {
+        toSignInputs.forEach(v => {
+          // psbt.validateSignaturesOfInput(v.index, validator);
+          psbt.finalizeInput(v.index)
+        })
+      } catch (e) {
+        // ignore
+      }
     }
     return psbt
   }
@@ -2111,7 +2115,11 @@ export class WalletController extends BaseController {
     const { keyring } = await this.checkKeyringMethod('parseSignPsbtUr')
     const psbtHex = await keyring.parseSignPsbtUr!(type, cbor)
     const psbt = bitcoin.Psbt.fromHex(psbtHex)
-    isFinalize && psbt.finalizeAllInputs()
+    try {
+      isFinalize && psbt.finalizeAllInputs()
+    } catch (e) {
+      //skip
+    }
     return {
       psbtHex: psbt.toHex(),
       rawtx: isFinalize ? psbt.extractTransaction().toHex() : undefined,
