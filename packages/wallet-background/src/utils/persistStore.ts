@@ -13,9 +13,9 @@ export const initPersistStoreStorage = (s: {
   storage = s
 }
 
-const persistStorage = (name: string, obj: object) => {
-  debounce(storage.set(name, obj), 1000)
-}
+const persistStorage = debounce((name: string, obj: object) => {
+  storage.set(name, obj)
+}, 1000)
 
 interface CreatePersistStoreParams<T> {
   name: string
