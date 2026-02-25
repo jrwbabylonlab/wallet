@@ -1,15 +1,13 @@
+import React from 'react';
+
 import { Column, Content, Footer, Header, Icon, Layout, Row, Text } from '@/ui/components';
+import { Button, Card } from '@/ui/components';
 import { NavTabBar } from '@/ui/components/NavTabBar';
 import { SwitchNetworkBar } from '@/ui/components/SwitchNetworkBar';
 import { fontSizes } from '@/ui/theme/font';
-import { SettingsItemType, useChain, useI18n, useNavigation, useVersionInfo } from '@unisat/wallet-state';
-import React from 'react';
-
-import { DISCORD_URL, GITHUB_URL, TWITTER_URL } from '@unisat/wallet-shared';
-
-import { Button, Card } from '@/ui/components';
 import { spacing } from '@/ui/theme/spacing';
-
+import { DISCORD_URL, GITHUB_URL, TWITTER_URL } from '@unisat/wallet-shared';
+import { SettingsItemType, useChain, useI18n, useNavigation, useVersionInfo } from '@unisat/wallet-state';
 import { useSettingsTabScreenLogic } from '@unisat/wallet-state';
 
 export default function SettingsTabScreen() {
@@ -31,6 +29,7 @@ export default function SettingsTabScreen() {
 
   const renderSettingsItem = (item: SettingsItemType, groupTop: boolean, groupBottom: boolean) => (
     <Card
+      data-testid={item.key}
       onClick={() => item.onClick && item.onClick()}
       style={{
         height: '64px',
