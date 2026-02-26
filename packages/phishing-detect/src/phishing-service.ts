@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3'
-import { fetchPhishingList } from 'utils/fetch'
+import { fetchAllowlist, fetchPhishingList } from 'utils/fetch'
 import type {
   PhishingAdapter,
   PhishingCheckResult,
@@ -17,6 +17,7 @@ const CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours
 const VERSION = 2
 const RETRY_DELAY = 60 * 60 * 1000 // 1 hour retry delay
 const MAX_RETRIES = 3
+const ALLOWLIST_UPDATE_INTERVAL = 60 * 60 * 1000 // 1 hour
 
 const initConfig: PhishingConfig = {
   version: VERSION,
@@ -39,6 +40,7 @@ export class PhishingService extends EventEmitter<PhishingServiceEvents> {
   private blacklistSet: Set<string> = new Set()
   private whitelistSet: Set<string> = new Set()
   private updateTimer: NodeJS.Timeout | null = null
+  private allowlistTimer: NodeJS.Timeout | null = null
   private initialized = false
 
   constructor() {
@@ -63,6 +65,8 @@ export class PhishingService extends EventEmitter<PhishingServiceEvents> {
       this.forceUpdate()
     }
     this.scheduleUpdate()
+    this.fetchAndApplyAllowlist()
+    this.scheduleAllowlistUpdate()
     this.initialized = true
   }
 
@@ -73,6 +77,10 @@ export class PhishingService extends EventEmitter<PhishingServiceEvents> {
     if (this.updateTimer) {
       clearTimeout(this.updateTimer)
       this.updateTimer = null
+    }
+    if (this.allowlistTimer) {
+      clearTimeout(this.allowlistTimer)
+      this.allowlistTimer = null
     }
     this.removeAllListeners()
     this.initialized = false
@@ -249,6 +257,27 @@ export class PhishingService extends EventEmitter<PhishingServiceEvents> {
     this.updateTimer = setTimeout(() => {
       this.updatePhishingList()
     }, timeUntilNextUpdate)
+  }
+
+  private scheduleAllowlistUpdate(): void {
+    if (this.allowlistTimer) {
+      clearTimeout(this.allowlistTimer)
+    }
+    this.allowlistTimer = setTimeout(() => {
+      this.fetchAndApplyAllowlist()
+    }, ALLOWLIST_UPDATE_INTERVAL)
+  }
+
+  private async fetchAndApplyAllowlist(): Promise<void> {
+    const domains = await fetchAllowlist()
+    if (!domains || domains.length === 0) return
+
+    for (const domain of domains) {
+      const normalized = this.normalizeHostname(domain)
+      this.temporaryWhitelist.add(normalized)
+    }
+
+    this.scheduleAllowlistUpdate()
   }
 
   private async updatePhishingList(): Promise<void> {

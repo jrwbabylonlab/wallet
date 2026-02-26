@@ -20,6 +20,13 @@ const PHISHING_SOURCES = {
    */
   UNISAT:
     'https://raw.githubusercontent.com/unisat-wallet/phishing-detect/master/phishing_sites.json',
+
+  /**
+   * Unisat allowlist source - small file for appeal/reinstatement use cases.
+   * Fetched frequently (every hour) to quickly unblock domains after successful appeals.
+   */
+  UNISAT_ALLOWLIST:
+    'https://raw.githubusercontent.com/unisat-wallet/phishing-detect/master/allowlist.json',
 }
 
 /**
@@ -290,9 +297,37 @@ async function getFromLocalCache(): Promise<any> {
 }
 
 /**
- * Clear the phishing list cache // NO USE
- * @returns Promise resolving to success status
+ * Fetch the unisat allowlist - a small file containing domains cleared after appeal.
+ * Returns an array of hostnames, or null if the fetch fails.
  */
+export async function fetchAllowlist(): Promise<string[] | null> {
+  try {
+    const response = await fetchWithTimeout(PHISHING_SOURCES.UNISAT_ALLOWLIST, {
+      cache: 'no-cache',
+      headers: { Accept: 'application/json' },
+    })
+
+    if (!response.ok) {
+      log.warn('[Phishing] Allowlist fetch returned non-ok status:', response.status)
+      return null
+    }
+
+    const data = await response.json()
+
+    if (!Array.isArray(data)) {
+      log.warn('[Phishing] Allowlist response is not an array')
+      return null
+    }
+
+    return data.filter((item): item is string => typeof item === 'string')
+  } catch (error) {
+    log.error('[Phishing] Allowlist fetch failed:', error)
+    return null
+  }
+}
+
+/**
+ * Clear the phishing list cache // NO USE
 export async function clearPhishingCache(): Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
     try {
