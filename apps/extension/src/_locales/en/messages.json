@@ -2282,6 +2282,9 @@
   "transactions_at_once": {
     "message": "transactions at once"
   },
+  "trust_this_site_for_quick_multi_sign": {
+    "message": "Trust this site for quick multi-sign"
+  },
   "transfer": {
     "message": "Transfer"
   },

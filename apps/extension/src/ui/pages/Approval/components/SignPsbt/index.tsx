@@ -100,6 +100,7 @@ export default function SignPsbt(props: SignPsbtProps) {
     onClickSign,
     onQuickMultiSign,
     onTryMultiSign,
+    onTrustSite,
 
     onKeystoneSigningSuccess,
     onKeystoneSigningBack,
@@ -223,7 +224,10 @@ export default function SignPsbt(props: SignPsbtProps) {
         {disclaimerVisible && (
           <MultiSignDisclaimerModal
             txCount={toSignDatas.length}
-            onContinue={onQuickMultiSign}
+            onContinue={(trustSite) => {
+              if (trustSite) onTrustSite();
+              onQuickMultiSign();
+            }}
             onClose={onDisclaimerModalClose}
           />
         )}

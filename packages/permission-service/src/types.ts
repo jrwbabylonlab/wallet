@@ -21,6 +21,7 @@ export interface ConnectedSite {
   isTop: boolean
   order?: number
   isConnected: boolean
+  allowQuickMultiSign?: boolean
 }
 
 /**

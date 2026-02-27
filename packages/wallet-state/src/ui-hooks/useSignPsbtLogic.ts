@@ -138,6 +138,15 @@ export function useSignPsbtLogic(props: SignPsbtProps) {
     if (website) {
       const result = await wallet.checkWebsite(website)
       setWebsiteResult(result)
+
+      // Also check local user-granted trust
+      if (!result.allowQuickMultiSign && toSignDatas.length > 1) {
+        const sites = await wallet.getConnectedSites()
+        const site = sites.find(s => s.origin === website)
+        if (site?.allowQuickMultiSign) {
+          setAllowQuickMultiSign(true)
+        }
+      }
     }
   }, [])
 
@@ -288,6 +297,13 @@ export function useSignPsbtLogic(props: SignPsbtProps) {
 
   const onTryMultiSign = async () => {
     setDisclaimerVisible(true)
+  }
+
+  const onTrustSite = async () => {
+    const origin = session?.origin
+    if (!origin) return
+    await wallet.updateConnectSite(origin, { allowQuickMultiSign: true })
+    setAllowQuickMultiSign(true)
   }
 
   const onQuickMultiSign = async () => {
@@ -442,6 +458,7 @@ export function useSignPsbtLogic(props: SignPsbtProps) {
     onClickSign,
     onQuickMultiSign,
     onTryMultiSign,
+    onTrustSite,
 
     onKeystoneSigningSuccess,
     onKeystoneSigningBack,

@@ -42,6 +42,7 @@ export default function SignMessage(props: SignMessageProps) {
     onClickSign,
     onQuickMultiSign,
     onTryMultiSign,
+    onTrustSite,
 
     onKeystoneSigningSuccess,
     onKeystoneSigningBack,
@@ -159,7 +160,10 @@ export default function SignMessage(props: SignMessageProps) {
         {disclaimerVisible && (
           <MultiSignDisclaimerModal
             txCount={toSignMessages.length}
-            onContinue={onQuickMultiSign}
+            onContinue={(trustSite) => {
+              if (trustSite) onTrustSite();
+              onQuickMultiSign();
+            }}
             onClose={onDisclaimerModalClose}
           />
         )}

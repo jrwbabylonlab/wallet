@@ -288,6 +288,7 @@ export interface WalletController {
   getConnectedSites(): Promise<ConnectedSite[]>
   removeConnectedSite(origin: string): Promise<void>
   getCurrentConnectedSite(id: string): Promise<ConnectedSite>
+  updateConnectSite(origin: string, data: Partial<ConnectedSite>): Promise<void>
 
   getCurrentKeyring(): Promise<WalletKeyring>
   getKeyrings(): Promise<WalletKeyring[]>

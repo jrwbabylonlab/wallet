@@ -80,6 +80,15 @@ export function useSignMessageLogic(props: SignMessageProps) {
     if (website) {
       const result = await wallet.checkWebsite(website)
       setWebsiteResult(result)
+
+      // Also check local user-granted trust
+      if (!result.allowQuickMultiSign && toSignMessages.length > 1) {
+        const sites = await wallet.getConnectedSites()
+        const site = sites.find(s => s.origin === website)
+        if (site?.allowQuickMultiSign) {
+          setAllowQuickMultiSign(true)
+        }
+      }
     }
   }, [])
 
@@ -145,6 +154,13 @@ export function useSignMessageLogic(props: SignMessageProps) {
 
   const onTryMultiSign = async () => {
     setDisclaimerVisible(true)
+  }
+
+  const onTrustSite = async () => {
+    const origin = session?.origin
+    if (!origin) return
+    await wallet.updateConnectSite(origin, { allowQuickMultiSign: true })
+    setAllowQuickMultiSign(true)
   }
 
   const onQuickMultiSign = async () => {
@@ -273,6 +289,7 @@ export function useSignMessageLogic(props: SignMessageProps) {
     onClickSign,
     onQuickMultiSign,
     onTryMultiSign,
+    onTrustSite,
 
     onKeystoneSigningSuccess,
     onKeystoneSigningBack,
