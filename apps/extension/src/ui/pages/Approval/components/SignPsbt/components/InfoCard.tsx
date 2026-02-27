@@ -5,6 +5,7 @@ export interface InfoCardProps {
   title: string;
   value: string;
   subtitle?: string;
+  subContent?: React.ReactNode;
   icon?: string;
   iconColor?: string;
   status?: 'default' | 'success' | 'warning' | 'error';
@@ -83,6 +84,7 @@ export default function InfoCard({
   title,
   value,
   subtitle,
+  subContent,
   icon,
   iconColor,
   status = 'default',
@@ -122,6 +124,7 @@ export default function InfoCard({
       <Text text={value} preset="bold" color="white" size={sizeCfg.valueSize} />
 
       {subtitle && <Text text={subtitle} preset="regular" color="textDim" size="xs" style={{ marginTop: 2 }} />}
+      {subContent}
 
       {extra && <div style={{ position: 'absolute', top: 4, right: 4 }}>{extra}</div>}
     </div>

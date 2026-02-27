@@ -1,18 +1,21 @@
-import { Card, Column, Grid, Row } from '@/ui/components';
-import { spacing } from '@/ui/theme/spacing';
+import { useState } from 'react';
 
+import { Card, Column, Grid, Row } from '@/ui/components';
 import AlkanesNFTPreview from '@/ui/components/AlkanesNFTPreview';
 import { AlkaneBalance } from '@/ui/components/AlkanesPreviewCard';
 import AlkanesPreviewCard from '@/ui/components/AlkanesPreviewCard/AlkanesPreviewCard';
 import AssetTag from '@/ui/components/AssetTag';
 import BRC20Preview from '@/ui/components/BRC20Preview';
+import { BtcUsd } from '@/ui/components/BtcUsd';
 import InscriptionPreview from '@/ui/components/InscriptionPreview';
 import { Popover } from '@/ui/components/Popover';
 import RunesPreviewCard from '@/ui/components/RunesPreviewCard';
 import { colors } from '@/ui/theme/colors';
+import { spacing } from '@/ui/theme/spacing';
+import { amountToSatoshis } from '@/ui/utils';
 import { DecodedPsbt, RuneBalance, TickPriceItem } from '@unisat/wallet-shared';
 import { useBTCUnit, useI18n } from '@unisat/wallet-state';
-import { useState } from 'react';
+
 import AssetCard from './AssetCard';
 import InfoCard from './InfoCard';
 import { SignPsbtSection } from './Section';
@@ -221,7 +224,12 @@ export default function AssetOverviewSection({
               width: '100%'
             }}>
             {showNetworkFee && (
-              <InfoCard title={t('network_fee')} value={networkFee.toString()} subtitle={btcUnit} icon="fee" />
+              <InfoCard
+                title={t('network_fee')}
+                value={networkFee.toString() + ' ' + btcUnit}
+                subContent={<BtcUsd sats={amountToSatoshis(networkFee)} bracket />}
+                icon="fee"
+              />
             )}
 
             {showNetworkFee && (
