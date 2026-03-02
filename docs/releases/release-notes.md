@@ -1,5 +1,29 @@
 # UniSat Wallet Release Notes
 
+## v1.7.11
+
+### New Features
+
+- Added in-app announcement card on the home screen with carousel support and dismiss-all option
+- Added notification center: unread badge on settings icon, notification list with timestamps, and mark-all-as-read
+- Added Magic Eden Wallet as a supported restore wallet type
+- Added USD value display for network fees on the signing page
+
+### Improvements
+
+- Batch signing now requires explicit user confirmation via disclaimer modal before quick multi-sign
+- Batch signing is aborted when SIGHASH_NONE is detected or when any PSBT fails to parse
+- Wallet restore flow now respects per-wallet configuration for supported word counts (12/24), custom HD path, and passphrase
+- Brand names (Ordinals Wallet, Xverse, etc.) are no longer passed through the translation system, eliminating console warnings
+- `getAccountDerivationPath` now centrally handles HD path construction for both standard and account-index derivation modes (Magic Eden)
+
+### Bug Fixes
+
+- Fixed occasional toast error during batch PSBT signing
+- Fixed account list scroll-to-current triggering "max limitation" warning in rc-virtual-list
+- Fixed "Extension context invalidated" error thrown by content script after extension reload
+- Fixed `fill-rule`/`fillRule` DOM property warning caused by antd CloseOutlined icon
+
 ## v1.7.10
 
 ### Bug Fixes
