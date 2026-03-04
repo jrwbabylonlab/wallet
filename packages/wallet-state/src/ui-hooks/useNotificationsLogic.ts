@@ -1,6 +1,6 @@
-import { StoredNotification } from '@unisat/wallet-shared'
+import { AnnouncementLinkType, StoredNotification } from '@unisat/wallet-shared'
 import { useCallback, useEffect, useState } from 'react'
-import { useI18n, useTools, useWallet } from 'src/context'
+import { useI18n, useNavigation, useTools, useWallet } from 'src/context'
 
 export function useUnreadNotificationsCount() {
   const wallet = useWallet()
@@ -23,6 +23,7 @@ export function useUnreadNotificationsCount() {
 }
 
 export function useNotificationsLogic() {
+  const nav = useNavigation()
   const wallet = useWallet()
   const [notifications, setNotifications] = useState<StoredNotification[]>([])
   const [loading, setLoading] = useState(true)
@@ -74,6 +75,32 @@ export function useNotificationsLogic() {
 
   const unreadCount = notifications.filter(n => n.readAt === undefined).length
 
+  const handleCardClick = async (notification: StoredNotification) => {
+    if (notification.readAt === undefined) {
+      await handleReadNotification(notification.id)
+    }
+    if (notification.link) {
+      if (notification.linkType === AnnouncementLinkType.EXTERNAL_LINK) {
+        nav.navToUrl(notification.link, true)
+        return
+      }
+      nav.navToUrl(notification.link)
+    }
+  }
+  const formatTime = (timestamp: number) => {
+    const now = Date.now()
+    const diff = now - timestamp
+    const minutes = Math.floor(diff / 60000)
+    const hours = Math.floor(diff / 3600000)
+    const days = Math.floor(diff / 86400000)
+
+    if (minutes < 1) return t('just_now')
+    if (minutes < 60) return String(minutes) + ' ' + t('minutes_ago')
+    if (hours < 24) return String(hours) + ' ' + t('hours_ago')
+    if (days < 7) return String(days) + ' ' + t('days_ago')
+    return new Date(timestamp).toLocaleDateString()
+  }
+
   return {
     notifications,
     loading,
@@ -82,5 +109,7 @@ export function useNotificationsLogic() {
     handleReadAll,
     handleDeleteNotification,
     fetchNotifications,
+    handleCardClick,
+    formatTime,
   }
 }

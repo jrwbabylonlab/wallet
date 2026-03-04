@@ -253,7 +253,7 @@ export interface NavigationContextType {
   getRouteState<T extends RouteTypes>(): RouteParamList[T]
 
   navToUtxoTools: () => void
-  navToUrl: (url: string) => void
+  navToUrl: (url: string, externalBrowser?: boolean) => void
 
   navToExplorerTx: (txid: string) => void
   navToExplorerAddress: (address: string) => void
@@ -263,7 +263,6 @@ export interface NavigationContextType {
 
   openExtensionInTab?: () => void // in extension only
   navToRootHome: () => void // in extension only
-  navToNotifications: () => void // in extension only
 }
 
 const initContext = {
@@ -283,7 +282,7 @@ const initContext = {
 
   navToUtxoTools: () => {},
 
-  navToUrl: (url: string) => {},
+  navToUrl: (url: string, externalBrowser?: boolean) => {},
   navToExplorerTx: (txid: string) => {},
   navToExplorerAddress: (address: string) => {},
 
@@ -293,7 +292,6 @@ const initContext = {
   // in extension only
   openExtensionInTab: () => {},
   navToRootHome: () => {},
-  navToNotifications: () => {},
 }
 
 export const NavigationContext = React.createContext<NavigationContextType>(initContext)

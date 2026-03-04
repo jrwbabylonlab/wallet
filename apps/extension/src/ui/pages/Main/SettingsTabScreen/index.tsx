@@ -133,7 +133,7 @@ export default function SettingsTabScreen() {
                 size={20}
                 color="textDim"
                 onClick={() => {
-                  nav.navToNotifications();
+                  nav.navigate('NotificationListScreen');
                 }}
               />
               {unreadNotificationCount ? (

@@ -1,39 +1,12 @@
 import { Column, Content, Header, Layout, Row, Text } from '@/ui/components';
 import { shortDesc } from '@/ui/utils';
-import { StoredNotification } from '@unisat/wallet-shared';
 import { useI18n, useNavigation, useNotificationsLogic } from '@unisat/wallet-state';
-
-import { useNavigate } from '../MainRoute';
 
 export default function NotificationListScreen() {
   const { t } = useI18n();
   const nav = useNavigation();
-  const navigate = useNavigate();
-  const { notifications, loading, unreadCount, handleReadNotification, handleReadAll, handleDeleteNotification } =
+  const { notifications, loading, unreadCount, formatTime, handleCardClick, handleReadAll, handleDeleteNotification } =
     useNotificationsLogic();
-
-  const formatTime = (timestamp: number) => {
-    const now = Date.now();
-    const diff = now - timestamp;
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
-
-    if (minutes < 1) return t('just_now');
-    if (minutes < 60) return t('minutes_ago', String(minutes));
-    if (hours < 24) return t('hours_ago', String(hours));
-    if (days < 7) return t('days_ago', String(days));
-    return new Date(timestamp).toLocaleDateString();
-  };
-
-  const handleCardClick = async (notification: StoredNotification) => {
-    if (notification.readAt === undefined) {
-      await handleReadNotification(notification.id);
-    }
-    if (notification.link) {
-      window.open(notification.link);
-    }
-  };
 
   const layoutHeight = window.innerHeight - 64;
 
@@ -81,16 +54,6 @@ export default function NotificationListScreen() {
                         color="textDim"
                         style={{ fontSize: 12 }}
                       />
-
-                      {/* <Icon
-                      icon="delete"
-                      size={12}
-                      color="textDim"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteNotification(notification.id);
-                      }}
-                    /> */}
                     </Row>
                     <Row itemsCenter>
                       {notification.readAt === undefined && (

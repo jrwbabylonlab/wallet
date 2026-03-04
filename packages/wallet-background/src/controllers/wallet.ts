@@ -40,20 +40,20 @@ import {
   CosmosSignDataType,
   DummyTxType,
   getLockTimeInfo,
+  LocalPsbtSummary,
   PlatformEnv,
   PsbtActionDetailType,
   PsbtActionInfo,
   PsbtActionType,
   PublicKeyUserToSignInput,
   RateUsStatus,
+  RiskType,
   SESSION_EVENTS,
   SignedData,
   SignedMessage,
   SignMessageType,
   SignPsbtOptions,
   t,
-  LocalPsbtSummary,
-  RiskType,
   ToSignData,
   ToSignMessage,
   UTXO,
@@ -931,7 +931,6 @@ export class WalletController extends BaseController {
       autoFinalized = false
     }
 
-
     return {
       psbt,
       toSignInputs,
@@ -1627,7 +1626,9 @@ export class WalletController extends BaseController {
         ? displayedKeyring.keyring.hdPath
         : ''
     const accountIndexDerivation: boolean =
-      type === KeyringType.HdKeyring ? (displayedKeyring.keyring.accountIndexDerivation ?? false) : false
+      type === KeyringType.HdKeyring
+        ? (displayedKeyring.keyring.accountIndexDerivation ?? false)
+        : false
     const alianName = preferenceService.getKeyringAlianName(
       key,
       initName ? `${KEYRING_TYPES[type]!.alianName} #${index + 1}` : ''
@@ -2023,7 +2024,15 @@ export class WalletController extends BaseController {
       }
     }
 
-    return { totalFee, totalInput, completedCount, hasSighashNone, parseErrorCount, hasAssets, items }
+    return {
+      totalFee,
+      totalInput,
+      completedCount,
+      hasSighashNone,
+      parseErrorCount,
+      hasAssets,
+      items,
+    }
   }
 
   decodeContracts = (contracts: any[], account) => {

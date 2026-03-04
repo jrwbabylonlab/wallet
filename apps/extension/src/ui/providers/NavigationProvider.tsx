@@ -1,7 +1,9 @@
-import { NavigationContext, NavigationContextType, RouteTypes, useChain } from '@unisat/wallet-state';
-import { ChainType } from '@unisat/wallet-types';
 import { useCallback, useMemo, useRef } from 'react';
 import { useLocation, useNavigate as useNavigateOrigin } from 'react-router-dom';
+
+import { NavigationContext, NavigationContextType, RouteTypes, useChain } from '@unisat/wallet-state';
+import { ChainType } from '@unisat/wallet-types';
+
 import { routes } from '../pages/MainRoute';
 import { openExtensionInTab } from '../web/tabs';
 
@@ -154,9 +156,6 @@ export function NavigationProvider({ children }: { children: React.ReactNode }) 
       },
       navToRootHome: () => {
         navigate('/');
-      },
-      navToNotifications: () => {
-        navigate('NotificationListScreen');
       },
       openExtensionInTab: async () => {
         await openExtensionInTab('index.html', {});
