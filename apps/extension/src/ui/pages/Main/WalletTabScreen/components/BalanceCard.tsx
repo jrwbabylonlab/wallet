@@ -11,7 +11,7 @@ export function BalanceCard() {
     totalBalance,
     availableAmount,
     unavailableAmount,
-
+    unavailableTipText,
     balanceValue,
     chain,
     t,
@@ -102,7 +102,7 @@ export function BalanceCard() {
             <Row itemsCenter>
               <Text color={'black_65'} size="xs" text={t('unavailable')} style={{ fontWeight: 500 }}></Text>
               <Tooltip
-                title={`If your balance shows as unavailable, it may be because your UTXOs are locked due to containing inscriptions, runes, brc-20 assets, or being unconfirmed. In most cases, you can use our UTXO Management Tool to unlock these UTXOs and make them spendable again. `}
+                title={unavailableTipText}
                 overlayStyle={{
                   fontSize: fontSizes.xs
                 }}>
