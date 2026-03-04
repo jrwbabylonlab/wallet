@@ -14,5 +14,8 @@ export * from './transaction'
 // Types and constants
 export * from './types'
 
+// PSBT utilities
+export { PsbtDecoder, type FeeRateThresholds } from './decode-psbt'
+
 // Runes utilities
 export * from './runes'

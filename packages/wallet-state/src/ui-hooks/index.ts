@@ -90,6 +90,7 @@ export { useCAT721NFTScreenLogic } from './useCAT721NFTScreenLogic'
 
 export { useSignMessageLogic, type SignMessageProps } from './useSignMessageLogic'
 export { useSignPsbtLogic, type SignPsbtProps } from './useSignPsbtLogic'
+export type { PsbtLocalInfo } from '@unisat/wallet-shared'
 
 export { useTxConfirmScreenLogic } from './useTxConfirmScreenLogic'
 export { useTxFailScreenLogic } from './useTxFailScreenLogic'

@@ -2515,5 +2515,29 @@
   },
   "view_detail": {
     "message": "查看詳情"
+  },
+  "failed_to_parse_psbt": {
+    "message": "一或多筆交易無法解析，簽名已中止。"
+  },
+  "sighash_none_detected": {
+    "message": "偵測到 SIGHASH_NONE，為安全起見已中止簽名。"
+  },
+  "transaction_count": {
+    "message": "交易筆數"
+  },
+  "total_fee": {
+    "message": "總手續費"
+  },
+  "incomplete_psbt_warning": {
+    "message": "筆交易缺少 UTXO 資料，金額無法驗證"
+  },
+  "parse_error": {
+    "message": "解析錯誤"
+  },
+  "quick_sign_assets_detected": {
+    "message": "無法快速簽名：輸入中包含銘文或代幣"
+  },
+  "total_spent": {
+    "message": "總支出"
   }
 }

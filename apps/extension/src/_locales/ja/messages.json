@@ -2512,5 +2512,29 @@
   },
   "view_detail": {
     "message": "詳細を見る"
+  },
+  "failed_to_parse_psbt": {
+    "message": "1件以上のトランザクションを解析できませんでした。署名を中止しました。"
+  },
+  "sighash_none_detected": {
+    "message": "SIGHASH_NONEが検出されました。セキュリティのため署名を中止しました。"
+  },
+  "transaction_count": {
+    "message": "トランザクション"
+  },
+  "total_fee": {
+    "message": "合計手数料"
+  },
+  "incomplete_psbt_warning": {
+    "message": "件のトランザクションにUTXOデータがなく、金額を確認できません"
+  },
+  "parse_error": {
+    "message": "解析エラー"
+  },
+  "quick_sign_assets_detected": {
+    "message": "クイック署名不可：入力にインスクリプションまたはトークンが含まれています"
+  },
+  "total_spent": {
+    "message": "総支出"
   }
 }

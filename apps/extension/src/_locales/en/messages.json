@@ -2533,5 +2533,29 @@
   },
   "sign_psbt_input_error": {
     "message": "The psbt or params is invalid and cannot be signed."
+  },
+  "failed_to_parse_psbt": {
+    "message": "One or more transactions could not be parsed. Signing aborted."
+  },
+  "sighash_none_detected": {
+    "message": "SIGHASH_NONE detected. Signing aborted for security."
+  },
+  "quick_sign_assets_detected": {
+    "message": "Cannot quick sign: inputs contain inscriptions or tokens"
+  },
+  "transaction_count": {
+    "message": "Transactions"
+  },
+  "total_fee": {
+    "message": "Total fee"
+  },
+  "total_spent": {
+    "message": "Total spent"
+  },
+  "incomplete_psbt_warning": {
+    "message": "transaction(s) missing UTXO data, amounts unverifiable"
+  },
+  "parse_error": {
+    "message": "Parse error"
   }
 }

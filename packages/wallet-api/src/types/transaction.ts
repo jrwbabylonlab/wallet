@@ -7,6 +7,22 @@ import type { RuneBalance } from './runes'
 import type { AlkanesBalance } from './alkanes'
 
 // ========================================
+// UTXO asset lookup
+// ========================================
+
+export interface UtxoAssets {
+  txid: string
+  vout: number
+  inscriptions: {
+    inscriptionId: string
+    inscriptionNumber: number
+    offset: number
+  }[]
+  runes: RuneBalance[]
+  alkanes: AlkanesBalance[]
+}
+
+// ========================================
 // Transaction and PSBT related
 // ========================================
 

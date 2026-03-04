@@ -52,6 +52,8 @@ import {
   SignMessageType,
   SignPsbtOptions,
   t,
+  LocalPsbtSummary,
+  RiskType,
   ToSignData,
   ToSignMessage,
   UTXO,
@@ -1927,6 +1929,101 @@ export class WalletController extends BaseController {
 
   decodePsbt = (psbtHex: string, website: string) => {
     return walletApiService.bitcoin.decodePsbt(psbtHex, website)
+  }
+
+  analyzeLocalPsbts = async (toSignDatas: ToSignData[]): Promise<LocalPsbtSummary> => {
+    const networkType = this.getNetworkType()
+    let totalFee = 0
+    let totalInput = 0
+    let completedCount = 0
+    let hasSighashNone = false
+    let parseErrorCount = 0
+    const items: LocalPsbtSummary['items'] = []
+
+    // Fetch network fee rates once for all PSBTs
+    let feeRateThresholds: txHelpers.FeeRateThresholds | undefined
+    try {
+      const feeSummary = await walletApiService.bitcoin.getFeeSummary()
+      const rates = feeSummary.list.map(f => f.feeRate)
+      if (rates.length >= 3) {
+        const mid = rates[1]!
+        const [low, , high] = rates as [number, number, number]
+        feeRateThresholds = {
+          tooLow: Math.max(1, low - 2),
+          tooHigh: high + 50,
+          recommended: mid,
+        }
+      }
+    } catch (e) {
+      log.warn('Failed to fetch fee summary for local PSBT analysis:', e)
+    }
+
+    // Phase 1: local decode — no network, collect outpoints + per-PSBT info
+    const outpointSet = new Set<string>()
+    for (const toSignData of toSignDatas) {
+      try {
+        const decoder = new txHelpers.PsbtDecoder({
+          toSignData,
+          networkType,
+          ...(feeRateThresholds !== undefined ? { feeRateThresholds } : {}),
+        })
+        const result = await decoder.decode()
+
+        const itemHasSighashNone = result.risks.some(r => r.type === RiskType.SIGHASH_NONE)
+        if (itemHasSighashNone) hasSighashNone = true
+
+        const itemTotalInput = result.inputInfos.reduce((sum, v) => sum + v.value, 0)
+        if (result.isCompleted) {
+          totalFee += result.fee
+          totalInput += itemTotalInput
+          completedCount++
+        }
+        for (const input of result.inputInfos) {
+          outpointSet.add(`${input.txid}:${input.vout}`)
+        }
+
+        items.push({
+          inputCount: result.inputInfos.length,
+          outputCount: result.outputInfos.length,
+          feeRate: result.feeRate,
+          fee: result.fee,
+          totalInput: itemTotalInput,
+          isCompleted: result.isCompleted,
+          hasSighashNone: itemHasSighashNone,
+          parseError: false,
+        })
+      } catch (e) {
+        log.error('Local PSBT analysis failed:', e)
+        parseErrorCount++
+        items.push({
+          inputCount: 0,
+          outputCount: 0,
+          feeRate: '-',
+          fee: 0,
+          totalInput: 0,
+          isCompleted: false,
+          hasSighashNone: false,
+          parseError: true,
+        })
+      }
+    }
+
+    // Phase 2: one batch API call to check asset coverage on inputs
+    let hasAssets = false
+    if (outpointSet.size > 0) {
+      try {
+        const utxoAssets = await walletApiService.bitcoin.getUtxoAssetsByOutpoints(
+          Array.from(outpointSet)
+        )
+        hasAssets = utxoAssets.some(
+          u => u.inscriptions.length > 0 || u.runes.length > 0 || u.alkanes.length > 0
+        )
+      } catch (e) {
+        log.warn('Failed to fetch UTXO assets for PSBT analysis:', e)
+      }
+    }
+
+    return { totalFee, totalInput, completedCount, hasSighashNone, parseErrorCount, hasAssets, items }
   }
 
   decodeContracts = (contracts: any[], account) => {

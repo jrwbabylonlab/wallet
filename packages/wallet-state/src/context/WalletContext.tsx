@@ -32,6 +32,7 @@ import {
   CosmosSignDataType,
   DecodedPsbt,
   DummyTxType,
+  LocalPsbtSummary,
   FeeSummary,
   InscribeOrder,
   Inscription,
@@ -328,6 +329,7 @@ export interface WalletController {
   getInscribeResult(orderId: string): Promise<TokenTransfer>
 
   decodePsbt(psbtHex: string, website: string): Promise<DecodedPsbt>
+  analyzeLocalPsbts(toSignDatas: ToSignData[]): Promise<LocalPsbtSummary>
 
   decodeContracts(contracts: any[], account: any): Promise<any[]>
 

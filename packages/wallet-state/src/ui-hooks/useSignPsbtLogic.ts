@@ -4,6 +4,7 @@ import {
   ApprovalSession,
   ContractResult,
   DecodedPsbt,
+  LocalPsbtSummary,
   SignedData,
   SignState,
   TickPriceItem,
@@ -70,10 +71,6 @@ export interface SignPsbtProps {
   fromApproval?: boolean
 }
 
-export interface LocalParsedPsbtData {
-  txid: string
-}
-
 export function useSignPsbtLogic(props: SignPsbtProps) {
   const {
     params: {
@@ -100,6 +97,7 @@ export function useSignPsbtLogic(props: SignPsbtProps) {
   const { t } = useI18n()
 
   const [disclaimerVisible, setDisclaimerVisible] = useState(false)
+  const [localPsbtSummary, setLocalPsbtSummary] = useState<LocalPsbtSummary | null>(null)
 
   const [signingTxIndex, setSigningTxIndex] = useState(toSignDatas.length > 1 ? -1 : 0)
   const [signedStates, setSignedStates] = useState<SignState[]>(
@@ -261,20 +259,20 @@ export function useSignPsbtLogic(props: SignPsbtProps) {
         buttonPreset = 'danger'
       }
 
-      let title = shortAddress(data.psbtHex, 10)
+      const psbtInfo = localPsbtSummary?.items?.[index]
 
       const onClick = () => {
         setSigningTxIndex(index)
       }
       return {
         index,
-        title,
         buttonText,
         buttonPreset,
+        psbtInfo,
         onClick,
       }
     })
-  }, [toSignDatas, signedStates, t])
+  }, [toSignDatas, signedStates, localPsbtSummary, t])
 
   // action
   const onClickBack = () => {
@@ -295,6 +293,16 @@ export function useSignPsbtLogic(props: SignPsbtProps) {
     onNextStep()
   }
 
+  useAsyncEffect(async () => {
+    if (toSignDatas.length <= 1) return
+    try {
+      const summary = await wallet.analyzeLocalPsbts(toSignDatas)
+      setLocalPsbtSummary(summary)
+    } catch (e) {
+      logger.error('analyzeLocalPsbts failed:', e)
+    }
+  }, [])
+
   const onTryMultiSign = async () => {
     setDisclaimerVisible(true)
   }
@@ -307,6 +315,23 @@ export function useSignPsbtLogic(props: SignPsbtProps) {
   }
 
   const onQuickMultiSign = async () => {
+    // Run analysis if not yet done (user clicked before async summary completed)
+    const summary = localPsbtSummary ?? (await wallet.analyzeLocalPsbts(toSignDatas))
+    if (!localPsbtSummary) setLocalPsbtSummary(summary)
+
+    if (summary.parseErrorCount > 0) {
+      tools.toastError(t('failed_to_parse_psbt'))
+      return
+    }
+    if (summary.hasSighashNone) {
+      tools.toastError(t('sighash_none_detected'))
+      return
+    }
+    if (summary.hasAssets) {
+      tools.toastError(t('quick_sign_assets_detected'))
+      return
+    }
+
     for (let i = 0; i < toSignDatas.length; i++) {
       try {
         const toSignData = toSignDatas[i]
@@ -438,6 +463,7 @@ export function useSignPsbtLogic(props: SignPsbtProps) {
     showLoading,
 
     disclaimerVisible,
+    localPsbtSummary,
 
     // data
     toSignDatas,

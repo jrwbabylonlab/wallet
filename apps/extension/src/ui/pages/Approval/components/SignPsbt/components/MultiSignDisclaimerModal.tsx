@@ -1,4 +1,3 @@
-import { Checkbox } from 'antd';
 import { useState } from 'react';
 
 import { Button, Column, Row, Text } from '@/ui/components';
@@ -43,11 +42,6 @@ export default function MultiSignDisclaimerModal({
             style={{ fontSize: fontSizes.sm, lineHeight: 2 }}
             text={t('by_proceeding_you_confirm_that_youve_read_and_accepted_this_disclaimer')}></Text>
         </Column>
-
-        <Row itemsCenter mb="md" onClick={() => setTrustSite((v) => !v)} style={{ cursor: 'pointer' }}>
-          <Checkbox checked={trustSite} onChange={(e) => setTrustSite(e.target.checked)} />
-          <Text mt="sm" style={{ fontSize: fontSizes.sm }} text={t('trust_this_site_for_quick_multi_sign')} />
-        </Row>
 
         <Button
           text={`${t('sign_all')} ${txCount} ${t('transactions_at_once')}`}

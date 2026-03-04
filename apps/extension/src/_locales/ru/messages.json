@@ -2512,5 +2512,29 @@
   },
   "view_detail": {
     "message": "Посмотреть детали"
+  },
+  "failed_to_parse_psbt": {
+    "message": "Одну или несколько транзакций не удалось разобрать. Подпись отменена."
+  },
+  "sighash_none_detected": {
+    "message": "Обнаружен SIGHASH_NONE. Подпись отменена в целях безопасности."
+  },
+  "transaction_count": {
+    "message": "Транзакции"
+  },
+  "total_fee": {
+    "message": "Общая комиссия"
+  },
+  "incomplete_psbt_warning": {
+    "message": "транзакция(и) без данных UTXO, суммы не проверяемы"
+  },
+  "parse_error": {
+    "message": "Ошибка разбора"
+  },
+  "quick_sign_assets_detected": {
+    "message": "Быстрая подпись невозможна: входы содержат надписи или токены"
+  },
+  "total_spent": {
+    "message": "Итого потрачено"
   }
 }

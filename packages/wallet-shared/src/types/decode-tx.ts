@@ -78,3 +78,31 @@ export interface ContractResult {
   script: string
   isOwned: boolean
 }
+
+export interface PsbtLocalInfo {
+  inputCount: number
+  outputCount: number
+  /** Formatted fee rate string, e.g. "12.5" or "≈12.5", "-" if unknown */
+  feeRate: string
+  /** Miner fee in satoshis; 0 if PSBT is not completed */
+  fee: number
+  /** Total value of all inputs in satoshis; 0 if PSBT is not completed */
+  totalInput: number
+  isCompleted: boolean
+  hasSighashNone: boolean
+  parseError: boolean
+}
+
+export interface LocalPsbtSummary {
+  /** Sum of miner fees across all completed PSBTs */
+  totalFee: number
+  /** Sum of all input values across all completed PSBTs (total BTC being committed) */
+  totalInput: number
+  completedCount: number
+  hasSighashNone: boolean
+  parseErrorCount: number
+  /** True if any input UTXO carries inscriptions, runes, or alkanes */
+  hasAssets: boolean
+  /** Per-PSBT decoded info for display in the multi-sign list */
+  items: PsbtLocalInfo[]
+}

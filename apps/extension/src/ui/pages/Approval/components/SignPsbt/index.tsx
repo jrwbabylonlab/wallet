@@ -2,6 +2,7 @@ import VirtualList, { ListRef } from 'rc-virtual-list';
 import { forwardRef, useEffect, useRef } from 'react';
 
 import { Button, Card, Column, Content, Footer, Header, Layout, Row, Text } from '@/ui/components';
+import { BtcUsd } from '@/ui/components/BtcUsd';
 import ColdWalletSignPsbt from '@/ui/components/ColdWallet/ColdWalletSignPsbt';
 import { ContractPopover } from '@/ui/components/ContractPopover';
 import LoadingPage from '@/ui/components/LoadingPage';
@@ -10,8 +11,9 @@ import { SignPsbtWithRisksPopover } from '@/ui/components/SignPsbtWithRisksPopov
 import WebsiteBar from '@/ui/components/WebsiteBar';
 import KeystoneSignScreen from '@/ui/pages/Wallet/KeystoneSignScreen';
 import { fontSizes } from '@/ui/theme/font';
+import { numUtils } from '@unisat/base-utils';
 import { KeystoneSignEnum } from '@unisat/keyring-service/types';
-import { SignPsbtProps, useI18n, useSignPsbtLogic } from '@unisat/wallet-state';
+import { PsbtLocalInfo, SignPsbtProps, useBTCUnit, useI18n, useSignPsbtLogic } from '@unisat/wallet-state';
 
 import ActionOverviewSection from './components/ActionOverviewSection';
 import AssetOverviewSection from './components/AssetOverviewSection';
@@ -21,41 +23,55 @@ import { OutputsList } from './components/OutputsList';
 import PsbtDataSection from './components/PsbtDataSection';
 import { SignPsbtSection } from './components/Section';
 
-const ITEM_HEIGHT = 64 + 8; // item height + margin top
+const ITEM_HEIGHT = 72 + 8; // item height + margin top
 
 function TransactionItem(
   {
     index,
-    title,
     buttonText,
     buttonPreset,
+    psbtInfo,
     onClick
   }: {
     index: number;
-    title: string;
     buttonText: string;
     buttonPreset: string;
+    psbtInfo?: PsbtLocalInfo;
     onClick: () => void;
   },
   ref: any
 ) {
   const { t } = useI18n();
+  const btcUnit = useBTCUnit();
   return (
     <Card style={{ height: ITEM_HEIGHT - 8, marginTop: 8 }}>
-      <Row justifyBetween fullX>
-        <Column>
+      <Row justifyBetween fullX itemsCenter>
+        <Column gap="zero" style={{ flex: 1, minWidth: 0 }}>
           <Text text={`${t('transaction')} ${index + 1}`} preset="bold" />
-          <Text text={title} wrap />
+          {psbtInfo && !psbtInfo.parseError ? (
+            <Row gap="sm" itemsCenter style={{ flexWrap: 'wrap' }}>
+              <Text text={`${t('inputs')}: ${psbtInfo.inputCount}`} size="xs" color="textDim" />
+              <Text text={`${t('outputs')}: ${psbtInfo.outputCount}`} size="xs" color="textDim" />
+              <Row>
+                {psbtInfo.feeRate !== '-' && <Text text={`${psbtInfo.feeRate} sat/vB`} size="xs" color="textDim" />}
+                {psbtInfo.isCompleted && psbtInfo.fee > 0 && (
+                  <Text text={`${numUtils.satoshisToAmount(psbtInfo.fee)} ${btcUnit}`} size="xs" color="textDim" />
+                )}
+                <BtcUsd sats={psbtInfo.fee} size="xs" />
+              </Row>
+              {psbtInfo.hasSighashNone && <Text text="SIGHASH_NONE" size="xs" color="red" />}
+            </Row>
+          ) : psbtInfo?.parseError ? (
+            <Text text={t('parse_error')} size="xs" color="red" />
+          ) : null}
         </Column>
-        <Column>
-          <Button
-            preset={buttonPreset as any}
-            textStyle={{ fontSize: fontSizes.sm }}
-            text={buttonText}
-            onClick={onClick}
-            style={{ width: 80, height: 25 }}
-          />
-        </Column>
+        <Button
+          preset={buttonPreset as any}
+          textStyle={{ fontSize: fontSizes.sm }}
+          text={buttonText}
+          onClick={onClick}
+          style={{ width: 80, height: 25 }}
+        />
       </Row>
     </Card>
   );
@@ -84,6 +100,7 @@ export default function SignPsbt(props: SignPsbtProps) {
     showMultiSignView,
 
     disclaimerVisible,
+    localPsbtSummary,
 
     // state
     isAllSigned,
@@ -173,13 +190,42 @@ export default function SignPsbt(props: SignPsbtProps) {
   }
 
   if (showMultiSignView) {
-    const layoutHeight = Math.ceil((window.innerHeight - 64) / ITEM_HEIGHT) * ITEM_HEIGHT;
+    const SUMMARY_HEIGHT = localPsbtSummary ? 72 : 0;
+    const layoutHeight = Math.ceil((window.innerHeight - 64 - SUMMARY_HEIGHT) / ITEM_HEIGHT) * ITEM_HEIGHT;
+
+    const hasSighashNoneRisk = localPsbtSummary?.hasSighashNone;
+    const hasParseError = localPsbtSummary && localPsbtSummary.parseErrorCount > 0;
 
     return (
       <Layout>
         {header}
         <Content>
           <Text text={t('sign_multiple_transactions')} preset="title-bold" textCenter mt="lg" />
+
+          {localPsbtSummary && (
+            <Card
+              style={{
+                marginTop: 8,
+                padding: '8px 12px',
+                borderColor: hasSighashNoneRisk || hasParseError ? '#ff4d4f' : '#2C2C2C',
+                borderWidth: 1,
+                background: '#1A1A1A'
+              }}>
+              <Row justifyBetween fullX>
+                <Column>
+                  <Text text={`${t('transaction_count')}: ${toSignDatas.length}`} size="xs" color="textDim" />
+                </Column>
+                {(hasSighashNoneRisk || hasParseError) && (
+                  <Text
+                    text={hasSighashNoneRisk ? `🚫 SIGHASH_NONE` : `🚫 ${t('parse_error')}`}
+                    size="xs"
+                    color="red"
+                  />
+                )}
+              </Row>
+            </Card>
+          )}
+
           <VirtualList
             data={multiSignList}
             data-id="list"
@@ -189,9 +235,9 @@ export default function SignPsbt(props: SignPsbtProps) {
             ref={refList}>
             {(item, index) => (
               <ForwardTransactionItem
-                title={item.title}
                 buttonText={item.buttonText}
                 buttonPreset={item.buttonPreset}
+                psbtInfo={item.psbtInfo}
                 onClick={item.onClick}
                 index={index}
               />
@@ -207,11 +253,7 @@ export default function SignPsbt(props: SignPsbtProps) {
               preset="primary"
               text={isAllSigned ? t('submit') : `(${signedCount}/${toSignDatas.length}) ${t('signed')}`}
               onClick={() => {
-                if (allowQuickMultiSign) {
-                  onQuickMultiSign();
-                } else {
-                  onTryMultiSign();
-                }
+                onTryMultiSign();
               }}
               icon={allowQuickMultiSign ? undefined : 'alert'}
               full

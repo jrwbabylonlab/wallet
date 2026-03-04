@@ -38,9 +38,15 @@ interface OutputInfo {
   isUnspendableLegacy?: boolean
 }
 
+export interface FeeRateThresholds {
+  tooLow: number
+  tooHigh: number
+  recommended: number
+}
+
 export class PsbtDecoder {
   _psbt: bitcoin.Psbt
-  _opreturnData: Buffer = Buffer.from([])
+  _opreturnDataLength: number = 0
   _opreturnDataString: string = ''
   _inputInfos: InputInfo[] = []
   _outputInfos: OutputInfo[] = []
@@ -58,9 +64,22 @@ export class PsbtDecoder {
 
   risks: Risk[] = []
 
-  constructor({ toSignData, networkType }: { toSignData: ToSignData; networkType: NetworkType }) {
+  constructor({
+    toSignData,
+    networkType,
+    feeRateThresholds,
+  }: {
+    toSignData: ToSignData
+    networkType: NetworkType
+    feeRateThresholds?: FeeRateThresholds
+  }) {
     this._psbt = bitcoin.Psbt.fromHex(toSignData.psbtHex)
     this._network = toPsbtNetwork(networkType)
+    if (feeRateThresholds) {
+      this._tooLowFeeRate = feeRateThresholds.tooLow
+      this._tooHighFeeRate = feeRateThresholds.tooHigh
+      this._recommendedFeeRate = feeRateThresholds.recommended
+    }
   }
 
   async decode() {
@@ -74,9 +93,7 @@ export class PsbtDecoder {
 
     this.initCompleted()
 
-    // const [low, normal, high] = feeRates
-    // this._tooLowFeeRate = Math.min(low.feeRate, normal.feeRate - 6)
-    // this._tooHighFeeRate = Math.max(high.feeRate, normal.feeRate + 6)
+    this.initFee()
 
     this.checkFeeRate()
 
@@ -114,8 +131,8 @@ export class PsbtDecoder {
           }
           address = opreutrnDataString
 
-          if (!this._opreturnData) {
-            this._opreturnData = v.script
+          if (this._opreturnDataLength === 0) {
+            this._opreturnDataLength = v.script.length
             this._opreturnDataString = opreutrnDataString
           }
 
@@ -291,13 +308,9 @@ export class PsbtDecoder {
   }
 
   checkSigHashTypes() {
-    let foundSighashNone = false
-    this._psbt.data.inputs.forEach(v => {
-      if (v.sighashType === bitcoin.Transaction.SIGHASH_NONE) {
-        foundSighashNone = true
-        return
-      }
-    })
+    const foundSighashNone = this._psbt.data.inputs.some(
+      v => v.sighashType === bitcoin.Transaction.SIGHASH_NONE
+    )
     if (foundSighashNone) {
       this.risks.push({
         type: RiskType.SIGHASH_NONE,

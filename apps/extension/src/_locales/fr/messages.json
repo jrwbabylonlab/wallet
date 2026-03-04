@@ -2512,5 +2512,29 @@
   },
   "view_detail": {
     "message": "Voir le détail"
+  },
+  "failed_to_parse_psbt": {
+    "message": "Une ou plusieurs transactions n'ont pas pu être analysées. Signature annulée."
+  },
+  "sighash_none_detected": {
+    "message": "SIGHASH_NONE détecté. Signature annulée pour des raisons de sécurité."
+  },
+  "transaction_count": {
+    "message": "Transactions"
+  },
+  "total_fee": {
+    "message": "Frais totaux"
+  },
+  "incomplete_psbt_warning": {
+    "message": "transaction(s) sans données UTXO, montants invérifiables"
+  },
+  "parse_error": {
+    "message": "Erreur d'analyse"
+  },
+  "quick_sign_assets_detected": {
+    "message": "Signature rapide impossible : les entrées contiennent des inscriptions ou des jetons"
+  },
+  "total_spent": {
+    "message": "Total dépensé"
   }
 }

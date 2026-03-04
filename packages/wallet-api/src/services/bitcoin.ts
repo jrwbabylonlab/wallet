@@ -9,6 +9,7 @@ import type {
   BitcoinBalanceV2,
   UTXO,
   DecodedPsbt,
+  UtxoAssets,
   WalletConfig,
   FeeSummary,
 } from '../types'
@@ -166,5 +167,13 @@ export class BitcoinService {
    */
   async decodeContracts(contracts: any[], account: any): Promise<any> {
     return this.httpClient.post('/v5/contracts/decode', { contracts, account })
+  }
+
+  /**
+   * Batch fetch inscription/rune/alkane assets for a list of outpoints (txid:vout).
+   * Much smaller payload than sending full PSBT hex.
+   */
+  async getUtxoAssetsByOutpoints(outpoints: string[]): Promise<UtxoAssets[]> {
+    return this.httpClient.post('/v5/utxo/assets-by-outpoints', { outpoints })
   }
 }
