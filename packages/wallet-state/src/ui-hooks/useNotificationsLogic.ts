@@ -14,8 +14,8 @@ export function useUnreadNotificationsCount() {
 
     updateUnreadCount()
 
-    // Poll every 30 seconds for new notifications
-    const interval = setInterval(updateUnreadCount, 30000)
+    // Poll every 3 seconds for unread count updates.
+    const interval = setInterval(updateUnreadCount, 3000)
     return () => clearInterval(interval)
   }, [wallet])
 

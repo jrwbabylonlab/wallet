@@ -79,6 +79,8 @@ export default function WalletTabScreen() {
 
   useEffect(() => {
     const run = async () => {
+      wallet.getNotifications();
+
       const show = await wallet.getShowSafeNotice();
       setShowSafeNotice(show);
 
