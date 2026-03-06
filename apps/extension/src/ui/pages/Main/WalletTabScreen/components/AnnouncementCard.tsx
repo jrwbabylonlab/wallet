@@ -1,4 +1,4 @@
-import { Card, Column, Icon, Row, Text } from '@/ui/components';
+import { Card, Column, Icon, Image, Row, Text } from '@/ui/components';
 import { shortDesc } from '@/ui/utils';
 import { AnnouncementLinkType } from '@unisat/wallet-shared';
 import { useAnnouncementCardLogic, useI18n } from '@unisat/wallet-state';
@@ -57,6 +57,12 @@ export function AnnouncementCard() {
           <Icon icon="close" size={10} color="black" />
         </div>
 
+        <Image
+          src={'./images/artifacts/announcement_art.png'}
+          size={64}
+          style={{ position: 'absolute', top: 15, right: 15 }}
+        />
+
         {/* Header badge */}
         <Row
           style={{
@@ -82,7 +88,7 @@ export function AnnouncementCard() {
           {isLinkable(current) && (
             <Card
               preset="style2"
-              style={{ height: 24, backgroundColor: 'rgba(255, 255, 255, 0.1)', marginTop: 'auto' }}
+              style={{ height: 32, backgroundColor: 'rgba(255, 255, 255, 0.1)', marginTop: 'auto' }}
               fullX
               onClick={() => {
                 handleViewDetails();

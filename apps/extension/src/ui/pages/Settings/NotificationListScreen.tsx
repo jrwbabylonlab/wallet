@@ -23,9 +23,9 @@ export default function NotificationListScreen() {
           </Row>
         }
       />
-      <Content style={{ padding: 0 }}>
+      <Content>
         <div style={{ height: layoutHeight, overflowY: 'auto' }}>
-          <Column px="md" gap="md">
+          <Column gap="md">
             {loading ? (
               <Column justifyCenter itemsCenter py="xxl">
                 <Text text={t('loading')} color="textDim" />
@@ -35,17 +35,17 @@ export default function NotificationListScreen() {
                 <Text text={t('no_notifications')} color="textDim" />
               </Column>
             ) : (
-              <Column gap="sm">
+              <Column gap="zero">
                 {notifications.map((notification) => (
                   <Column
                     key={notification.id}
                     style={{
                       background: '#1A1A1A',
-                      border: '1px solid #2C2C2C',
                       borderRadius: 12,
                       padding: 12,
                       cursor: 'pointer'
                     }}
+                    mb="lg"
                     onClick={() => handleCardClick(notification)}>
                     <Row justifyBetween>
                       <Text
@@ -73,7 +73,7 @@ export default function NotificationListScreen() {
                     </Row>
 
                     <Text
-                      text={shortDesc(notification.content, 160)}
+                      text={shortDesc(notification.content, 120)}
                       wrap
                       size="xs"
                       color="textDim"

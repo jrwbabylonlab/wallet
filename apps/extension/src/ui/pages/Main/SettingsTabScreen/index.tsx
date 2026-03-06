@@ -144,8 +144,10 @@ export default function SettingsTabScreen() {
                     right: 2,
                     width: 7,
                     height: 7,
-                    backgroundColor: 'red',
-                    borderRadius: '50%'
+                    backgroundColor: '#F55454',
+                    borderRadius: '50%',
+                    borderWidth: 1,
+                    borderColor: 'white'
                   }}></BaseView>
               ) : null}
             </BaseView>

@@ -48,7 +48,7 @@ export function RefreshButton({
         wait(5);
         onClick(e);
       }}>
-      <ReloadOutlined className={isRotating ? styles.rotate : ''} style={{ fontSize: 12, color: 'rgba(0,0,0,0.5)' }} />
+      <ReloadOutlined className={isRotating ? styles.rotate : ''} style={{ fontSize: 14, color: 'rgba(0,0,0,0.5)' }} />
       {!hideText && (
         <Text text={disabled ? `${leftTime} ${t('secs')}` : t('refresh')} color="black_muted" size="sm" textCenter />
       )}

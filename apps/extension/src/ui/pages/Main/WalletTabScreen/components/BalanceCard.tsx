@@ -43,7 +43,7 @@ export function BalanceCard() {
       }}>
       <Column style={{ padding: 8 }} gap={'md'}>
         <Image src={backgroundImage} size={64} style={{ position: 'absolute', top: 0, right: 0 }} />
-        <Row>
+        <Row itemsCenter>
           <Text size="sm" text={t('total_balance')} style={{ color: 'rgba(0,0,0,0.55)' }} />
           <Row
             onClick={() => {
@@ -94,7 +94,8 @@ export function BalanceCard() {
               width: 1,
               borderWidth: 1,
               height: '100%',
-              borderColor: 'rgba(109, 65, 0, 0.15)'
+              borderColor: 'rgba(109, 65, 0, 0.15)',
+              marginRight: 5
             }}
           />
 
@@ -106,21 +107,34 @@ export function BalanceCard() {
                 overlayStyle={{
                   fontSize: fontSizes.xs
                 }}>
-                <Icon icon="balance-question" size={20} />
+                <Icon
+                  icon="balance-question"
+                  size={20}
+                  style={{
+                    marginBottom: 10
+                  }}
+                />
               </Tooltip>
             </Row>
             <BtcDisplay preset="sub" balance={unavailableAmount} hideBalance={isBalanceHidden} />
           </Column>
 
           {showUtxoToolButton ? (
-            <Icon
-              style={{ flex: 1, cursor: 'pointer' }}
-              icon={'unlock'}
-              size={28}
-              onClick={() => {
-                handleUnlock();
-              }}
-            />
+            <Tooltip
+              title={`${t('unlock')} ->`}
+              overlayStyle={{
+                fontSize: fontSizes.sm,
+                marginTop: 5
+              }}>
+              <Icon
+                style={{ flex: 1, cursor: 'pointer' }}
+                icon={'unlock'}
+                size={28}
+                onClick={() => {
+                  handleUnlock();
+                }}
+              />
+            </Tooltip>
           ) : null}
         </Row>
       )}
