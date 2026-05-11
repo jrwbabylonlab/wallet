@@ -299,7 +299,7 @@ describe('bitcoin-hd-keyring', () => {
       expect(result).toMatch(/^[0-9a-f]{64}$/)
     })
 
-    it('produces same result as direct derivation with the connected leaf private key', async () => {
+    it('produces same result as direct sibling-path derivation', async () => {
       const keyring = new HdKeyring({
         mnemonic: sampleMnemonic,
         activeIndexes: [0],
@@ -308,14 +308,14 @@ describe('bitcoin-hd-keyring', () => {
       const contextHex = 'deadbeef'
       const keyringResult = await keyring.deriveContextHash(accounts[0], APP_NAME, contextHex)
 
-      // IKM = the BIP-32 leaf private key at the connected receive address.
-      // For default hdPath "m/44'/0'/0'/0" + index 0, leaf is "m/44'/0'/0'/0/0".
+      // IKM = BIP-32 privkey at sibling path m/73681862'/coin'/account'/change/index.
+      // For default hdPath "m/44'/0'/0'/0" + index 0, sibling is "m/73681862'/0'/0'/0/0".
       const bip39 = await import('bip39')
       const hdkey = await import('hdkey')
       const seedBuf = bip39.mnemonicToSeedSync(sampleMnemonic)
       const master = hdkey.fromMasterSeed(seedBuf)
-      const leaf = master.derive("m/44'/0'/0'/0/0")
-      const privKey = new Uint8Array(leaf.privateKey)
+      const sibling = master.derive("m/73681862'/0'/0'/0/0")
+      const privKey = new Uint8Array(sibling.privateKey)
       const directResult = deriveContextHash(privKey, APP_NAME, parseHexContext(contextHex))
       expect(keyringResult).toBe(directResult)
     })
@@ -335,7 +335,11 @@ describe('bitcoin-hd-keyring', () => {
       expect(result0).toMatch(/^[0-9a-f]{64}$/)
     })
 
-    it('changing hdPath rotates the secret', async () => {
+    it('BIP-43 purpose change does NOT rotate the secret (per-position semantics)', async () => {
+      // Spec v2.0: IKM path replaces the user purpose with 73681862'. So BIP-44
+      // and BIP-86 leaves at the same (coin, account, change, index) share IKM
+      // and produce the same output. Apps that need per-script-type rotation
+      // must encode that in `context` themselves.
       const keyringBip44 = new HdKeyring({
         mnemonic: sampleMnemonic,
         hdPath: "m/44'/0'/0'/0",
@@ -348,9 +352,12 @@ describe('bitcoin-hd-keyring', () => {
       })
       const accounts44 = await keyringBip44.getAccounts()
       const accounts86 = await keyringBip86.getAccounts()
+      // Different connected pubkeys (BIP-44 legacy vs BIP-86 taproot)...
+      expect(accounts44[0]).not.toBe(accounts86[0])
+      // ...but same deriveContextHash output.
       const result44 = await keyringBip44.deriveContextHash(accounts44[0], APP_NAME, 'deadbeef')
       const result86 = await keyringBip86.deriveContextHash(accounts86[0], APP_NAME, 'deadbeef')
-      expect(result44).not.toBe(result86)
+      expect(result44).toBe(result86)
     })
 
     it('different account index rotates the secret', async () => {
@@ -475,12 +482,50 @@ describe('bitcoin-hd-keyring', () => {
       )
     })
 
-    // KAT: IKM = the BIP-32 leaf private key at "m/44'/0'/0'/0/0" (default
-    // hdPath + child index 0) from the standard BIP-39 test mnemonic
+    it('rejects removed publicKey (presence check)', async () => {
+      const keyring = new HdKeyring({
+        mnemonic: sampleMnemonic,
+        activeIndexes: [0, 1],
+      })
+      const accounts = await keyring.getAccounts()
+      const removedPubkey = accounts[0]!
+      keyring.removeAccount(removedPubkey)
+      await expect(keyring.deriveContextHash(removedPubkey, APP_NAME, 'deadbeef')).rejects.toThrow(
+        'Unable to find matching publicKey'
+      )
+    })
+
+    it('accountIndexDerivation: BIP-44 vs BIP-86 same accountIndex produce same output', async () => {
+      // Under accountIndexDerivation mode, leafIndex varies the account segment.
+      // The IKM path is m/73681862'/coin'/leafIndex'/change/0 either way, so
+      // BIP-44 and BIP-86 leaves at the same account index share IKM and output.
+      const keyringBip44 = new HdKeyring({
+        mnemonic: sampleMnemonic,
+        hdPath: "m/44'/0'/0'/0",
+        accountIndexDerivation: true,
+        activeIndexes: [3],
+      })
+      const keyringBip86 = new HdKeyring({
+        mnemonic: sampleMnemonic,
+        hdPath: "m/86'/0'/0'/0",
+        accountIndexDerivation: true,
+        activeIndexes: [3],
+      })
+      const accounts44 = await keyringBip44.getAccounts()
+      const accounts86 = await keyringBip86.getAccounts()
+      expect(accounts44[0]).not.toBe(accounts86[0])
+      const result44 = await keyringBip44.deriveContextHash(accounts44[0], APP_NAME, 'deadbeef')
+      const result86 = await keyringBip86.deriveContextHash(accounts86[0], APP_NAME, 'deadbeef')
+      expect(result44).toBe(result86)
+    })
+
+    // Spec v2.0 §4.2 KAT: IKM = BIP-32 privkey at sibling path
+    // "m/73681862'/0'/0'/0/0" from the standard BIP-39 test mnemonic
     // "abandon abandon abandon abandon abandon abandon abandon abandon abandon
     // abandon abandon about" (no passphrase). Cross-wallet interop fixture:
-    // any conforming wallet connected to this leaf produces this exact value.
-    it('spec vector: known mnemonic, BIP-44 leaf 0/0, appName=test-app, context=deadbeef', async () => {
+    // any conforming wallet connected to a (coin=0, account=0, change=0,
+    // index=0) leaf under this mnemonic produces this exact value.
+    it('spec v2.0 §4.2: known mnemonic, sibling at m/73681862\'/0\'/0\'/0/0, appName=test-app, context=deadbeef', async () => {
       const knownMnemonic =
         'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about'
       const keyring = new HdKeyring({
@@ -489,7 +534,7 @@ describe('bitcoin-hd-keyring', () => {
       })
       const accounts = await keyring.getAccounts()
       const result = await keyring.deriveContextHash(accounts[0], 'test-app', 'deadbeef')
-      expect(result).toBe('650b3fa2cf958ecd258544af2b812c3e8a3f4f75ea5d030cb4dd175da551e356')
+      expect(result).toBe('7cf4ad428083057fb3c344795b8e124be7f3ef521929b1531909e682c1072f29')
     })
   })
 

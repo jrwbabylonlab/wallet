@@ -1,28 +1,33 @@
 /**
  * Deterministic context-based key derivation using HKDF (RFC 5869).
  *
- * ## Derivation scheme (per-public-key)
- *
  * ```
- * ikm    = the connected leaf's 32-byte private key
  * salt   = "derive-context-hash"
  * info   = SHA-256(UTF8(appName)) || contextBytes
  * output = HKDF-SHA-256(ikm, salt, info, 32)
  * ```
  *
- * For HD wallets, the IKM is the connected leaf private key (the BIP-32
- * leaf at the receive-address path). Different leaves (different leaf
- * pubkeys) produce different secrets. For imported wallets, the IKM is
- * the raw imported private key.
+ * IKM source depends on wallet type (resolved by the keyring layer):
+ * - Mnemonic-imported HD: BIP-32 privkey at sibling path
+ *   m/73681862'/coin_type'/account'/change/address_index
+ * - Imported (raw) and xpriv-imported HD (no master access):
+ *   leftmost 32 bytes of HMAC-SHA-512("derive-context-hash-from-k", privkey)
  *
  * @module derive-context-hash
  */
 
 import { hkdf } from '@noble/hashes/hkdf'
+import { hmac } from '@noble/hashes/hmac'
 import { sha256 } from '@noble/hashes/sha256'
+import { sha512 } from '@noble/hashes/sha512'
 
 const SALT = 'derive-context-hash'
 const OUTPUT_LENGTH = 32
+
+/** BIP-43 purpose for the deriveContextHash sibling path. */
+export const DERIVE_CONTEXT_HASH_PURPOSE = 73681862
+
+const HMAC_WRAP_LABEL = 'derive-context-hash-from-k'
 
 /**
  * Convert a Uint8Array to a hex string.
@@ -62,6 +67,30 @@ export function deriveContextHash(ikm: Uint8Array, appName: string, context: Uin
   info.fill(0)
 
   return result
+}
+
+/**
+ * Wrap a 32-byte private key into IKM via HMAC-SHA-512 (BIP-85 pattern).
+ * Argument order matches BIP-85: label is the HMAC key, privkey is the message.
+ * Returns the leftmost 32 bytes of the HMAC output.
+ *
+ * Used for imported (raw) wallets and HD wallets without master-seed access
+ * (e.g. xpriv-imported sub-path wallets). Outputs are NOT interoperable with
+ * mnemonic-imported wallets of the same recovery phrase.
+ */
+export function wrapPrivateKeyAsIkm(privkey: Uint8Array): Uint8Array {
+  if (privkey.length !== 32) {
+    throw new Error(`privkey must be 32 bytes, got ${privkey.length}`)
+  }
+  const label = new TextEncoder().encode(HMAC_WRAP_LABEL)
+  const mac = hmac(sha512, label, privkey)
+  try {
+    const ikm = new Uint8Array(32)
+    ikm.set(mac.subarray(0, 32))
+    return ikm
+  } finally {
+    mac.fill(0)
+  }
 }
 
 /**

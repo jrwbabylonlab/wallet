@@ -10,7 +10,7 @@ import { isTaprootInput } from 'bitcoinjs-lib/src/psbt/bip371.js'
 import { decode } from 'bs58check'
 import { EventEmitter } from 'events'
 import { ToSignInput } from '../types'
-import { deriveContextHash, parseHexContext } from './derive-context-hash'
+import { deriveContextHash, parseHexContext, wrapPrivateKeyAsIkm } from './derive-context-hash'
 
 const type = 'Simple Key Pair'
 
@@ -134,11 +134,17 @@ export class SimpleKeyring extends EventEmitter {
       throw new Error('deriveContextHash requires access to the private key')
     }
     const contextBytes = parseHexContext(context)
-    const privKeyBytes = new Uint8Array(wallet.privateKey)
+    const privKeyCopy = new Uint8Array(wallet.privateKey)
+    let ikm: Uint8Array
     try {
-      return deriveContextHash(privKeyBytes, appName, contextBytes)
+      ikm = wrapPrivateKeyAsIkm(privKeyCopy)
     } finally {
-      privKeyBytes.fill(0)
+      privKeyCopy.fill(0)
+    }
+    try {
+      return deriveContextHash(ikm, appName, contextBytes)
+    } finally {
+      ikm.fill(0)
     }
   }
 

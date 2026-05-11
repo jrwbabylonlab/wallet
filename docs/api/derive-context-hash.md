@@ -28,25 +28,24 @@ Derive a deterministic 32-byte value from the connected leaf's key material, an 
 **Derivation Scheme**
 
 ```
-ikm    = the connected leaf's 32-byte private key
 salt   = "derive-context-hash"
 info   = SHA-256(UTF8(appName)) || decode_hex(context)
 output = HKDF-SHA-256(ikm, salt, info, 32)
 ```
 
-Where `ikm` is the connected receive address's private key:
-- For mnemonic / xpriv wallets: the BIP-32 leaf private key at the receive-address path (e.g. `m/44'/0'/0'/0/0` for the first receive address of a BIP-44 account 0).
-- For imported raw private key wallets: the raw 32-byte private key.
+The IKM source depends on wallet type:
+- **Mnemonic-imported HD wallets:** the BIP-32 private key scalar at the sibling path `m/73681862'/coin_type'/account'/change/address_index`, where `coin_type / account / change / address_index` are taken from the connected user leaf (e.g. user leaf `m/44'/0'/0'/0/0` → IKM at `m/73681862'/0'/0'/0/0`).
+- **xpriv-imported HD wallets and imported raw private keys:** the leftmost 32 bytes of `HMAC-SHA-512("derive-context-hash-from-k", connected_privkey)` (BIP-85 pattern). Outputs from these wallets are NOT interoperable with mnemonic-imported wallets of the same recovery phrase.
 
 The `info` field is constructed by concatenating SHA-256(UTF8(appName)) (32 bytes, fixed-length) with the raw context bytes decoded from hex. Hashing appName ensures a fixed 32-byte prefix, eliminating length-confusion collisions.
 
-**Output semantics — per-public-key**
+**Output semantics — per-position**
 
-Output is bound to the connected leaf's public key:
-- Different connected receive addresses (different leaf pubkeys) → **different** output, even within the same wallet.
-- Same connected leaf called twice → **same** output.
-- Different mnemonic, BIP-39 passphrase, address type, or account index → different output (different leaf path → different leaf pubkey).
-- Switching mainnet ↔ testnet does **not** rotate the output: UniSat uses BIP-44 `coin_type = 0` paths for both, so the leaf private key is unchanged across networks. Applications that need network-bound outputs MUST encode the network in the `context`.
+Output is bound to the connected user leaf's `(coin_type, account, change, address_index)` quad:
+- Different mnemonic, BIP-39 passphrase, account index, change index, or leaf index → different output.
+- Same connected leaf called twice → same output.
+- BIP-43 purpose / address-type changes (e.g. BIP-44 ↔ BIP-86) at the same `(coin, account, change, index)` do **not** rotate the IKM. Apps that need per-script-type rotation must encode the script type or pubkey in `context`.
+- Switching mainnet ↔ testnet does **not** rotate the output: UniSat uses BIP-44 `coin_type = 0` paths for both, so the IKM is unchanged across networks. Applications that need network-bound outputs MUST encode the network in `context`.
 
 ---
 

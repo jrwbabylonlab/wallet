@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { deriveContextHash, parseHexContext, validateAppName } from '../src/keyrings/derive-context-hash'
+import {
+  deriveContextHash,
+  parseHexContext,
+  validateAppName,
+  wrapPrivateKeyAsIkm,
+} from '../src/keyrings/derive-context-hash'
 
 describe('deriveContextHash', () => {
   const APP_NAME = 'test-app'
@@ -165,5 +170,44 @@ describe('parseHexContext', () => {
   it('accepts context of exactly 2048 hex chars', () => {
     const maxHex = 'ab'.repeat(1024) // 2048 hex chars
     expect(() => parseHexContext(maxHex)).not.toThrow()
+  })
+})
+
+describe('wrapPrivateKeyAsIkm', () => {
+  // KAT from babylon-toolkit spec §4.3:
+  // privkey = e284129cc0922579a535bbf4d1a3b25773090d28c909bc0fed73b5e0222cc372
+  // wrapped IKM (leftmost 32 bytes) = 350c0933c706cc78ddef8ba38abcafd14f1cc5f94dee7004e994a97455a30863
+  const privkeyHex = 'e284129cc0922579a535bbf4d1a3b25773090d28c909bc0fed73b5e0222cc372'
+  const expectedIkmHex = '350c0933c706cc78ddef8ba38abcafd14f1cc5f94dee7004e994a97455a30863'
+
+  it('produces the spec §4.3 wrapped IKM for the canonical fixture', () => {
+    const privkey = new Uint8Array(Buffer.from(privkeyHex, 'hex'))
+    const ikm = wrapPrivateKeyAsIkm(privkey)
+    expect(Buffer.from(ikm).toString('hex')).toBe(expectedIkmHex)
+  })
+
+  it('rejects non-32-byte input', () => {
+    expect(() => wrapPrivateKeyAsIkm(new Uint8Array(31))).toThrow()
+    expect(() => wrapPrivateKeyAsIkm(new Uint8Array(33))).toThrow()
+    expect(() => wrapPrivateKeyAsIkm(new Uint8Array(0))).toThrow()
+  })
+
+  it('returns 32 bytes', () => {
+    const privkey = new Uint8Array(32).fill(0xab)
+    const ikm = wrapPrivateKeyAsIkm(privkey)
+    expect(ikm.length).toBe(32)
+  })
+
+  it('produces same output for same input', () => {
+    const privkey = new Uint8Array(Buffer.from(privkeyHex, 'hex'))
+    const a = wrapPrivateKeyAsIkm(privkey)
+    const b = wrapPrivateKeyAsIkm(privkey)
+    expect(Buffer.from(a).toString('hex')).toBe(Buffer.from(b).toString('hex'))
+  })
+
+  it('produces different output for different inputs', () => {
+    const a = wrapPrivateKeyAsIkm(new Uint8Array(32).fill(0xaa))
+    const b = wrapPrivateKeyAsIkm(new Uint8Array(32).fill(0xbb))
+    expect(Buffer.from(a).toString('hex')).not.toBe(Buffer.from(b).toString('hex'))
   })
 })

@@ -5,7 +5,13 @@ import bitcore from 'bitcore-lib'
 import * as hdkey from 'hdkey'
 
 import { ECPairInterface, bitcoin, eccManager } from '@unisat/wallet-bitcoin'
-import { deriveContextHash, parseHexContext } from './derive-context-hash'
+import { getAccountDerivationPath } from '@unisat/wallet-shared'
+import {
+  DERIVE_CONTEXT_HASH_PURPOSE,
+  deriveContextHash,
+  parseHexContext,
+  wrapPrivateKeyAsIkm,
+} from './derive-context-hash'
 import { SimpleKeyring } from './simple-keyring'
 
 const hdPathString = "m/44'/0'/0'/0"
@@ -263,24 +269,26 @@ export class HdKeyring extends SimpleKeyring {
   }
 
   /**
-   * Derive a deterministic context hash bound to the connected leaf
-   * public key. IKM is the leaf private key, so different receive
-   * addresses (different leaf pubkeys) produce different secrets — the
-   * same connected pubkey called twice produces the same secret.
+   * Derive a deterministic context hash per spec v2.0.
    *
-   * Implementation is kept self-contained (independent of SimpleKeyring's
-   * inheritance) — this method's output stability is a forever invariant,
-   * so we don't want it perturbed by future modifications to unrelated
-   * code paths.
+   * Mnemonic-imported HD: IKM at sibling path
+   *   m/73681862'/coin_type'/account'/change/address_index
+   * (the connected user-leaf path with its purpose segment replaced).
+   *
+   * xpriv-imported HD (no master access): IKM via HMAC-SHA-512 wrap
+   * of the connected leaf privkey. Outputs are not interoperable with
+   * mnemonic-imported wallets of the same recovery phrase.
    */
   override async deriveContextHash(publicKey: string, appName: string, context: string): Promise<string> {
     const contextBytes = parseHexContext(context)
 
-    // Find the leaf ECPair whose public key matches the connected pubkey.
+    // Find the connected leaf ECPair AND its derivation index.
     let leafPrivateKey: Buffer | undefined
-    for (const wallet of this.wallets) {
-      if (wallet.publicKey.toString('hex') === publicKey) {
+    let leafIndex = -1
+    for (const [idx, [, wallet]] of Object.entries(this._index2wallet)) {
+      if (wallet.publicKey.toString('hex') === publicKey && this.wallets.includes(wallet)) {
         leafPrivateKey = wallet.privateKey
+        leafIndex = Number(idx)
         break
       }
     }
@@ -288,11 +296,21 @@ export class HdKeyring extends SimpleKeyring {
       throw new Error('deriveContextHash: Unable to find matching publicKey')
     }
 
-    const ikmBytes = new Uint8Array(leafPrivateKey)
+    let ikm: Uint8Array
+    if (this.mnemonic) {
+      // Sibling path: swap user purpose for 73681862', reuse the existing path helper.
+      const siblingHdPath = this.hdPath.replace(/^m\/\d+'/, `m/${DERIVE_CONTEXT_HASH_PURPOSE}'`)
+      const fullPath = getAccountDerivationPath(siblingHdPath, leafIndex, this.accountIndexDerivation)
+      ikm = new Uint8Array(this.hdWallet.derive(fullPath).privateKey)
+    } else {
+      // xpriv-imported: HMAC-wrap fallback (no master access).
+      ikm = wrapPrivateKeyAsIkm(new Uint8Array(leafPrivateKey))
+    }
+
     try {
-      return deriveContextHash(ikmBytes, appName, contextBytes)
+      return deriveContextHash(ikm, appName, contextBytes)
     } finally {
-      ikmBytes.fill(0)
+      ikm.fill(0)
     }
   }
 

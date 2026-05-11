@@ -7,7 +7,11 @@ import {
   validator,
 } from '@unisat/wallet-bitcoin'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { deriveContextHash, parseHexContext } from '../src/keyrings/derive-context-hash'
+import {
+  deriveContextHash,
+  parseHexContext,
+  wrapPrivateKeyAsIkm,
+} from '../src/keyrings/derive-context-hash'
 import { SimpleKeyring } from '../src/keyrings/simple-keyring'
 
 const TYPE_STR = 'Simple Key Pair'
@@ -371,11 +375,13 @@ describe('bitcoin-simple-keyring', () => {
       expect(result).toMatch(/^[0-9a-f]{64}$/)
     })
 
-    it('produces same result as direct derivation', async () => {
+    it('produces same result as direct HMAC-wrap derivation', async () => {
       const newKeyring = new SimpleKeyring([testAccount.key])
       const result = await newKeyring.deriveContextHash(testAccount.address, APP_NAME, 'deadbeef')
+      // Spec v2.0: imported wallets wrap the privkey via HMAC-SHA-512 first.
       const privKeyBytes = new Uint8Array(Buffer.from(testAccount.key, 'hex'))
-      const directResult = deriveContextHash(privKeyBytes, APP_NAME, parseHexContext('deadbeef'))
+      const wrappedIkm = wrapPrivateKeyAsIkm(privKeyBytes)
+      const directResult = deriveContextHash(wrappedIkm, APP_NAME, parseHexContext('deadbeef'))
       expect(result).toBe(directResult)
     })
 
